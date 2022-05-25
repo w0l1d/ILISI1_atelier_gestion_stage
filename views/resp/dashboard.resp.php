@@ -15,7 +15,7 @@
     <vmenu>
         <div class="top">
             <div class="logo">
-                <img src="../../public/assets/img/img.png" alt="Logo de la FSTM">
+                <img src="../../public/assets/img/logo_FSTM.png" alt="Logo de la FSTM">
                 <h2>intern<span class="primary">ship</span></h2>
             </div>
             <div class="close" id="close-btn">
@@ -190,7 +190,7 @@
                 <small class="text-muted">Admin</small>
             </div>
             <div class="profile-photo">
-                <img src="pic/profile.jpg">
+                <img src="../../public/assets/img/profile.jpg">
             </div>
         </div>
     </div>
@@ -201,7 +201,7 @@
             <div class="update">
                 <div class="profile-photo">
                     
-                    <img src="pic/comp1.jpg">
+                    <img src="../../public/assets/img/comp1.jpg">
                 </div>
                 <div class="message">
                     <p> company1 </p>
@@ -212,7 +212,7 @@
             <div class="update">
                 <div class="profile-photo">
                     
-                    <img src="pic/comp2.jpg">
+                    <img src="../../public/assets/img/comp2.jpg">
                 </div>
                 <div class="message">
                     <p> company2</p>
@@ -223,7 +223,7 @@
             <div class="update">
                 <div class="profile-photo">
                     
-                    <img src="pic/comp1.jpg">
+                    <img src="../../public/assets/img/comp1.jpg">
                 </div>
                 <div class="message">
                     <p> company3</p>
