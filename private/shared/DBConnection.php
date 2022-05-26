@@ -1,22 +1,43 @@
 <?php
- function getDBConnection()
-{
-    $servername = "localhost";
-    $dbname = "ilisi1_atelier1_gestion_stages";
-    $username = "root";
-    $password = "";
 
-    try {
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-        // set the PDO error mode to exception
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch(PDOException $e) {
-        echo "Connection failed: " . $e->getMessage();
-        die();
+class Connection
+{
+
+    protected static $instance;
+
+    private static $dbname = "ilisi1_atelier1_gestion_stages";
+
+    private static $servername = "localhost";
+
+    private static $dsn = 'mysql:host=localhost;dbname=ilisi1_atelier1_gestion_stages';
+
+    private static $username = 'root';
+
+    private static $password = '';
+
+    private function __construct()
+    {
+        try {
+            self::$instance = new PDO(self::$dsn, self::$username, self::$password);
+        } catch (PDOException $e) {
+            echo "MySql Connection Error: " . $e->getMessage();
+        }
     }
 
-    return $conn;
+    public static function getInstance() {
+        if (!self::$instance) {
+            new Connection();
+        }
+        return self::$instance;
+    }
 }
+
+function getDBConnection()
+{
+    return Connection::getInstance();
+}
+
+
 
 
 

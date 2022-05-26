@@ -7,18 +7,11 @@ if (isset($_GET['logout'])) {
     session_destroy();
 }
 
-check_user_connected:
-$user = isAuthenticated();
-if ( $user != null) {
-    header('Location: /');
-
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['email']) ||
         !empty($_POST['password']) ||
         !empty($_POST['user-type'])) {
-        $email = $_POST['email'];
+        $email = trim($_POST['email']);
         $password = $_POST['password'];
         $user_type = $_POST['user-type'];
 
@@ -53,11 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($row)) {
                 $user = $row;
                 $user['type'] = $user_type;
-                if (($user_type === "etudiant") && ($user['IsValidated'] == false))
+                if (($user_type === "etudiant") && !$user['IsValidated'])
                     $error = "Veuillez contacter votre responsable pour valider votre compte";
                 else {
                     $_SESSION['user'] = $user;
-                    goto check_user_connected;
+                    header('Location: /');
+                    die();
                 }
             } else
                 $error = "email ou mot de passe incorrect";

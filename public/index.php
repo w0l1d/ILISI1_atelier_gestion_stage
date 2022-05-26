@@ -1,6 +1,6 @@
 <?php
 require_once('../private/shared/auth.functions.php');
-$request = $_SERVER['REQUEST_URI'];
+$request = explode('?', $_SERVER['REQUEST_URI'])[0];
 session_start();
 
 $user = isAuthenticated();
@@ -10,12 +10,12 @@ switch ($request) {
         if ($user != null)
             header('Location: /');
         require __DIR__ . '/../views/login.php';
-        break;
+        die();
     case '/register':
         if ($user != null)
             header('Location: /');
-        require __DIR__ . '/../views/register.php';
-        break;
+        require_once __DIR__ . '/../views/register.php';
+        die();
 
 }
 
@@ -49,25 +49,28 @@ switch ($request) {
 
     default:
         http_response_code(404);
+        echo $request."<br>";
         require __DIR__ . '/../views/404.php';
         break;
 }
+
 die();
 
 is_instructor:
 switch ($request) {
     case '':
-    case '/dashboard':
     case '/':
-        require __DIR__ . '/../views/responsable/index.resp.php';
+    case '/dashboard':
+        require __DIR__ . '/../views/resp/dashboard.resp.php';
         break;
 
-    case 'offers' :
-        require __DIR__ . '/../views/student/offre.student.php';
+    case '/offres' :
+        require __DIR__ . '/../views/resp/offre.resp.php';
         break;
 
     default:
         http_response_code(404);
+        echo $request."<br>";
         require __DIR__ . '/../views/404.php';
         break;
 }
@@ -82,6 +85,9 @@ switch ($request) {
 
     default:
         http_response_code(404);
+        echo $request."<br>";
         require __DIR__ . '/../views/404.php';
         break;
 }
+
+

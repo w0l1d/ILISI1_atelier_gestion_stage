@@ -18,15 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         !empty($_POST['cne']) ||
         !empty($_POST['promotion'])) {
 
-        $cin        =   $_POST['cin'];
-        $cne        =   $_POST['cne'];
-        $lname      =   $_POST['lname'];
-        $fname      =   $_POST['fname'];
-        $phone      =   $_POST['phone'];
-        $email      =   $_POST['email'];
+        $cin        =   trim($_POST['cin']);
+        $cne        =   trim($_POST['cne']);
+        $lname      =   trim($_POST['lname']);
+        $fname      =   trim($_POST['fname']);
+        $phone      =   trim($_POST['phone']);
+        $email      =   trim($_POST['email']);
         $password   =   $_POST['password'];
-        $formation  =   strtoupper($_POST['formation']);
-        $promotion  =   $_POST['promotion'];
+        $formation  =   strtoupper(trim($_POST['formation']));
+        $promotion  =   trim($_POST['promotion']);
         $date_naiss =   $_POST['date-naiss'];
 
 
