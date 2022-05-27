@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Register - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+</head>
+
+<body class="bg-gradient-primary">
+    <div class="container">
+        <div class="card shadow-lg o-hidden border-0 my-5">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-flex">
+                        <div class="flex-grow-1 bg-register-image" style="background: url(&quot;assets/img/uh2c_logo.jpg&quot;) round;background-size: contain;"></div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h4 class="text-dark mb-4">Cree Compte Etudiant</h4>
+                            </div>
+                            <form class="user">
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text" id="exampleFirstName" placeholder="Prenom" name="fname" required=""></div>
+                                    <div class="col-sm-6"><input class="form-control form-control-user" type="text" id="exampleFirstName" placeholder="Nom" name="lname" required=""></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text" id="exampleFirstName-1" placeholder="CIN" name="cin" required="" minlength="6"></div>
+                                    <div class="col-sm-6"><input class="form-control form-control-user" type="text" id="exampleFirstName-2" placeholder="CNE" name="cne" required="" minlength="10"></div>
+                                </div>
+                                <div class="mb-3"><label class="form-label d-flex flex-column flex-grow-1 flex-fill">Date de naissance<input class="form-control form-control-user" id="exampleInputEmail-2" aria-describedby="emailHelp" placeholder="Telephone" name="date-naiss" required="" type="date"></label></div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text" id="exampleFirstName-3" placeholder="Promotion : (annee d'inscription) " name="promotion" required="" pattern="^20[0-9]{2}$"></div>
+                                    <div class="col-sm-6"><input class="form-control form-control-user" type="text" id="exampleFirstName-4" placeholder="Formation (Ex. ILISI, GMI...)" name="formation" required="" minlength="2" maxlength="15"></div>
+                                </div>
+                                <div class="mb-3"><input class="form-control form-control-user" type="tel" id="exampleInputEmail-1" aria-describedby="emailHelp" placeholder="Telephone" name="phone" required=""></div>
+                                <div class="mb-3"><input class="form-control form-control-user" type="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Email Address" name="email" required=""></div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="password" id="examplePasswordInput-1" placeholder="Password" name="password" required=""></div>
+                                    <div class="col-sm-6"><input class="form-control form-control-user" type="password" id="exampleRepeatPasswordInput-1" placeholder="Repeat Password" name="rpassword" required=""></div>
+                                </div>
+                                <div class="alert alert-danger border rounded-pill alert-dismissible" role="alert" style="font-size: 12px;"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button><span><strong>Error:</strong>&nbsp;this is an error label</span></div>
+                                <div class="alert alert-success border rounded-pill alert-dismissible" role="alert" style="font-size: 12px;"><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button><span>this is an message label</span></div><button class="btn btn-primary d-block btn-user w-100" type="submit">Register Account</button>
+                                <hr>
+                            </form>
+                            <div class="text-center"><a class="small" href="forgot-password.html" data-bs-target="#">Forgot Password?</a></div>
+                            <div class="text-center"><a class="small" href="login.html" data-bs-target="/login">Already have an account? Login!</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

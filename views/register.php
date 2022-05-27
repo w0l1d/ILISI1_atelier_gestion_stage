@@ -18,16 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         !empty($_POST['cne']) ||
         !empty($_POST['promotion'])) {
 
-        $cin        =   trim($_POST['cin']);
-        $cne        =   trim($_POST['cne']);
-        $lname      =   trim($_POST['lname']);
-        $fname      =   trim($_POST['fname']);
-        $phone      =   trim($_POST['phone']);
-        $email      =   trim($_POST['email']);
-        $password   =   $_POST['password'];
-        $formation  =   strtoupper(trim($_POST['formation']));
-        $promotion  =   trim($_POST['promotion']);
-        $date_naiss =   $_POST['date-naiss'];
+        $cin = trim($_POST['cin']);
+        $cne = trim($_POST['cne']);
+        $lname = trim($_POST['lname']);
+        $fname = trim($_POST['fname']);
+        $phone = trim($_POST['phone']);
+        $email = trim($_POST['email']);
+        $password = $_POST['password'];
+        $formation = strtoupper(trim($_POST['formation']));
+        $promotion = trim($_POST['promotion']);
+        $date_naiss = $_POST['date-naiss'];
 
 
         require_once('../private/shared/DBConnection.php');
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':cin', $cin);
             $stmt->bindParam(':cne', $cne);
             $stmt->bindParam(':promo', $promotion);
-                $stmt->bindParam(':formation', $formation_id['id']);
+            $stmt->bindParam(':formation', $formation_id['id']);
             $stmt->execute();
 
             $pdo->commit();
@@ -81,88 +81,113 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 skip_process:
 ?>
-<!doctype html>
-<html lang="en">
+
+<!DOCTYPE html>
+<html lang="fr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Authentication</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Register</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
 </head>
-<body>
-<div >
 
-    <!-- Pills content -->
-    <div>
-        <form method="post">
-            <?php if (!empty($error)) {?>
-                <div>
-                    <h4> <?php echo "error :: $error";?></h4>
+<body class="bg-gradient-primary">
+<div class="container">
+    <div class="card shadow-lg o-hidden border-0 my-5">
+        <div class="card-body p-0">
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-flex">
+                    <div class="flex-grow-1 bg-register-image"
+                         style="background: url(&quot;assets/img/uh2c_logo.jpg&quot;) round;background-size: contain;"></div>
                 </div>
-            <?php } elseif (!empty($msg)) {?>
-                <div>
-                    <h4> <?php echo "message :: $msg";?></h4>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h4 class="text-dark mb-4">Cree Compte Etudiant</h4>
+                        </div>
+                        <form class="user" action="/register" method="post">
+                            <div class="row mb-3">
+                                <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
+                                                                          type="text" id="exampleFirstName"
+                                                                          placeholder="Prenom" name="fname" required="">
+                                </div>
+                                <div class="col-sm-6"><input class="form-control form-control-user" type="text"
+                                                             id="exampleFirstName" placeholder="Nom" name="lname"
+                                                             required=""></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
+                                                                          type="text" id="exampleFirstName-1"
+                                                                          placeholder="CIN" name="cin" required=""
+                                                                          minlength="6"></div>
+                                <div class="col-sm-6"><input class="form-control form-control-user" type="text"
+                                                             id="exampleFirstName-2" placeholder="CNE" name="cne"
+                                                             required="" minlength="10"></div>
+                            </div>
+                            <div class="mb-3"><label class="form-label d-flex flex-column flex-grow-1 flex-fill">Date de
+                                    naissance<input class="form-control form-control-user" id="exampleInputEmail-2"
+                                                    aria-describedby="emailHelp" placeholder="Telephone"
+                                                    name="date-naiss" required="" type="date"></label></div>
+                            <div class="row mb-3">
+                                <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
+                                                                          type="text" id="exampleFirstName-3"
+                                                                          placeholder="Promotion : (annee d'inscription) "
+                                                                          name="promotion" required=""
+                                                                          pattern="^20[0-9]{2}$"></div>
+                                <div class="col-sm-6"><input class="form-control form-control-user" type="text"
+                                                             id="exampleFirstName-4"
+                                                             placeholder="Formation (Ex. ILISI, GMI...)"
+                                                             name="formation" required="" minlength="2" maxlength="15">
+                                </div>
+                            </div>
+                            <div class="mb-3"><input class="form-control form-control-user" type="tel"
+                                                     id="exampleInputEmail-1" aria-describedby="emailHelp"
+                                                     placeholder="Telephone" name="phone" required=""></div>
+                            <div class="mb-3"><input class="form-control form-control-user" type="email"
+                                                     id="exampleInputEmail" aria-describedby="emailHelp"
+                                                     placeholder="Email Address" name="email" required=""></div>
+                            <div class="row mb-3">
+                                <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
+                                                                          type="password" id="examplePasswordInput-1"
+                                                                          placeholder="Password" name="password"
+                                                                          required=""></div>
+                                <div class="col-sm-6"><input class="form-control form-control-user" type="password"
+                                                             id="exampleRepeatPasswordInput-1"
+                                                             placeholder="Repeat Password" name="rpassword" required="">
+                                </div>
+                            </div>
+                            <?php if (!empty($error)) { ?>
+                                <div class="alert alert-danger border rounded-pill alert-dismissible" role="alert"
+                                     style="font-size: 12px;">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    <span><strong>Error:</strong>&nbsp;<?php echo $error; ?></span></div>
+                            <?php } elseif (!empty($msg)) { ?>
+                                <div class="alert alert-success border rounded-pill alert-dismissible" role="alert"
+                                     style="font-size: 12px;">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    <span><?php echo $msg; ?></span></div>
+                            <?php } ?>
+                            <button class="btn btn-primary d-block btn-user w-100" type="submit">Register Account
+                            </button>
+                            <hr>
+                        </form>
+                        <div class="text-center"><a class="small" href="#">Oublier Mot de passe?</a></div>
+                        <div class="text-center"><a class="small" href="/login">Vous avez deja un compte? Login!</a>
+                        </div>
+                    </div>
                 </div>
-            <?php }?>
-
-            <div>
-                <input type="text" id="cin" name="cin" required/>
-                <label  for="cin">cin</label>
             </div>
-            <div>
-                <input type="text" id="cne" name="cne" required/>
-                <label  for="cne">cne</label>
-            </div>
-            <div>
-                <input type="text" id="lname" name="lname" required/>
-                <label  for="lname">lname</label>
-            </div>
-            <div>
-                <input type="text" id="fname" name="fname" required/>
-                <label  for="fname">fname</label>
-            </div>
-            <div>
-                <input type="text" id="phone" name="phone" required/>
-                <label  for="phone">phone</label>
-            </div>
-            <div>
-                <input type="email" id="email" name="email" required/>
-                <label  for="email">email</label>
-            </div>
-            <div>
-                <input type="password" id="password" name="password" required/>
-                <label  for="password">password</label>
-            </div>
-            <div>
-                <input type="number" id="promotion" name="promotion" required/>
-                <label  for="promotion">promotion</label>
-            </div>
-            <div>
-                <input type="date" id="date-naiss" name="date-naiss" required/>
-                <label  for="date-naiss">date-naiss</label>
-            </div>
-            <div>
-                <input type="text" minlength="2" maxlength="15" id="formation" required name="formation"/>
-                <label  for="formation">formation</label>
-            </div>
-
-            <!-- Submit button -->
-            <button type="submit" >Sign in</button>
-
-        </form>
+        </div>
     </div>
+</div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/js/theme.js"></script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
