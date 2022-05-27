@@ -1,51 +1,16 @@
-<vmenu>
-    <div class="top">
-        <div class="logo">
-            <img src="/assets/img/logo_FSTM.png" alt="Logo de la FSTM">
-            <h2>intern<span class="primary">ship</span></h2>
-        </div>
-        <div class="close" id="close-btn">
-            <span class="material-icons-sharp">close</span>
-        </div>
+<nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+    <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+        <div class="sidebar-brand-icon rotate-n-15"><i class="far fa-handshake"></i></div>
+        <div class="sidebar-brand-text mx-3"><span>Gestion<br>De Stage</span></div>
+    </a>
+        <hr class="sidebar-divider my-0">
+        <ul class="navbar-nav text-light" id="accordionSidebar">
+            <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+            <li class="nav-item"><a class="nav-link active" href="/offres"><i class="fa fa-gift"></i><span>Offres de stage</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="/entreprise"><i class="fa fa-gift"></i><span>Entreprises</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="/profile"><i class="fas fa-user"></i><span>Profile</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table"></i><span>Table</span></a></li>
+        </ul>
+        <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
     </div>
-    <div class="sidebar">
-        <a href="/" class="active">
-            <span class="material-icons-sharp">dashboard</span>
-            <h3>Dashboard</h3>
-        </a>
-        <a href="#">
-            <span class="material-icons-sharp"> person</span>
-            <h3>students</h3>
-        </a>
-        <a href="#">
-            <span class="material-icons-sharp"> work_history</span>
-            <h3>internship</h3>
-        </a>
-
-        <a href="#">
-            <span class="material-icons-sharp">person_add</span>
-            <h3>validation</h3>
-            <span class="validation-count">6</span>
-        </a>
-        <a href="#">
-            <span class="material-icons-sharp"> business</span>
-            <h3>Companies</h3>
-        </a>
-            <a href="/offres">
-            <span class="material-icons-sharp"> post_add</span>
-            <h3>internship offer</h3>
-        </a>
-        <a href="#">
-            <span class="material-icons-sharp"> edit</span>
-            <h3>Edit profile</h3>
-        </a>
-
-
-        <a href="/login?logout">
-            <span class="material-icons-sharp">logout</span>
-            <h3>logOut</h3>
-        </a>
-
-
-    </div>
-</vmenu>
+</nav>
