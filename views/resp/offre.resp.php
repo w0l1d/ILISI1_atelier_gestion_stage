@@ -4,6 +4,59 @@ $pdo = getDBConnection();
 
 $curr_user = $_SESSION['user'];
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['delai_offre']) ||
+        !empty($_POST['description']) ||
+        !empty($_POST['duree_stage']) ||
+        !empty($_POST['end_stage']) ||
+        !empty($_POST['nbr_stagiaire']) ||
+        !empty($_POST['start_stage']) ||
+        !empty($_POST['statue']) ||
+        !empty($_POST['title']) ||
+        !empty($_POST['entreprise_id']) ||
+        !empty($_POST['type_stage'])) {
+
+        $delai_offre = $_POST['delai_offre'];
+        $description = $_POST['description'];
+        $duree_stage = $_POST['duree_stage'];
+        $end_stage = $_POST['end_stage'];
+        $nbr_stagiaire = $_POST['nbr_stagiaire'];
+        $start_stage = $_POST['start_stage'];
+        $statue = $_POST['statue'];
+        $title = $_POST['title'];
+        $type_stage = $_POST['type_stage'];
+        $entreprise_id = $_POST['entreprise_id'];
+        $formation_id = $curr_user['formation_id'];
+
+
+        $query = "INSERT INTO offre 
+                    (id, created_date, delai_offre, description, duree_stage, end_stage, nbr_stagiaire,
+                     start_stage, statue, title, type_stage, updated_date, entreprise_id, formation_id)
+                    VALUES (null,'NOW()',:delai_offre,:description,:duree_stage,:end_stage,:nbr_stagiaire,
+                            :start_stage,:statue,:title,:type_stage,'NOW()',:entreprise_id, :formation_id)";
+        $stmt = $pdo->prepare($query);
+
+        $stmt->bindParam(':delai_offre', $delai_offre);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':duree_stage', $duree_stage);
+        $stmt->bindParam(':end_stage', $end_stage);
+        $stmt->bindParam(':nbr_stagiaire', $nbr_stagiaire);
+        $stmt->bindParam(':start_stage', $start_stage);
+        $stmt->bindParam(':statue', $statue);
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':type_stage', $type_stage);
+        $stmt->bindParam(':entreprise_id', $entreprise_id);
+        $stmt->bindParam(':formation_id', $formation_id);
+
+        if ($stmt->execute())
+            $msg = "L'Offre est bien cree";
+        else
+            $error = "Erreur : Offre n'est pas cree";
+
+    } else
+        $error = "Veuillez entrer les champs obligatoires";
+}
+
 
 ?>
 
@@ -41,6 +94,24 @@ $curr_user = $_SESSION['user'];
                     <button class="btn btn-primary d-block d-sm-none d-md-none" type="button" data-bs-target="#modal-1"
                             data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i></button>
                 </div>
+
+                <?php
+                if (!empty($error)) {
+                    ?>
+                    <div class="alert alert-danger" role="alert">
+                    <span>
+                        <strong>Erreur : </strong>
+                        <?php echo $error; ?>
+                    </span>
+                    </div>
+                <?php } elseif (!empty($msg)) { ?>
+                    <div class="alert alert-success" role="alert">
+                    <span>
+                        <?php echo $msg; ?>
+                    </span>
+                    </div>
+                <?php } ?>
+
                 <div class="card shadow">
                     <div class="card-header py-3">
                         <p class="text-primary m-0 fw-bold">Offres</p>
@@ -50,20 +121,29 @@ $curr_user = $_SESSION['user'];
                                style="width:100%; font-size: calc(0.5em + 1vmin); ">
                             <thead>
                             <th>ID</th>
-                            <th>Title</th>
-                            <th>Type Stage</th>
-                            <th>Nombre Stagiaire</th>
-                            <th>Description</th>
-                            <th>Duree Stage</th>
+                            <th>Titre</th>
                             <th>Statue</th>
+                            <th>Type</th>
+                            <th>Entreprise</th>
+                            <th>Dernier Delai</th>
+                            <th>Duree en jours</th>
+                            <th>Nombre de stagiaires</th>
+                            <th>Date Debut</th>
+                            <th>Date Fin</th>
+                            <th>Description</th>
+                            <th>Date de creation</th>
+                            <th>Date de Maj</th>
+
                             </thead>
                             <?php
                             try {
-                                $query = "SELECT id, created_date, delai_offre, description, duree_stage, end_stage,
-                                nbr_stagiaire, start_stage, statue, title, updated_date, entreprise_id,
-                                formation_id, type_stage FROM offre e
-                                where formation_id = (SELECT id FROM formation
-                                                                WHERE responsable_id = :id_resp limit 1)";
+                                $query = "SELECT o.id, o.created_date, o.delai_offre, o.description, 
+                                            o.duree_stage, o.end_stage, o.nbr_stagiaire, o.start_stage,
+                                            o.statue, o.title, o.updated_date, o.formation_id,
+                                            o.type_stage, e.short_name, e.name
+                                            FROM offre o, entreprise e WHERE o.formation_id in (SELECT id FROM formation f
+                                                                WHERE f.responsable_id = :id_resp)
+                                            AND o.entreprise_id = e.id";
 
                                 $stmt = $pdo->prepare($query);
                                 $stmt->bindParam('id_resp', $curr_user['id']);
@@ -75,15 +155,25 @@ $curr_user = $_SESSION['user'];
                                         <tr>
                                             <td><?php echo $value['id']; ?></td>
                                             <td><?php echo $value['title']; ?></td>
-                                            <td><?php echo $value['type_stage']; ?></td>
-                                            <td><?php echo $value['nbr_stagiaire']; ?></td>
-                                            <td><?php echo $value['description']; ?></td>
-                                            <td><?php echo $value['duree_stage']; ?></td>
                                             <td><?php echo $value['statue']; ?></td>
+                                            <td><?php echo $value['type_stage']; ?></td>
+                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>">
+                                                <?php echo $value['short_name']; ?>
+                                            </td>
+                                            <td><?php echo $value['delai_offre']; ?></td>
+                                            <td><?php echo $value['duree_stage']; ?></td>
+                                            <td><?php echo $value['nbr_stagiaire']; ?></td>
+                                            <td><?php echo $value['start_stage']; ?></td>
+                                            <td><?php echo $value['end_stage']; ?></td>
+                                            <td><?php echo $value['description']; ?></td>
+                                            <td><?php echo $value['created_date']; ?></td>
+                                            <td><?php echo $value['updated_date']; ?></td>
+
                                         </tr>
                                         <?php
                                     }
-                                }
+                                } else
+                                    echo "Nothing found";
                             } catch (Exception $e) {
                                 echo 'Erreur : ' . $e->getMessage();
                             }
@@ -105,26 +195,28 @@ $curr_user = $_SESSION['user'];
 
 
 <!--ADD OFFRE MODAL-->
-<div class="modal fade" role="dialog" tabindex="-1" id="modal-1" style="font-size: calc(0.5em + 1vmin);">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Ajouter Offre de stage</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form class="d-flex flex-column flex-fill justify-content-around align-content-start"
-                      action="/offres" method="post">
+<form class="d-flex flex-column flex-fill justify-content-around align-content-start"
+      action="/offres" method="post" style="font-size: calc(0.5em + 1vmin);">
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Ajouter Offre de stage</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Titre</label>
+                        <label class="form-label">Titre<span
+                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
                         <input class="form-control" type="text"
                                required="" name="title"
                                placeholder="titre" maxlength="149"
                                minlength="5">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Entreprise</label>
-                        <select class="form-select flex-grow-1" required="">
+                        <label class="form-label">Entreprise<span
+                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
+                        <select name="entreprise" class="form-select flex-grow-1" required="">
 
                             <?php
                             try {
@@ -153,16 +245,19 @@ $curr_user = $_SESSION['user'];
                         <legend>Specification</legend>
                         <div class="row row-cols-2">
                             <div class="col-auto flex-grow-1 mb-2">
-                                <label class="form-label flex-grow-1">Nombre de stagiaire</label>
+                                <label class="form-label flex-grow-1">Nombre de stagiaire<span
+                                            style="color: var(--bs-red);font-weight: bold;">*</span></label>
                                 <input class="form-control" type="number" required=""
                                        min="1" name="nbr_stagiaire">
                             </div>
                             <div class="col-auto flex-grow-1 mb-2">
-                                <label class="form-label">Delai de stage</label>
+                                <label class="form-label">Delai de stage<span
+                                            style="color: var(--bs-red);font-weight: bold;">*</span></label>
                                 <input class="form-control" type="date" name="delai_stage" required="">
                             </div>
                             <div class="col-auto col-lg-auto flex-grow-1 mb-2">
-                                <label class="form-label">Type de stage</label>
+                                <label class="form-label">Type de stage<span
+                                            style="color: var(--bs-red);font-weight: bold;">*</span></label>
                                 <select class="form-select" required="" name="status">
                                     <option value="PFE" selected="">PFE</option>
                                     <option value="PFA">PFA</option>
@@ -171,7 +266,8 @@ $curr_user = $_SESSION['user'];
                                 </select>
                             </div>
                             <div class="col-auto col-lg-auto flex-grow-1  mb-2">
-                                <label class="form-label">Status</label>
+                                <label class="form-label">Status<span
+                                            style="color: var(--bs-red);font-weight: bold;">*</span></label>
                                 <select class="form-select" required name="status">
                                     <option value="NEW" selected="">Nouveau</option>
                                     <option value="CLOSED">Ferme</option>
@@ -180,7 +276,8 @@ $curr_user = $_SESSION['user'];
                                 </select>
                             </div>
                             <div class="col-auto flex-grow-1 mb-2">
-                                <label class="form-label flex-grow-1">Duree de stage</label>
+                                <label class="form-label flex-grow-1">Duree de stage<span
+                                            style="color: var(--bs-red);font-weight: bold;">*</span></label>
                                 <input class="form-control" type="number" required="" min="30"
                                        name="duree" placeholder="duree en jour">
                             </div>
@@ -190,30 +287,32 @@ $curr_user = $_SESSION['user'];
                         <legend>Period de stage</legend>
                         <div class="row">
                             <div class="col mb-2">
-                                <label class="form-label">debut</label>
+                                <label class="form-label">debut<span
+                                            style="color: var(--bs-red);font-weight: bold;">*</span></label>
                                 <input class="form-control" type="date" name="debut_stage" required="">
                             </div>
                             <div class="col mb-2">
-                                <label class="form-label">fin</label>
+                                <label class="form-label">fin<span
+                                            style="color: var(--bs-red);font-weight: bold;">*</span></label>
                                 <input class="form-control" type="date" name="fin_stage" required="">
                             </div>
                         </div>
                     </fieldset>
                     <div class="mb-3">
-                        <label class="form-label">Description</label>
+                        <label class="form-label">Description<span
+                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
                         <textarea class="border rounded form-control" placeholder="Description" name="description"
                                   maxlength="254"></textarea>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-light" type="button" data-bs-dismiss="modal">Fermer</button>
-                <button class="btn btn-primary" type="button">Ajouter</button>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal">Fermer</button>
+                    <button class="btn btn-primary" type="submit">Ajouter</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
+</form>
 
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
