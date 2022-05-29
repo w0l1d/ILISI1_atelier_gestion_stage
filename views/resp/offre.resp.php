@@ -124,7 +124,30 @@ $curr_user = $_SESSION['user'];
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Entreprise</label>
-                        <select class="form-select flex-grow-1" required=""></select>
+                        <select class="form-select flex-grow-1" required="">
+
+                            <?php
+                            try {
+                                $query = "SELECT id, name, short_name FROM entreprise e";
+
+                                $stmt = $pdo->prepare($query);
+                                $stmt->execute();
+                                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                if (!empty($rows)) {
+                                    foreach ($rows as $key => $value) {
+                                        ?>
+                                        <option value="<?php echo $value['id']; ?>">
+                                            <?php echo "{$value['short_name']}: {$value['name']}"; ?>
+                                        </option>
+                                        <?php
+                                    }
+                                }
+                            } catch (Exception $e) {
+                                echo 'Erreur : ' . $e->getMessage();
+                            }
+                            ?>
+
+                        </select>
                     </div>
                     <fieldset class="mb-3">
                         <legend>Specification</legend>
