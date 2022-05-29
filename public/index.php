@@ -68,6 +68,14 @@ switch ($request) {
         require __DIR__ . '/../views/resp/offre.resp.php';
         break;
 
+    case '/entreprises' :
+        require __DIR__ . '/../views/resp/entreprise.resp.php';
+        break;
+
+    case '/profile' :
+        require __DIR__ . '/../views/resp/profile.resp.php';
+        break;
+
     default:
         http_response_code(404);
         echo $request."<br>";
