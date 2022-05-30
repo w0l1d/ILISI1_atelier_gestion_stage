@@ -13,6 +13,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="/etudiants">
+                    <i class="fa fa-gift"></i>
+                    <span>Etudiants</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="/offres">
                     <i class="fa fa-gift"></i>
                     <span>Offres de stage</span>

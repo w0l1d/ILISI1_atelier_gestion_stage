@@ -4,8 +4,8 @@ require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($_POST['name']) ||
-        !empty($_POST['domaine']) ||
+    if (!empty($_POST['name']) &&
+        !empty($_POST['domaine']) &&
         !empty($_POST['email'])) {
 
 

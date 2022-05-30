@@ -8,8 +8,8 @@ if (isset($_GET['logout'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($_POST['email']) ||
-        !empty($_POST['password']) ||
+    if (!empty($_POST['email']) &&
+        !empty($_POST['password']) &&
         !empty($_POST['user-type'])) {
         $email = trim($_POST['email']);
         $password = $_POST['password'];
@@ -17,24 +17,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         require_once('../private/shared/DBConnection.php');
         $pdo = getDBConnection();
-        $sup_query = ";";
+
+
         switch ($user_type) {
             case 1:
                 $user_type = "etudiant";
-//                $sup_query = " AND e.IsValidated is true;";
+                $query = "SELECT p.*, e.* FROM person p, etudiant e
+                WHERE p.email = :email AND p.password like :pwd AND e.id = p.id";
                 break;
             case 2:
                 $user_type = "enseignant";
-                $sup_query = " AND p.id IN (SELECT responsable_id FROM formation);";
+                $query = "SELECT p.*, e.*, f.id as formation_id  
+                            FROM person p, enseignant e, formation f
+                             WHERE p.email = :email 
+                             AND p.password = :pwd 
+                             AND p.id  = f.responsable_id
+                             AND e.id = p.id";
                 break;
             case 3:
                 $user_type = "admin";
+                $query = "SELECT p.*, e.* FROM person p, admin e
+                WHERE p.email = :email AND p.password = :pwd AND e.id = p.id";
+
                 break;
         }
 
         try {
-            $query = "SELECT p.*, e.* FROM person p, $user_type e
-                WHERE p.email = :email AND p.password like :pwd AND e.id = p.id" . $sup_query;
 
             $stmt = $pdo->prepare($query);
             $stmt->bindParam(':email', $email);
