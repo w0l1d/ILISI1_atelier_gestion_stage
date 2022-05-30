@@ -14,7 +14,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/etudiants">
-                    <i class="fa fa-gift"></i>
+                    <i class="fa fa-users"></i>
                     <span>Etudiants</span>
                 </a>
             </li>
