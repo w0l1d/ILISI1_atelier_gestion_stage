@@ -68,59 +68,57 @@
                         <div class="card-body"></div>
                     </div>
                 </div>
-                <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Ajouter Offre de stage</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="d-flex flex-column flex-fill justify-content-around align-content-start" action="/offres" method="post">
-                                    <div><label class="form-label">Titre</label><input class="form-control" type="text" required="" name="title" placeholder="titre" maxlength="149" minlength="5"></div>
-                                    <div><label class="form-label">Entreprise</label><select class="form-select flex-grow-1" required=""></select></div>
-                                    <fieldset>
-                                        <legend>Specification</legend>
-                                        <div class="row row-cols-2">
-                                            <div class="col-auto flex-grow-1"><label class="form-label flex-grow-1">Nombre de stagiaire</label><input class="form-control" type="number" required="" min="1" name="nbr_stagiaire"></div>
-                                            <div class="col-auto flex-grow-1"><label class="form-label">Delai de stage</label><input class="form-control" type="date" name="delai_stage" required=""></div>
-                                            <div class="col-auto col-lg-auto flex-grow-1"><label class="form-label">Type de stage</label><select class="form-select" required="" name="status">
-                                                    <option value="PFE" selected="">PFE</option>
-                                                    <option value="PFA">PFA</option>
-                                                    <option value="INIT">stage d'initiation</option>
-                                                    <option value="SUMMER">stage d'ete</option>
-                                                </select></div>
-                                            <div class="col-auto col-lg-auto flex-grow-1"><label class="form-label">Status</label><select class="form-select" required="" name="status">
-                                                    <option value="NEW" selected="">Nouveau</option>
-                                                    <option value="CLOSED">Ferme</option>
-                                                    <option value="CANCELLED">Annule</option>
-                                                    <option value="FULL">Complet</option>
-                                                </select></div>
-                                            <div class="col-auto flex-grow-1"><label class="form-label flex-grow-1">Duree de stage</label><input class="form-control" type="number" required="" min="30" name="duree" placeholder="duree en jour"></div>
-                                        </div>
-                                    </fieldset>
-
-
-                                    <fieldset>
-                                        <legend>Period de stage</legend>
-                                        <div class="row">
-                                            <div class="col"><label class="form-label">debut</label><input class="form-control" type="date" name="debut_stage" required=""></div>
-                                            <div class="col"><label class="form-label">fin</label><input class="form-control" type="date" name="fin_stage" required=""></div>
-                                        </div>
-                                    </fieldset>
-                                    <div><label class="form-label">Description</label><textarea class="border rounded form-control" placeholder="Description" name="description" maxlength="254"></textarea></div>
-                                </form>
-                            </div>
-                            <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Fermer</button><button class="btn btn-primary" type="button">Ajouter</button></div>
-                        </div>
-                    </div>
-                </div>
             </div>
             <footer class="bg-white sticky-footer">
                 <div class="container my-auto">
                     <div class="text-center my-auto copyright"><span>Copyright © Gestion de stage 2022</span></div>
                 </div>
             </footer>
-        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+        </div>
+        <form class="d-flex flex-column flex-fill justify-content-around align-content-start" action="/offres" method="post">
+            <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Ajouter Offre de stage</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div><label class="form-label">Titre</label><input class="form-control" type="text" required="" name="title" placeholder="titre" maxlength="149" minlength="5"></div>
+                            <div><label class="form-label">Entreprise</label><select class="form-select flex-grow-1" required=""></select></div>
+                            <fieldset>
+                                <legend>Specification</legend>
+                                <div class="row row-cols-2">
+                                    <div class="col-auto flex-grow-1"><label class="form-label flex-grow-1">Nombre de stagiaire</label><input class="form-control" type="number" required="" min="1" name="nbr_stagiaire"></div>
+                                    <div class="col-auto flex-grow-1"><label class="form-label">Delai de stage</label><input class="form-control" type="date" name="delai_stage" required=""></div>
+                                    <div class="col-auto col-lg-auto flex-grow-1"><label class="form-label">Type de stage</label><select class="form-select" required="" name="status">
+                                            <option value="PFE" selected="">PFE</option>
+                                            <option value="PFA">PFA</option>
+                                            <option value="INIT">stage d'initiation</option>
+                                            <option value="SUMMER">stage d'ete</option>
+                                        </select></div>
+                                    <div class="col-auto col-lg-auto flex-grow-1"><label class="form-label">Status</label><select class="form-select" required="" name="status">
+                                            <option value="NEW" selected="">Nouveau</option>
+                                            <option value="CLOSED">Ferme</option>
+                                            <option value="CANCELLED">Annule</option>
+                                            <option value="FULL">Complet</option>
+                                        </select></div>
+                                    <div class="col-auto flex-grow-1"><label class="form-label flex-grow-1">Duree de stage</label><input class="form-control" type="number" required="" min="30" name="duree" placeholder="duree en jour"></div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Period de stage</legend>
+                                <div class="row">
+                                    <div class="col"><label class="form-label">debut</label><input class="form-control" type="date" name="debut_stage" required=""></div>
+                                    <div class="col"><label class="form-label">fin</label><input class="form-control" type="date" name="fin_stage" required=""></div>
+                                </div>
+                            </fieldset>
+                            <div><label class="form-label">Description</label><textarea class="border rounded form-control" placeholder="Description" name="description" maxlength="254"></textarea></div>
+                        </div>
+                        <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Fermer</button><button class="btn btn-primary" type="submit">Ajouter</button></div>
+                    </div>
+                </div>
+            </div>
+        </form><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>

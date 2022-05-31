@@ -4,59 +4,87 @@ $pdo = getDBConnection();
 
 $curr_user = $_SESSION['user'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($_POST['title']) &&
-        !empty($_POST['entreprise_id']) &&
-        !empty($_POST['nbr_stagiaire']) &&
-        !empty($_POST['delai_offre']) &&
-        !empty($_POST['type_stage']) &&
-        !empty($_POST['status']) &&
-        !empty($_POST['duree_stage']) &&
-        !empty($_POST['start_stage']) &&
-        !empty($_POST['end_stage']) &&
-        !empty($_POST['description'])) {
+if (!empty($_GET['validate'])) {
+    $validate_id = $_GET['validate'];
 
-        $delai_offre = $_POST['delai_offre'];
-        $description = $_POST['description'];
-        $duree_stage = $_POST['duree_stage'];
-        $end_stage = $_POST['end_stage'];
-        $nbr_stagiaire = $_POST['nbr_stagiaire'];
-        $start_stage = $_POST['start_stage'];
-        $statue = $_POST['status'];
-        $title = $_POST['title'];
-        $type_stage = $_POST['type_stage'];
-        $entreprise_id = $_POST['entreprise_id'];
-        $formation_id = $curr_user['formation_id'];
+    $query = "SELECT * FROM etudiant WHERE id = :validate_id;";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':validate_id', $validate_id);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    if (empty($row)) {
+        $error = "etudiant n'existe pas";
+        goto skip_process;
+    } elseif ($row['formation_id'] != $curr_user['formation_id']) {
+        $error = "etudiant `{$row['id']}` n'appartient pas a votre formation";
+        goto skip_process;
+    } elseif ($row['IsValidated']) {
+        $error = "etudiant `{$row['id']}` est deja valide";
+        goto skip_process;
+    }
 
-        $query = "INSERT INTO offre 
-                    (id, created_date, delai_offre, description, duree_stage, end_stage, nbr_stagiaire,
-                     start_stage, statue, title, type_stage, updated_date, entreprise_id, formation_id)
-                    VALUES (null,NOW(),:delai_offre,:description,:duree_stage,:end_stage,:nbr_stagiaire,
-                            :start_stage,:statue,:title,:type_stage,NOW(),:entreprise_id, :formation_id)";
-        $stmt = $pdo->prepare($query);
+    $query = "UPDATE etudiant SET IsValidated = true where id = :validate_id";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':validate_id', $validate_id);
+    if (!$stmt->execute()) {
+        $error = 'Etudiant n\'est pas Valide';
+        goto skip_process;
+    }
 
-        $stmt->bindParam(':delai_offre', $delai_offre);
-        $stmt->bindParam(':description', $description);
-        $stmt->bindParam(':duree_stage', $duree_stage);
-        $stmt->bindParam(':end_stage', $end_stage);
-        $stmt->bindParam(':nbr_stagiaire', $nbr_stagiaire);
-        $stmt->bindParam(':start_stage', $start_stage);
-        $stmt->bindParam(':statue', $statue);
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':type_stage', $type_stage);
-        $stmt->bindParam(':entreprise_id', $entreprise_id);
-        $stmt->bindParam(':formation_id', $formation_id);
-
-        if ($stmt->execute())
-            $msg = "L'Offre est bien cree";
-        else
-            $error = "Erreur : Offre n'est pas cree";
-
-    } else
-        $error = "Veuillez entrer les champs obligatoires";
+    $msg = "etudiant est valide";
 }
+elseif (!empty($_GET['delete'])) {
+    $delete_id = $_GET['delete'];
 
+    try {
+
+        $query = "SELECT * FROM etudiant WHERE id = :delete_id";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':delete_id', $delete_id);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+        if (empty($row)) {
+            $error = "etudiant n'existe pas";
+            goto skip_process;
+        } elseif ($row['formation_id'] != $curr_user['formation_id']) {
+            $error = "etudiant `{$row['id']}` n'appartient pas a votre formation";
+            goto skip_process;
+        } elseif ($row['IsValidated']) {
+            $error = "etudiant `{$row['id']}` est deja valide";
+            goto skip_process;
+        }
+
+        $pdo->beginTransaction();
+
+        $query = "DELETE FROM etudiant WHERE id = :delete_id";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':delete_id', $delete_id);
+        if (!$stmt->execute()) {
+            $pdo->rollback();
+            $error = 'Etudiant n\'est pas supprime';
+            goto skip_process;
+        }
+
+        $query = "DELETE FROM person WHERE id = :delete_id";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':delete_id', $delete_id);
+        if (!$stmt->execute()) {
+            $pdo->rollback();
+            $error = 'Etudiant n\'est pas supprime';
+            goto skip_process;
+        }
+
+        $pdo->commit();
+        $msg = 'Etudiant est supprime';
+    } catch (Exception $e) {
+        $pdo->rollback();
+        $error = $e->getMessage();
+    }
+}
+skip_process:
 
 ?>
 
@@ -66,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Gestion des Offres</title>
+    <title>Gestion des Etudiants</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/datatable/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="assets/datatable/css/responsive.bootstrap5.min.css">
@@ -87,12 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php require_once 'parts/navbar.html' ?>
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-dark mb-0">Offres de stages<br></h3>
-                    <button class="btn btn-primary d-none d-sm-block d-md-block" type="button" data-bs-target="#modal-1"
-                            data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i>&nbsp;ajouter offre
-                    </button>
-                    <button class="btn btn-primary d-block d-sm-none d-md-none" type="button" data-bs-target="#modal-1"
-                            data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i></button>
+                    <h3 class="text-dark mb-0">Etudiants<br></h3>
                 </div>
 
                 <?php
@@ -114,35 +137,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="card shadow">
                     <div class="card-header py-3">
-                        <p class="text-primary m-0 fw-bold">Offres</p>
+                        <p class="text-primary m-0 fw-bold">Etudiants</p>
                     </div>
                     <div class="card-body">
                         <table id="myTable" class="table table-striped nowrap"
                                style="width:100%; font-size: calc(0.5em + 1vmin); ">
                             <thead>
-                            <th>ID</th>
-                            <th>Titre</th>
-                            <th>Statue</th>
-                            <th>Type</th>
-                            <th>Entreprise</th>
-                            <th>Dernier Delai</th>
-                            <th>Duree en jours</th>
-                            <th>Nombre de stagiaires</th>
-                            <th>Date Debut</th>
-                            <th>Date Fin</th>
-                            <th>Description</th>
-                            <th>Date de creation</th>
-                            <th>Date de Maj</th>
-
+                            <th>id</th>
+                            <th>Etat</th>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th>CIN</th>
+                            <th>CNE</th>
+                            <th>Promotion</th>
+                            <th>Email</th>
+                            <th>Telephone</th>
+                            <th>Date de Naissance</th>
+                            <th>Action</th>
                             </thead>
                             <?php
                             try {
-                                $query = "SELECT o.id, o.created_date, o.delai_offre, o.description, 
-                                            o.duree_stage, o.end_stage, o.nbr_stagiaire, o.start_stage,
-                                            o.statue, o.title, o.updated_date, o.formation_id,
-                                            o.type_stage, e.short_name, e.name
-                                            FROM offre o, entreprise e WHERE o.formation_id = :formation_id
-                                            AND o.entreprise_id = e.id";
+                                $query = "SELECT p.*, e.* FROM person p, etudiant e 
+                                            WHERE e.id = p.id AND e.formation_id = :formation_id";
 
                                 $stmt = $pdo->prepare($query);
                                 $stmt->bindParam(':formation_id', $curr_user['formation_id']);
@@ -153,21 +169,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         ?>
                                         <tr>
                                             <td><?php echo $value['id']; ?></td>
-                                            <td><?php echo $value['title']; ?></td>
-                                            <td><?php echo $value['statue']; ?></td>
-                                            <td><?php echo $value['type_stage']; ?></td>
-                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>">
-                                                <?php echo $value['short_name']; ?>
+                                            <td>
+                                                <?php if ($value['IsValidated']) { ?>
+                                                    <span class="badge bg-success text-uppercase font-monospace" bs-cut="1">Valide</span>
+                                                <?php } else {
+                                                    ?>
+                                                    <span class="badge bg-secondary text-uppercase font-monospace" bs-cut="1">Invalide</span>
+                                                <?php } ?>
                                             </td>
-                                            <td><?php echo $value['delai_offre']; ?></td>
-                                            <td><?php echo $value['duree_stage']; ?></td>
-                                            <td><?php echo $value['nbr_stagiaire']; ?></td>
-                                            <td><?php echo $value['start_stage']; ?></td>
-                                            <td><?php echo $value['end_stage']; ?></td>
-                                            <td><?php echo $value['description']; ?></td>
-                                            <td><?php echo $value['created_date']; ?></td>
-                                            <td><?php echo $value['updated_date']; ?></td>
-
+                                            <td><?php echo $value['lname']; ?></td>
+                                            <td><?php echo $value['fname']; ?></td>
+                                            <td><?php echo $value['cin']; ?></td>
+                                            <td><?php echo $value['cne']; ?></td>
+                                            <td><?php echo $value['promotion'] . "/" . ($value['promotion'] + 3); ?></td>
+                                            <td><?php echo $value['email']; ?></td>
+                                            <td><?php echo $value['phone']; ?></td>
+                                            <td><?php echo $value['date_naiss']; ?></td>
+                                            <td>
+                                                <?php if (!$value['IsValidated']) { ?>
+                                                    <div class="btn-toolbar" bs-cut="1">
+                                                        <div class="btn-group" role="group">
+                                                            <a class="btn btn-success" role="button"
+                                                               href="/etudiants?validate=<?php echo $value['id']; ?>">
+                                                                <i class="fa fa-check"></i></a>
+                                                            <a class="btn btn-danger" role="button"
+                                                               href="/etudiants?delete=<?php echo $value['id']; ?>">
+                                                                <i class="far fa-trash-alt"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                <?php } ?>
+                                            </td>
                                         </tr>
                                         <?php
                                     }
@@ -200,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Ajouter Offre de stage</h4>
+                    <h4 class="modal-title">Ajouter Etudiant de stage</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

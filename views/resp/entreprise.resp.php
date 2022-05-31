@@ -1,10 +1,44 @@
 <?php
+$curr_user = $_SESSION['user'];
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
-$curr_user = $_SESSION['user'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['name']) &&
+        !empty($_POST['domaine']) &&
+        !empty($_POST['email'])) {
 
 
+        $name = $_POST['name'];
+        $domaine = $_POST['domaine'];
+        $email = $_POST['email'];
+        $short_name = $_POST['short_name'] ?? '';
+        $phone = $_POST['phone'] ?? '';
+        $web_site = $_POST['web_site'] ?? '';
+        $description = $_POST['description'] ?? '';
+        $logo = (!empty($_POST['logo'])) ? file_get_contents($_FILES['logo']['tmp_name']) : null;
+
+        $query = "INSERT INTO entreprise 
+                    (id, domaine, email, logo, short_name, name, phone, web_site, description)
+                    VALUES (null,:domaine,:email,:logo,:short_name,:name,:phone,:web_site,:description)";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':domaine', $domaine);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':short_name', $short_name);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':phone', $phone);
+        $stmt->bindParam(':web_site', $web_site);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':logo', $logo);
+
+        if ($stmt->execute())
+            $msg = "entreprise $short_name est Inseree";
+        else
+            $error = "Erreur : entreprise n'est pas Inseree";
+
+    } else
+        $error = "Veuillez entrer les champs obligatoires";
+}
 ?>
 
 <!DOCTYPE html>
@@ -35,10 +69,36 @@ $curr_user = $_SESSION['user'];
             <?php require_once 'parts/navbar.html' ?>
             <div class="container-fluid">
                 <div class="d-sm-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-dark mb-0">Entreprises<br></h3><a
-                        class="btn btn-primary d-none d-sm-inline-block" role="button" href="#"><i
-                            class="fas fa-plus fa-sm text-white-50"></i>&nbsp;ajouter Entreprise</a>
+                    <h3 class="text-dark mb-0">Entreprises</h3>
+
+                    <button class="btn btn-primary d-none d-sm-block d-md-block"
+                            type="button" data-bs-target="#modal-1" data-bs-toggle="modal">
+                        <i class="fas fa-plus fa-sm text-white-50"></i>
+                        ajouter Entreprise
+                    </button>
+                    <button class="btn btn-primary d-block d-sm-none d-md-none"
+                            type="button" data-bs-target="#modal-1"
+                            data-bs-toggle="modal" style="border-radius: 10px;">
+                        <i class="fas fa-plus fa-sm text-white-50"></i>
+                    </button>
                 </div>
+
+                <?php if (!empty($error)) {
+                    ?>
+                    <div class="alert alert-danger" role="alert">
+                    <span>
+                        <strong>Erreur : </strong>
+                        <?php echo $error; ?>
+                    </span>
+                    </div>
+                <?php } elseif (!empty($msg)) { ?>
+                    <div class="alert alert-success" role="alert">
+                    <span>
+                        <?php echo $msg; ?>
+                    </span>
+                    </div>
+                <?php } ?>
+
                 <div class="card shadow">
                     <div class="card-header py-3">
                         <p class="text-primary m-0 fw-bold">Entreprises</p>
@@ -48,15 +108,18 @@ $curr_user = $_SESSION['user'];
                                style="width:100%; font-size: calc(0.5em + 1vmin);">
                             <thead>
                             <th>ID</th>
-                            <th>Name</th>
+                            <th>Nom Court</th>
+                            <th>Nom</th>
                             <th>Domaine</th>
                             <th>Email</th>
-                            <th>Phone</th>
+                            <th>Telephone</th>
                             <th>Site Web</th>
+                            <th>Description</th>
                             </thead>
                             <?php
                             try {
-                                $query = "SELECT id, domaine, email, name, phone, web_site FROM entreprise";
+                                $query = "SELECT id, domaine, email, name, phone, 
+                                                web_site, short_name,description FROM entreprise";
 
                                 $stmt = $pdo->prepare($query);
                                 $stmt->execute();
@@ -66,11 +129,13 @@ $curr_user = $_SESSION['user'];
                                         ?>
                                         <tr>
                                             <td><?php echo $value['id']; ?></td>
+                                            <td><?php echo $value['short_name']; ?></td>
                                             <td><?php echo $value['name']; ?></td>
                                             <td><?php echo $value['domaine']; ?></td>
                                             <td><?php echo $value['email']; ?></td>
                                             <td><?php echo $value['phone']; ?></td>
                                             <td><?php echo $value['web_site']; ?></td>
+                                            <td><?php echo $value['description']; ?></td>
                                         </tr>
                                         <?php
                                     }
@@ -93,6 +158,8 @@ $curr_user = $_SESSION['user'];
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
 </div>
+
+
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="assets/datatable/js/jquery.dataTables.min.js"></script>
@@ -124,6 +191,78 @@ $curr_user = $_SESSION['user'];
         });
     });
 </script>
+
+<form class="d-flex flex-column flex-fill justify-content-around align-content-start"
+      style="font-size: calc(0.5em + 1vmin);" method="post">
+    <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Ajouter une Entreprise</h4>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            Nom <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                        </label>
+                        <input class="form-control" type="text" name="name"
+                               placeholder="Nom de l&#39;entreprise" required maxlength="100"/></div>
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            Nom Court</label>
+                        <input class="form-control" type="text" name="short_name"
+                               placeholder="Nom Court de l&#39;entreprise" maxlength="15" required/></div>
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            Domaine <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                        </label>
+                        <input class="form-control" type="text" name="domaine"
+                               placeholder="Domaine de l&#39;entreprise" required maxlength="50"/>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            Email <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                        </label>
+                        <input class="form-control" type="text" name="email"
+                               placeholder="Email de l&#39;entreprise" required maxlength="80"/>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            Telephone</label>
+                        <input class="form-control" type="text" name="phone"
+                        placeholder="Telephone de l&#39;entreprise" maxlength="15" />
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            Site web</label>
+                        <input class="form-control" type="text" name="web_site"
+                               placeholder="Site web de l&#39;entreprise" maxlength="250"/>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            Description</label>
+                        <input class="form-control" type="text" name="description"
+                               placeholder="Description de l&#39;entreprise" maxlength="512"/>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label">
+                            Logo</label>
+                        <input class="form-control" type="file" name="logo"
+                               placeholder="Logo de l&#39;entreprise"
+                               accept="image/*" multiple/></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light"
+                            type="button" data-bs-dismiss="modal">Fermer
+                    </button>
+                    <button class="btn btn-primary" type="submit">Ajouter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 </body>
 
