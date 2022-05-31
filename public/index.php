@@ -8,6 +8,7 @@ $user = isAuthenticated();
 switch ($request) {
     case '/login':
         if ($user != null)
+
             header('Location: /');
         require __DIR__ . '/../views/login.php';
         die();
@@ -40,6 +41,7 @@ switch ($request) {
     case '':
     case '/dashboard':
     case '/':
+      
         require __DIR__ . '/../views/student/index.student.php';
         break;
 
