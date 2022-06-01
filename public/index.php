@@ -42,12 +42,15 @@ switch ($request) {
     case '/dashboard':
     case '/':
       
-        require __DIR__ . '/../views/student/index.student.php';
+        require __DIR__ . '/../views/student/dashboard.student.php';
         break;
 
-    case '/test':
-        require __DIR__ . '/../views/resp/validate_student.resp.php';
+    case '/offres':
+        require __DIR__ . '/../views/student/offre.student.php';
         break;
+        case '/entreprises':
+            require __DIR__ . '/../views/student/entreprise.student.php';
+            break;
 
     default:
         http_response_code(404);
