@@ -69,6 +69,9 @@ switch ($request) {
     case '/offres/update' :
         require __DIR__ . '/../views/resp/updateOffre.resp.php';
         break;
+    case '/offres/view' :
+        require __DIR__ . '/../views/resp/detailOffre.resp.php';
+        break;
 
     case '/entreprises' :
         require __DIR__ . '/../views/resp/entreprise.resp.php';
@@ -84,7 +87,7 @@ switch ($request) {
 
  
     case '/detailoffre' :
-         require __DIR__ . '/../views/resp/DetailOffre.resp.php';
+         require __DIR__ . '/../views/resp/detailOffre.resp.php';
          break;
     case '/detailetudiant' :
         require __DIR__ . '/../views/resp/detailetudiant.resp.php';

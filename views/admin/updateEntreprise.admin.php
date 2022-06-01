@@ -2,7 +2,8 @@
 $curr_user = $_SESSION['user'];
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
-
+if (empty($_GET['id']))
+    header('Location: /entrepries');
 $entreprise_id = $_GET['id'];
 
 try {
