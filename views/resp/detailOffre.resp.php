@@ -7,6 +7,7 @@ if (empty($_GET['id'])) {
     header('Location: /offres');
 }
 $offre_id = $_GET['id'];
+$statue_att="WAITING";
 
 try {
     $query = "SELECT o.*, e.name FROM offre o, entreprise e WHERE o.id = :id AND o.entreprise_id = e.id";
@@ -156,7 +157,7 @@ try {
                             <th>Nom</th>
                             <th>Prenom</th>
                             <th>STATUS DE CONDIDATURE</th>
-                            <th>NUMERO DANS LIST D'ATTENTE</th>
+                            
                             <th>DATE DE CREATION</th>
                             <th>DATE DE MODIFICATION </th>
                             
@@ -177,8 +178,12 @@ try {
                                         <td><?php echo $value['etudiantid']; ?></td>
                                         <td><?php echo $value['lname']; ?></td>
                                         <td><?php echo $value['fname']; ?></td>
-                                        <td><?php echo $value['status']; ?></td>
-                                        <td><?php echo $value['position']; ?></td>
+                                        <td><?php echo $value['status'];
+                                                    if (strcmp($value['status'], $statue_att) == 0) {
+                                                        echo " ( " . $value['position'] . " )" ;
+                                                    }
+                                                            ?></td>
+                                        
                                         <td><?php echo $value['created_date']; ?></td>
                                         <td><?php echo $value['updated_date']; ?></td>
                                        
