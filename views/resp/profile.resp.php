@@ -1,7 +1,75 @@
 <?php
-
 $curr_user = $_SESSION['user'];
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['contact-form'])) {
+        if (!empty($_POST['email']) &&
+            !empty($_POST['phone'])) {
+
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+            $password = $_POST['password'];
+
+            require_once(__DIR__ . '/../../private/shared/DBConnection.php');
+            $pdo = getDBConnection();
+
+            if ($curr_user['password'] !== $password) {
+                $error = "Mot de passe incorrect";
+                goto skip_process;
+            }
+
+            try {
+                $query = "UPDATE person set email = :email, phone = :phone where id = :id";
+                $stmt = $pdo->prepare($query);
+                $stmt->bindParam(':id', $curr_user['id']);
+                $stmt->bindParam(':phone', $phone);
+                $stmt->bindParam(':email', $email);
+                if ($stmt->execute()) {
+                    $msg = "Maj est bien effectee";
+                    $curr_user['phone'] = $phone;
+                    $curr_user['email'] = $email;
+                } else {
+                    $error = "Maj n'est pas effectee";
+                }
+            } catch (Exception $e) {
+                $error = $e->getMessage();
+            }
+        } else {
+            $error = (empty($_POST['email']) ? 'email' : 'Telephone') . 'est obligatoire';
+        }
+    } elseif (isset($_POST['password-form'])) {
+        if (!empty($_POST['old-pwd']) &&
+            !empty($_POST['new-pwd']) &&
+            !empty($_POST['rnew-pwd'])) {
+            $old_pwd = $_POST['old-pwd'];
+            $new_pwd = $_POST['new-pwd'];
+            if ($curr_user['password'] !== $old_pwd) {
+                $error = "Mot de passe incorrect";
+            } elseif ($new_pwd !== $_POST['rnew-pwd']) {
+                $error = "Nouveau Mot de passe n'est pas le meme";
+            } else {
+                require_once(__DIR__ . '/../../private/shared/DBConnection.php');
+                $pdo = getDBConnection();
+
+                $query = "UPDATE person set password = :password where id = :id";
+                $stmt = $pdo->prepare($query);
+
+                $stmt->bindParam(':id', $curr_user['id']);
+                $stmt->bindParam(':password', $new_pwd);
+                if ($stmt->execute()) {
+                    $curr_user['password'] = $new_pwd;
+                    $msg = "Maj est bien effectee";
+                } else {
+                    $error = "Maj n'est pas effectee";
+                }
+            }
+        } else
+            $error = "veuillez renseigner tous les champs";
+    }
+
+}
+skip_process:
 ?>
 
 <!DOCTYPE html>
@@ -30,9 +98,10 @@ $curr_user = $_SESSION['user'];
                 <div class="row row-cols-2">
                     <div class="col-lg-4">
                         <div class="card mb-3">
-                            <div class="card-body text-center shadow"><img class="rounded-circle mb-3 mt-4"
-                                                                           src="assets/img/dogs/image2.jpeg" width="160"
-                                                                           height="160">
+                            <div class="card-body text-center shadow">
+                                <img class="rounded-circle mb-3 mt-4"
+                                     src="assets/img/dogs/image2.jpeg" width="160"
+                                     height="160">
                                 <div class="mb-3">
                                     <button class="btn btn-primary btn-sm" type="button">Change CV</button>
                                 </div>
@@ -56,14 +125,38 @@ $curr_user = $_SESSION['user'];
                     <div class="card-header py-3">
                         <p class="text-primary m-0 fw-bold">Changer Mot de Passe</p>
                     </div>
+                    <?php if (isset($_POST['password-form'])) {
+                        if (!empty($error)) {
+                            ?>
+                            <div class="alert alert-danger" role="alert">
+                    <span>
+                        <strong>Erreur : </strong>
+                        <?php echo $error; ?>
+                    </span>
+                            </div>
+                        <?php } elseif (!empty($msg)) { ?>
+                            <div class="alert alert-success" role="alert">
+                    <span>
+                        <?php echo $msg; ?>
+                    </span>
+                            </div>
+                        <?php }
+                    } ?>
                     <div class="card-body">
-                        <form>
-                            <div class="mb-3"><input class="form-control" type="password" id="address" name="address"
-                                                     placeholder="Ancien Mot de passe"></div>
-                            <div class="mb-3"><input class="form-control" type="password" id="address-2"
-                                                     placeholder="Nouveau mot de passe" name="address"></div>
-                            <div class="mb-3"><input class="form-control" type="password" id="address-1"
-                                                     placeholder="Nouveau Mot de passe encore une fois" name="address">
+                        <form method="post">
+                            <input name="password-form" class="visually-hidden">
+
+                            <div class="mb-3">
+                                <input class="form-control" type="password" id="old-pwd" name="old-pwd"
+                                       placeholder="Ancien Mot de passe">
+                            </div>
+                            <div class="mb-3">
+                                <input class="form-control" type="password" id="new-pwd"
+                                       placeholder="Nouveau mot de passe" name="new-pwd">
+                            </div>
+                            <div class="mb-3">
+                                <input class="form-control" type="password" id="rnew-pwd"
+                                       placeholder="Nouveau Mot de passe encore une fois" name="rnew-pwd">
                             </div>
                             <div class="mb-3">
                                 <button class="btn btn-primary btn-sm" type="submit">Sauvegarder</button>
@@ -75,8 +168,26 @@ $curr_user = $_SESSION['user'];
                     <div class="card-header py-3">
                         <p class="text-primary m-0 fw-bold">Modifier Mes Coordonnées&nbsp;</p>
                     </div>
+                    <?php if (isset($_POST['contact-form'])) {
+                        if (!empty($error)) {
+                            ?>
+                            <div class="alert alert-danger" role="alert">
+                    <span>
+                        <strong>Erreur : </strong>
+                        <?php echo $error; ?>
+                    </span>
+                            </div>
+                        <?php } elseif (!empty($msg)) { ?>
+                            <div class="alert alert-success" role="alert">
+                    <span>
+                        <?php echo $msg; ?>
+                    </span>
+                            </div>
+                        <?php }
+                    } ?>
                     <div class="card-body">
-                        <form method="post" action="/profile/contact">
+                        <form method="post" action="/profile">
+                            <input name="contact-form" class="visually-hidden">
                             <div class="row">
                                 <div class="col">
                                     <div class="mb-3">
@@ -96,7 +207,7 @@ $curr_user = $_SESSION['user'];
                             <div class="row">
                                 <div class="col">
                                     <div class="mb-3"><label class="form-label" for="username">
-                                            <strong>Téléphone</strong><br>
+                                            <strong>Téléphone</strong>
                                         </label>
                                         <input class="form-control" type="tel" id="username"
                                                value="<?php echo $curr_user['phone']; ?>" name="phone">
@@ -104,8 +215,9 @@ $curr_user = $_SESSION['user'];
                                 </div>
                                 <div class="col">
                                     <div class="mb-3">
-                                        <label class="form-label" for="email"><strong>Adresse
-                                                Email</strong></label>
+                                        <label class="form-label" for="email">
+                                            <strong>Adresse Email</strong>
+                                        </label>
                                         <input class="form-control" type="email"
                                                id="email" name="email"
                                                value="<?php echo $curr_user['email']; ?>">
@@ -113,9 +225,11 @@ $curr_user = $_SESSION['user'];
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col mb-3 mb-sm-0"><input class="form-control form-control-user"
-                                                                     type="password" id="examplePasswordInput-1"
-                                                                     placeholder="Password" name="password"></div>
+                                <div class="col mb-3 mb-sm-0">
+                                    <input class="form-control form-control-user"
+                                           type="password" id="examplePasswordInput-1"
+                                           placeholder="Password" name="password">
+                                </div>
                             </div>
                             <div class="mb-3 mt-3">
                                 <button class="btn btn-primary btn-sm" type="submit">

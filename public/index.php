@@ -70,6 +70,9 @@ switch ($request) {
     case '/offres' :
         require __DIR__ . '/../views/resp/offre.resp.php';
         break;
+    case '/offres/update' :
+        require __DIR__ . '/../views/resp/updateOffre.resp.php';
+        break;
 
     case '/entreprises' :
         require __DIR__ . '/../views/resp/entreprise.resp.php';
@@ -83,12 +86,19 @@ switch ($request) {
         require __DIR__ . '/../views/resp/etudiant.resp.php';
         break;
 
+ 
     case '/detailoffre' :
          require __DIR__ . '/../views/resp/DetailOffre.resp.php';
          break;
     case '/detailetudiant' :
         require __DIR__ . '/../views/resp/detailetudiant.resp.php';
          break;
+ 
+    case '/test-mail' :
+        require __DIR__ . '/../views/testmail.php';
+        break;
+
+ 
     default:
         http_response_code(404);
         echo $request."<br>";
