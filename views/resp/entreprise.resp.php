@@ -3,6 +3,18 @@ $curr_user = $_SESSION['user'];
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
+function generateRandomString($length = 10): string
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['name']) &&
         !empty($_POST['domaine']) &&
@@ -16,29 +28,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $phone = $_POST['phone'] ?? '';
         $web_site = $_POST['web_site'] ?? '';
         $description = $_POST['description'] ?? '';
-        $logo = (!empty($_POST['logo'])) ? file_get_contents($_FILES['logo']['tmp_name']) : null;
+        $logo = '';
+        if (!empty($_FILES["logo"])) {
+            $filename = $_FILES["logo"]["name"];
+            $now = new DateTime();
+            $logo = generateRandomString(10) . '-' . $filename;
+            $tempname = $_FILES["logo"]["tmp_name"];
+            $folder = __DIR__ . "/../../private/uploads/images/logo/" . $logo;
+            if (!move_uploaded_file($tempname, $folder)) {
+                $error = "Failed to upload image";
+                goto skip_process;
+            }
+        }
 
-        $query = "INSERT INTO entreprise 
+        try {
+            $pdo->beginTransaction();
+
+            $query = "INSERT INTO entreprise 
                     (id, domaine, email, logo, short_name, name, phone, web_site, description)
                     VALUES (null,:domaine,:email,:logo,:short_name,:name,:phone,:web_site,:description)";
-        $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':domaine', $domaine);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':short_name', $short_name);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':phone', $phone);
-        $stmt->bindParam(':web_site', $web_site);
-        $stmt->bindParam(':description', $description);
-        $stmt->bindParam(':logo', $logo);
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':domaine', $domaine);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':short_name', $short_name);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':web_site', $web_site);
+            $stmt->bindParam(':description', $description);
 
-        if ($stmt->execute())
-            $msg = "entreprise $short_name est Inseree";
-        else
-            $error = "Erreur : entreprise n'est pas Inseree";
+            $stmt->bindParam(':logo', $logo);
+
+            if ($stmt->execute()) {
+                $msg = "entreprise $short_name est Inseree";
+                $pdo->commit();
+            }else {
+                $error = "Erreur : entreprise n'est pas Inseree";
+                $pdo->rollBack();
+            }
+
+
+
+        } catch (Exception $e) {
+            $pdo->rollback();
+            $error = $e->getMessage();
+        }
+
 
     } else
         $error = "Veuillez entrer les champs obligatoires";
 }
+
+skip_process:
 ?>
 
 <!DOCTYPE html>
@@ -87,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ?>
                     <div class="alert alert-danger" role="alert">
                     <span>
-                        <strong>Erreur : </strong>
+                        <strong>Erreur : </strong>
                         <?php echo $error; ?>
                     </span>
                     </div>
@@ -108,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                style="width:100%; font-size: calc(0.5em + 1vmin);">
                             <thead>
                             <th>ID</th>
+                            <th>Logo</th>
                             <th>Nom Court</th>
                             <th>Nom</th>
                             <th>Domaine</th>
@@ -118,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </thead>
                             <?php
                             try {
-                                $query = "SELECT id, domaine, email, name, phone, 
+                                $query = "SELECT id, domaine, email, name, phone,logo, 
                                                 web_site, short_name,description FROM entreprise";
 
                                 $stmt = $pdo->prepare($query);
@@ -129,6 +170,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         ?>
                                         <tr>
                                             <td><?php echo $value['id']; ?></td>
+                                            <td>
+                                                <?php if (!empty($value['logo'])) { ?>
+                                                    <img src="/entreprises/logo?id=<?php echo $value['id'] ?>"
+                                                         width="50px" height="50px"/>
+                                                <?php } else { ?>
+                                                    <span class="badge bg-secondary text-uppercase font-monospace fw-light"
+                                                          bs-cut="1"><i>NULL</i></span>
+                                                <?php } ?>
+                                            </td>
                                             <td><?php echo $value['short_name']; ?></td>
                                             <td><?php echo $value['name']; ?></td>
                                             <td><?php echo $value['domaine']; ?></td>
@@ -193,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </script>
 
 <form class="d-flex flex-column flex-fill justify-content-around align-content-start"
-      style="font-size: calc(0.5em + 1vmin);" method="post">
+      style="font-size: calc(0.5em + 1vmin);" method="post" enctype="multipart/form-data">
     <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -205,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="modal-body">
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
-                            Nom <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                            Nom <span style="color: var(--bs-red);font-weight: bold;">*</span>
                         </label>
                         <input class="form-control" type="text" name="name"
                                placeholder="Nom de l&#39;entreprise" required maxlength="100"/></div>
@@ -216,14 +266,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                placeholder="Nom Court de l&#39;entreprise" maxlength="15" required/></div>
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
-                            Domaine <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                            Domaine <span style="color: var(--bs-red);font-weight: bold;">*</span>
                         </label>
                         <input class="form-control" type="text" name="domaine"
                                placeholder="Domaine de l&#39;entreprise" required maxlength="50"/>
                     </div>
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
-                            Email <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                            Email <span style="color: var(--bs-red);font-weight: bold;">*</span>
                         </label>
                         <input class="form-control" type="text" name="email"
                                placeholder="Email de l&#39;entreprise" required maxlength="80"/>
@@ -232,7 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label class="form-label">
                             Telephone</label>
                         <input class="form-control" type="text" name="phone"
-                        placeholder="Telephone de l&#39;entreprise" maxlength="15" />
+                               placeholder="Telephone de l&#39;entreprise" maxlength="15"/>
                     </div>
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
@@ -249,7 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
                             Logo</label>
-                        <input class="form-control" type="file" name="logo"
+                        <input class="form-control" type="file" name="logo" id="logo"
                                placeholder="Logo de l&#39;entreprise"
                                accept="image/*" multiple/></div>
                 </div>
@@ -267,6 +317,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
 
 </html>
-
-
-
