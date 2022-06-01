@@ -8,7 +8,6 @@ $user = isAuthenticated();
 switch ($request) {
     case '/login':
         if ($user != null)
-
             header('Location: /');
         require __DIR__ . '/../views/login.php';
         die();
@@ -17,13 +16,14 @@ switch ($request) {
             header('Location: /');
         require_once __DIR__ . '/../views/register.php';
         die();
+    case '/entreprises/logo':
+        require_once __DIR__ . '/../views/logoManagement.php';
+        die();
 
 }
 
-
-if ($user == null)
+if ($user === null)
     header('Location: /login');
-
 
 is_authenticated:
 switch ($user['type']) {
@@ -58,6 +58,7 @@ switch ($request) {
 
 die();
 
+
 is_instructor:
 switch ($request) {
     case '':
@@ -82,6 +83,12 @@ switch ($request) {
         require __DIR__ . '/../views/resp/etudiant.resp.php';
         break;
 
+    case '/detailoffre' :
+         require __DIR__ . '/../views/resp/DetailOffre.resp.php';
+         break;
+    case '/detailetudiant' :
+        require __DIR__ . '/../views/resp/detailetudiant.resp.php';
+         break;
     default:
         http_response_code(404);
         echo $request."<br>";
