@@ -121,18 +121,7 @@ skip_process:
             <?php require_once 'parts/navbar.php' ?>
             <div class="container-fluid">
                 <div class="d-sm-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-dark mb-0">Entreprises</h3>
-
-                    <button class="btn btn-primary d-none d-sm-block d-md-block"
-                            type="button" data-bs-target="#modal-1" data-bs-toggle="modal">
-                        <i class="fas fa-plus fa-sm text-white-50"></i>
-                        ajouter Entreprise
-                    </button>
-                    <button class="btn btn-primary d-block d-sm-none d-md-none"
-                            type="button" data-bs-target="#modal-1"
-                            data-bs-toggle="modal" style="border-radius: 10px;">
-                        <i class="fas fa-plus fa-sm text-white-50"></i>
-                    </button>
+                    <h3 class="text-dark mb-0">Detailles de l'entreprises `<?php echo $entreprise_id?>`</h3>
                 </div>
 
                 <?php if (!empty($error)) {
@@ -224,6 +213,7 @@ skip_process:
                                 <?php } ?>
                             </div>
 
+                            <button class="btn btn-primary" type="submit">Modifier</button>
                         </form>
                     </div>
                 </div>
@@ -241,108 +231,8 @@ skip_process:
 
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/datatable/js/jquery.dataTables.min.js"></script>
 <script src="/assets/js/bs-init.js"></script>
 <script src="/assets/js/theme.js"></script>
-<script src="/assets/datatable/js/dataTables.bootstrap5.min.js"></script>
-<script src="/assets/datatable/js/dataTables.responsive.min.js"></script>
-<script src="/assets/datatable/js/responsive.bootstrap5.min.js"></script>
-
-<script>
-    $(document).ready(function () {
-        $('#myTable').DataTable({
-            responsive: {
-                details: {
-                    display: $.fn.dataTable.Responsive.display.modal({
-                        header: function (row) {
-                            var data = row.data();
-                            return 'Details for ' + data[0] + ' ' + data[1];
-                        }
-                    }),
-                    renderer: $.fn.dataTable.Responsive.renderer.tableAll({
-                        tableClass: 'table'
-                    })
-                }
-            },
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json"
-            }
-        });
-    });
-</script>
-
-<form class="d-flex flex-column flex-fill justify-content-around align-content-start"
-      style="font-size: calc(0.5em + 1vmin);" method="post" enctype="multipart/form-data">
-    <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Ajouter une Entreprise</h4>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div style="margin-bottom: 20px;">
-                        <label class="form-label">
-                            Nom <span style="color: var(--bs-red);font-weight: bold;">*</span>
-                        </label>
-                        <input class="form-control" type="text" name="name"
-                               placeholder="Nom de l&#39;entreprise" required maxlength="100"/></div>
-                    <div style="margin-bottom: 20px;">
-                        <label class="form-label">
-                            Nom Court</label>
-                        <input class="form-control" type="text" name="short_name"
-                               placeholder="Nom Court de l&#39;entreprise" maxlength="15" required/></div>
-                    <div style="margin-bottom: 20px;">
-                        <label class="form-label">
-                            Domaine <span style="color: var(--bs-red);font-weight: bold;">*</span>
-                        </label>
-                        <input class="form-control" type="text" name="domaine"
-                               placeholder="Domaine de l&#39;entreprise" required maxlength="50"/>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <label class="form-label">
-                            Email <span style="color: var(--bs-red);font-weight: bold;">*</span>
-                        </label>
-                        <input class="form-control" type="text" name="email"
-                               placeholder="Email de l&#39;entreprise" required maxlength="80"/>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <label class="form-label">
-                            Telephone</label>
-                        <input class="form-control" type="text" name="phone"
-                               placeholder="Telephone de l&#39;entreprise" maxlength="15"/>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <label class="form-label">
-                            Site web</label>
-                        <input class="form-control" type="text" name="web_site"
-                               placeholder="Site web de l&#39;entreprise" maxlength="250"/>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <label class="form-label">
-                            Description</label>
-                        <input class="form-control" type="text" name="description"
-                               placeholder="Description de l&#39;entreprise" maxlength="512"/>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <label class="form-label">
-                            Logo</label>
-                        <input class="form-control" type="file" name="logo" id="logo"
-                               placeholder="Logo de l&#39;entreprise"
-                               accept="image/*" multiple/>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-light"
-                            type="button" data-bs-dismiss="modal">Fermer
-                    </button>
-                    <button class="btn btn-primary" type="submit">Ajouter</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
 
 </body>
 
