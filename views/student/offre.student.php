@@ -1,5 +1,4 @@
 
-
 <!doctype html>
 <html lang="">
 <head>
@@ -10,9 +9,5 @@
     <title>gestion des offres </title>
 </head>
 <body>
-
-
-
-
 </body>
 </html>

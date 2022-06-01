@@ -137,6 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </thead>
                             <?php
                             try {
+                               
                                 $query = "SELECT o.id, o.created_date, o.delai_offre, o.description, 
                                             o.duree_stage, o.end_stage, o.nbr_stagiaire, o.start_stage,
                                             o.statue, o.title, o.updated_date, o.formation_id,

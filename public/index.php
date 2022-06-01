@@ -54,6 +54,7 @@ switch ($request) {
 
 die();
 
+
 is_instructor:
 switch ($request) {
     case '':
@@ -81,10 +82,19 @@ switch ($request) {
         require __DIR__ . '/../views/resp/etudiant.resp.php';
         break;
 
+ 
+    case '/detailoffre' :
+         require __DIR__ . '/../views/resp/DetailOffre.resp.php';
+         break;
+    case '/detailetudiant' :
+        require __DIR__ . '/../views/resp/detailetudiant.resp.php';
+         break;
+ 
     case '/test-mail' :
         require __DIR__ . '/../views/testmail.php';
         break;
 
+ 
     default:
         http_response_code(404);
         echo $request."<br>";

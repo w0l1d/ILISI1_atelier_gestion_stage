@@ -127,7 +127,7 @@ skip_process:
                     ?>
                     <div class="alert alert-danger" role="alert">
                     <span>
-                        <strong>Erreur : </strong>
+                        <strong>Erreur : </strong>
                         <?php echo $error; ?>
                     </span>
                     </div>
@@ -255,7 +255,7 @@ skip_process:
                 <div class="modal-body">
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
-                            Nom <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                            Nom <span style="color: var(--bs-red);font-weight: bold;">*</span>
                         </label>
                         <input class="form-control" type="text" name="name"
                                placeholder="Nom de l&#39;entreprise" required maxlength="100"/></div>
@@ -266,14 +266,14 @@ skip_process:
                                placeholder="Nom Court de l&#39;entreprise" maxlength="15" required/></div>
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
-                            Domaine <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                            Domaine <span style="color: var(--bs-red);font-weight: bold;">*</span>
                         </label>
                         <input class="form-control" type="text" name="domaine"
                                placeholder="Domaine de l&#39;entreprise" required maxlength="50"/>
                     </div>
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
-                            Email <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                            Email <span style="color: var(--bs-red);font-weight: bold;">*</span>
                         </label>
                         <input class="form-control" type="text" name="email"
                                placeholder="Email de l&#39;entreprise" required maxlength="80"/>
@@ -317,6 +317,3 @@ skip_process:
 </body>
 
 </html>
-
-
-
