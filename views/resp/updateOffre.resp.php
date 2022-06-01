@@ -259,35 +259,9 @@ try {
 
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/datatable/js/jquery.dataTables.min.js"></script>
 <script src="/assets/js/bs-init.js"></script>
 <script src="/assets/js/theme.js"></script>
-<script src="/assets/datatable/js/dataTables.bootstrap5.min.js"></script>
-<script src="/assets/datatable/js/dataTables.responsive.min.js"></script>
-<script src="/assets/datatable/js/responsive.bootstrap5.min.js"></script>
 
-<script>
-    $(document).ready(function () {
-        $('#myTable').DataTable({
-            responsive: {
-                details: {
-                    display: $.fn.dataTable.Responsive.display.modal({
-                        header: function (row) {
-                            var data = row.data();
-                            return 'Details for ' + data[0] + ' ' + data[1];
-                        }
-                    }),
-                    renderer: $.fn.dataTable.Responsive.renderer.tableAll({
-                        tableClass: 'table'
-                    })
-                }
-            },
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json"
-            }
-        });
-    });
-</script>
 
 </body>
 
