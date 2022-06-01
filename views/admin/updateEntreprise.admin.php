@@ -2,25 +2,30 @@
 $curr_user = $_SESSION['user'];
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
+if (empty($_GET['id']))
+    header('Location: /entrepries');
+$entreprise_id = $_GET['id'];
 
-function generateRandomString($length = 10): string
-{
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
+try {
+    $query = "SELECT * FROM entreprise WHERE id = :id";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':id', $entreprise_id);
+    $stmt->execute();
+    $entreprise = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (empty($entreprise)) {
+        $error = "Entreprise `$entreprise_id` n'est pas trouve";
+        require_once(__DIR__ . '/../404.php');
+        die();
     }
-    return $randomString;
+} catch (Exception $e) {
+    header('Location: /entreprises');
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['name']) &&
         !empty($_POST['domaine']) &&
         !empty($_POST['email'])) {
-
-
+        
         $name = $_POST['name'];
         $domaine = $_POST['domaine'];
         $email = $_POST['email'];
@@ -31,8 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $logo = '';
         if (!empty($_FILES["logo"])) {
             $filename = $_FILES["logo"]["name"];
-            $now = new DateTime();
-            $logo = generateRandomString(10) . '-' . $filename;
+            $logo = $entreprise['logo'];
             $tempname = $_FILES["logo"]["tmp_name"];
             $folder = __DIR__ . "/../../private/uploads/images/logo/" . $logo;
             if (!move_uploaded_file($tempname, $folder)) {
@@ -44,10 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $pdo->beginTransaction();
 
-            $query = "INSERT INTO entreprise 
-                    (id, domaine, email, logo, short_name, name, phone, web_site, description)
-                    VALUES (null,:domaine,:email,:logo,:short_name,:name,:phone,:web_site,:description)";
+            $query = "UPDATE entreprise SET domaine = :domaine, email = :email,
+                      logo = :logo, short_name = :short_name, `name` = :name,
+                      phone = :phone, web_site = :web_site, 
+                      `description` = :description WHERE id = :id" ;
             $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':id', $entreprise_id);
             $stmt->bindParam(':domaine', $domaine);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':short_name', $short_name);
@@ -55,14 +61,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':phone', $phone);
             $stmt->bindParam(':web_site', $web_site);
             $stmt->bindParam(':description', $description);
-
             $stmt->bindParam(':logo', $logo);
 
             if ($stmt->execute()) {
-                $msg = "entreprise $short_name est Inseree";
+                $msg = "entreprise $short_name est modifiee";
+
+                $entreprise['domaine'] = $domaine;
+                $entreprise['email'] = $email;
+                $entreprise['short_name'] = $short_name;
+                $entreprise['name'] = $name;
+                $entreprise['phone'] = $phone;
+                $entreprise['web_site'] = $web_site;
+                $entreprise['description'] = $description;
+
                 $pdo->commit();
             }else {
-                $error = "Erreur : entreprise n'est pas Inseree";
+                $error = "entreprise n'est pas Modifiee";
                 $pdo->rollBack();
             }
 
@@ -72,8 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->rollback();
             $error = $e->getMessage();
         }
-
-
     } else
         $error = "Veuillez entrer les champs obligatoires";
 }
@@ -106,7 +118,7 @@ skip_process:
 
     <div class="d-flex flex-column" id="content-wrapper">
         <div id="content">
-            <?php require_once 'parts/navbar.html' ?>
+            <?php require_once 'parts/navbar.php' ?>
             <div class="container-fluid">
                 <div class="d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">Entreprises</h3>
@@ -127,7 +139,7 @@ skip_process:
                     ?>
                     <div class="alert alert-danger" role="alert">
                     <span>
-                        <strong>Erreur : </strong>
+                        <strong>Erreur : </strong>
                         <?php echo $error; ?>
                     </span>
                     </div>
@@ -144,58 +156,75 @@ skip_process:
                         <p class="text-primary m-0 fw-bold">Entreprises</p>
                     </div>
                     <div class="card-body">
-                        <table id="myTable" class="table table-striped nowrap"
-                               style="width:100%; font-size: calc(0.5em + 1vmin);">
-                            <thead>
-                            <th>ID</th>
-                            <th>Logo</th>
-                            <th>Nom Court</th>
-                            <th>Nom</th>
-                            <th>Domaine</th>
-                            <th>Email</th>
-                            <th>Telephone</th>
-                            <th>Site Web</th>
-                            <th>Description</th>
-                            </thead>
-                            <?php
-                            try {
-                                $query = "SELECT id, domaine, email, name, phone,logo, 
-                                                web_site, short_name,description FROM entreprise";
 
-                                $stmt = $pdo->prepare($query);
-                                $stmt->execute();
-                                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                if (!empty($rows)) {
-                                    foreach ($rows as $key => $value) {
-                                        ?>
-                                        <tr>
-                                            <td><?php echo $value['id']; ?></td>
-                                            <td>
-                                                <?php if (!empty($value['logo'])) { ?>
-                                                    <img src="/entreprises/logo?id=<?php echo $value['id'] ?>"
-                                                         width="50px" height="50px"/>
-                                                <?php } else { ?>
-                                                    <span class="badge bg-secondary text-uppercase font-monospace fw-light"
-                                                          bs-cut="1"><i>NULL</i></span>
-                                                <?php } ?>
-                                            </td>
-                                            <td><?php echo $value['short_name']; ?></td>
-                                            <td><?php echo $value['name']; ?></td>
-                                            <td><?php echo $value['domaine']; ?></td>
-                                            <td><?php echo $value['email']; ?></td>
-                                            <td><?php echo $value['phone']; ?></td>
-                                            <td><?php echo $value['web_site']; ?></td>
-                                            <td><?php echo $value['description']; ?></td>
-                                        </tr>
-                                        <?php
-                                    }
-                                }
-                            } catch (Exception $e) {
-                                echo 'Erreur : ' . $e->getMessage();
-                            }
-                            ?>
+                        <form class="d-flex flex-column flex-fill justify-content-around align-content-start"
+                              style="font-size: calc(0.5em + 1vmin);" method="post" enctype="multipart/form-data">
+                            <div style="margin-bottom: 20px;">
+                                <label class="form-label">
+                                    Nom <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                                </label>
+                                <input class="form-control" type="text" name="name"
+                                       placeholder="Nom de l&#39;entreprise" required
+                                       maxlength="100" value="<?php echo $entreprise['name'];?>"/></div>
+                            <div style="margin-bottom: 20px;">
+                                <label class="form-label">
+                                    Nom Court</label>
+                                <input class="form-control" type="text" name="short_name"
+                                       placeholder="Nom Court de l&#39;entreprise" required
+                                       maxlength="15" value="<?php echo $entreprise['short_name'];?>" /></div>
+                            <div style="margin-bottom: 20px;">
+                                <label class="form-label">
+                                    Domaine <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                                </label>
+                                <input class="form-control" type="text" name="domaine"
+                                       placeholder="Domaine de l&#39;entreprise" required
+                                       maxlength="50" value="<?php echo $entreprise['domaine'];?>"/>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label class="form-label">
+                                    Email <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                                </label>
+                                <input class="form-control" type="text" name="email"
+                                       placeholder="Email de l&#39;entreprise" required
+                                       maxlength="80" value="<?php echo $entreprise['email'];?>"/>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label class="form-label">
+                                    Telephone</label>
+                                <input class="form-control" type="text" name="phone"
+                                       placeholder="Telephone de l&#39;entreprise"
+                                       maxlength="15" value="<?php echo $entreprise['phone'];?>"/>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label class="form-label">
+                                    Site web</label>
+                                <input class="form-control" type="text" name="web_site"
+                                       placeholder="Site web de l&#39;entreprise"
+                                       maxlength="250" value="<?php echo $entreprise['web_site'];?>"/>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label class="form-label">
+                                    Description</label>
+                                <input class="form-control" type="text" name="description"
+                                       placeholder="Description de l&#39;entreprise"
+                                       maxlength="512" value="<?php echo $entreprise['description'];?>"/>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label class="form-label">
+                                    Logo</label>
+                                <input class="form-control" type="file" name="logo" id="logo"
+                                       placeholder="Logo de l&#39;entreprise"
+                                       accept="image/*" multiple/>
+                                <?php if (!empty($entreprise['logo'])) { ?>
+                                    <img src="/entreprises/logo?id=<?php echo $entreprise['id'] ?>"
+                                         width="50px" height="50px"/>
+                                <?php } else { ?>
+                                    <span class="badge bg-secondary text-uppercase font-monospace fw-light"
+                                          bs-cut="1"><i>NULL</i></span>
+                                <?php } ?>
+                            </div>
 
-                        </table>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -255,7 +284,7 @@ skip_process:
                 <div class="modal-body">
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
-                            Nom <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                            Nom <span style="color: var(--bs-red);font-weight: bold;">*</span>
                         </label>
                         <input class="form-control" type="text" name="name"
                                placeholder="Nom de l&#39;entreprise" required maxlength="100"/></div>
@@ -266,14 +295,14 @@ skip_process:
                                placeholder="Nom Court de l&#39;entreprise" maxlength="15" required/></div>
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
-                            Domaine <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                            Domaine <span style="color: var(--bs-red);font-weight: bold;">*</span>
                         </label>
                         <input class="form-control" type="text" name="domaine"
                                placeholder="Domaine de l&#39;entreprise" required maxlength="50"/>
                     </div>
                     <div style="margin-bottom: 20px;">
                         <label class="form-label">
-                            Email <span style="color: var(--bs-red);font-weight: bold;">*</span>
+                            Email <span style="color: var(--bs-red);font-weight: bold;">*</span>
                         </label>
                         <input class="form-control" type="text" name="email"
                                placeholder="Email de l&#39;entreprise" required maxlength="80"/>
@@ -301,7 +330,8 @@ skip_process:
                             Logo</label>
                         <input class="form-control" type="file" name="logo" id="logo"
                                placeholder="Logo de l&#39;entreprise"
-                               accept="image/*" multiple/></div>
+                               accept="image/*" multiple/>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light"
@@ -317,3 +347,6 @@ skip_process:
 </body>
 
 </html>
+
+
+

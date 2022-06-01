@@ -41,7 +41,7 @@ switch ($request) {
     case '':
     case '/dashboard':
     case '/':
-      
+ 
         require __DIR__ . '/../views/student/dashboard.student.php';
         break;
 
@@ -51,6 +51,7 @@ switch ($request) {
         case '/entreprises':
             require __DIR__ . '/../views/student/entreprise.student.php';
             break;
+ 
 
     default:
         http_response_code(404);
@@ -76,6 +77,9 @@ switch ($request) {
     case '/offres/update' :
         require __DIR__ . '/../views/resp/updateOffre.resp.php';
         break;
+    case '/offres/view' :
+        require __DIR__ . '/../views/resp/detailOffre.resp.php';
+        break;
 
     case '/entreprises' :
         require __DIR__ . '/../views/resp/entreprise.resp.php';
@@ -91,7 +95,7 @@ switch ($request) {
 
  
     case '/detailoffre' :
-         require __DIR__ . '/../views/resp/DetailOffre.resp.php';
+         require __DIR__ . '/../views/resp/detailOffre.resp.php';
          break;
     case '/detailetudiant' :
         require __DIR__ . '/../views/resp/detailetudiant.resp.php';
@@ -109,12 +113,21 @@ switch ($request) {
         break;
 }
 die();
+
 is_admin:
 switch ($request) {
     case '':
     case '/dashboard':
     case '/':
         require __DIR__ . '/../views/admin/index.admin.php';
+        break;
+
+    case '/entreprise':
+        require __DIR__ . '/../views/admin/entreprise.admin.php';
+        break;
+
+    case '/entreprise/update':
+        require __DIR__ . '/../views/admin/updateEntreprise.admin.php';
         break;
 
     default:
