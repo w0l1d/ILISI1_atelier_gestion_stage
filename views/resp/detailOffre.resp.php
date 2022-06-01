@@ -145,27 +145,26 @@ try {
 
                 <div class="card shadow">
                     <div class="card-header py-3">
-                        <h3 class="text-dark mb-0">LISTE ETUDIANTS</h3>
+                        <h3 class="text-dark mb-0">LISTE DES CONDIDATURES</h3>
                     </div>
                     <div class="card-body">
                         <table id="myTable" class="table table-striped nowrap"
                                style="width:100%; font-size: calc(0.5em + 1vmin); ">
                             <thead>
-                            <th>id</th>
+                            <th>CONDIDATURE ID</th>
+                            <th>ETUDIANT ID</th>
                             <th>Nom</th>
                             <th>Prenom</th>
-                            <th>CIN</th>
-                            <th>CNE</th>
-                            <th>Promotion</th>
-                            <th>Email</th>
-                            <th>Telephone</th>
-                            <th>Date de Naissance</th>
-                            <th>Status</th>
+                            <th>STATUS DE CONDIDATURE</th>
+                            <th>NUMERO DANS LIST D'ATTENTE</th>
+                            <th>DATE DE CREATION</th>
+                            <th>DATE DE MODIFICATION </th>
+                            
 
                             </thead>
                             <?php
                             try {
-                                $query = "SELECT p.*, c.*, e.*, e.id AS etudiantid FROM etudiant e, candidature c, person p
+                                $query = "SELECT p.*, c.*, e.*, e.id AS etudiantid,c.id AS candidatureId  FROM etudiant e, candidature c, person p
                                 WHERE offre_id = :id AND c.etudiant_id = p.id AND e.id = c.etudiant_id";
                                 $stmt = $pdo->prepare($query);
                                 $stmt->bindParam(':id', $offre_id);
@@ -174,16 +173,15 @@ try {
                                 foreach ($condidatures as $key => $value) {
                                     ?>
                                     <tr>
+                                        <td><?php echo $value['candidatureId']; ?></td>
                                         <td><?php echo $value['etudiantid']; ?></td>
                                         <td><?php echo $value['lname']; ?></td>
                                         <td><?php echo $value['fname']; ?></td>
-                                        <td><?php echo $value['cin']; ?></td>
-                                        <td><?php echo $value['cne']; ?></td>
-                                        <td><?php echo $value['promotion'] . "/" . ($value['promotion'] + 3); ?></td>
-                                        <td><?php echo $value['email']; ?></td>
-                                        <td><?php echo $value['phone']; ?></td>
-                                        <td><?php echo $value['date_naiss']; ?></td>
                                         <td><?php echo $value['status']; ?></td>
+                                        <td><?php echo $value['position']; ?></td>
+                                        <td><?php echo $value['created_date']; ?></td>
+                                        <td><?php echo $value['updated_date']; ?></td>
+                                       
                                     </tr>
                                     <?php
                                 }
