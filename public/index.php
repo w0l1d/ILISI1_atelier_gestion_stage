@@ -17,6 +17,9 @@ switch ($request) {
             header('Location: /');
         require_once __DIR__ . '/../views/register.php';
         die();
+    case '/entreprises/logo':
+        require_once __DIR__ . '/../views/logoManagement.php';
+        die();
 
 }
 
@@ -80,6 +83,10 @@ switch ($request) {
 
     case '/etudiants' :
         require __DIR__ . '/../views/resp/etudiant.resp.php';
+        break;
+
+    case '/test-mail' :
+        require __DIR__ . '/../views/testmail.php';
         break;
 
     default:

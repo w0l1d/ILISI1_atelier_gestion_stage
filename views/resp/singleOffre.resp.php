@@ -3,17 +3,6 @@ $curr_user = $_SESSION['user'];
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
-function generateRandomString($length = 10): string
-{
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['name']) &&
@@ -172,7 +161,7 @@ skip_process:
                                             <td><?php echo $value['id']; ?></td>
                                             <td>
                                                 <?php if (!empty($value['logo'])) { ?>
-                                                    <img src="/entreprises/logo?id=<?php echo $value['id'] ?>"
+                                                    <img src="data:image/png;base64,<?php echo base64_encode($value['logo']) ?>"
                                                          width="50px" height="50px"/>
                                                 <?php } else { ?>
                                                     <span class="badge bg-secondary text-uppercase font-monospace fw-light"
