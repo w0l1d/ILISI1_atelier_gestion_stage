@@ -1,5 +1,4 @@
 <?php
-
 $curr_user = $_SESSION['user'];
 
 
@@ -69,9 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "veuillez renseigner tous les champs";
     }
 
-
 }
-
 skip_process:
 ?>
 

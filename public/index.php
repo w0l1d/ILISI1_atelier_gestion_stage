@@ -8,7 +8,6 @@ $user = isAuthenticated();
 switch ($request) {
     case '/login':
         if ($user != null)
-
             header('Location: /');
         require __DIR__ . '/../views/login.php';
         die();
@@ -23,10 +22,8 @@ switch ($request) {
 
 }
 
-
-if ($user == null)
+if ($user === null)
     header('Location: /login');
-
 
 is_authenticated:
 switch ($user['type']) {
@@ -71,6 +68,9 @@ switch ($request) {
 
     case '/offres' :
         require __DIR__ . '/../views/resp/offre.resp.php';
+        break;
+    case '/offres/update' :
+        require __DIR__ . '/../views/resp/updateOffre.resp.php';
         break;
 
     case '/entreprises' :

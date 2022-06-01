@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <th>Description</th>
                             <th>Date de creation</th>
                             <th>Date de Maj</th>
-
+                            <th class="all">Action</th>
                             </thead>
                             <?php
                             try {
@@ -167,7 +167,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <td><?php echo $value['description']; ?></td>
                                             <td><?php echo $value['created_date']; ?></td>
                                             <td><?php echo $value['updated_date']; ?></td>
-
+                                            <td>
+                                                <a class="btn btn-secondary btn-circle btn-sm"
+                                                   href="/offres/view?id=<?php echo $value['id']; ?>">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a class="btn btn-primary btn-circle btn-sm"
+                                                   href="/offres/update?id=<?php echo $value['id']; ?>">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </td>
                                         </tr>
                                         <?php
                                     }
