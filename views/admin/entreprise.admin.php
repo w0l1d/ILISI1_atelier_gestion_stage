@@ -3,6 +3,17 @@ $curr_user = $_SESSION['user'];
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
+function generateRandomString($length = 10): string
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['name']) &&
@@ -55,14 +66,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->rollBack();
             }
 
-
-
         } catch (Exception $e) {
             $pdo->rollback();
             $error = $e->getMessage();
         }
-
-
     } else
         $error = "Veuillez entrer les champs obligatoires";
 }
@@ -95,7 +102,7 @@ skip_process:
 
     <div class="d-flex flex-column" id="content-wrapper">
         <div id="content">
-            <?php require_once 'parts/navbar.html' ?>
+            <?php require_once 'parts/navbar.php' ?>
             <div class="container-fluid">
                 <div class="d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">Entreprises</h3>
@@ -161,7 +168,7 @@ skip_process:
                                             <td><?php echo $value['id']; ?></td>
                                             <td>
                                                 <?php if (!empty($value['logo'])) { ?>
-                                                    <img src="data:image/png;base64,<?php echo base64_encode($value['logo']) ?>"
+                                                    <img src="/entreprises/logo?id=<?php echo $value['id'] ?>"
                                                          width="50px" height="50px"/>
                                                 <?php } else { ?>
                                                     <span class="badge bg-secondary text-uppercase font-monospace fw-light"

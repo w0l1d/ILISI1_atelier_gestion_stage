@@ -41,13 +41,9 @@ switch ($request) {
     case '':
     case '/dashboard':
     case '/':
-      
         require __DIR__ . '/../views/student/index.student.php';
         break;
 
-    case '/test':
-        require __DIR__ . '/../views/resp/validate_student.resp.php';
-        break;
 
     default:
         http_response_code(404);
@@ -96,12 +92,21 @@ switch ($request) {
         break;
 }
 die();
+
 is_admin:
 switch ($request) {
     case '':
     case '/dashboard':
     case '/':
         require __DIR__ . '/../views/admin/index.admin.php';
+        break;
+
+    case '/entreprise':
+        require __DIR__ . '/../views/admin/entreprise.admin.php';
+        break;
+
+    case '/entreprise/update':
+        require __DIR__ . '/../views/admin/updateEntreprise.admin.php';
         break;
 
     default:
