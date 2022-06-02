@@ -153,7 +153,7 @@ skip_process:
                             <th>Email</th>
                             <th>Telephone</th>
                             <th>Date de Naissance</th>
-                            <th>Action</th>
+                            <th class="all">Action</th>
                             </thead>
                             <?php
                             try {

@@ -101,7 +101,9 @@ skip_process:
             <div class="row">
                 <div class="col-lg-5 d-none d-lg-flex">
                     <div class="flex-grow-1 bg-register-image"
-                         style="background: url('assets/img/uh2c_logo.jpg') round;background-size: contain;"></div>
+                         style="background: url('assets/img/uh2c_logo.jpg') round;background-size: contain;">
+
+                    </div>
                 </div>
                 <div class="col-lg-7">
                     <div class="p-5">
@@ -110,53 +112,73 @@ skip_process:
                         </div>
                         <form class="user" action="/register" method="post">
                             <div class="row mb-3">
-                                <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
-                                                                          type="text" id="exampleFirstName"
-                                                                          placeholder="Prenom" name="fname" required="">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input class="form-control form-control-user"
+                                           type="text" id="exampleFirstName"
+                                           placeholder="Prenom" name="fname" required="">
                                 </div>
-                                <div class="col-sm-6"><input class="form-control form-control-user" type="text"
-                                                             id="exampleFirstName" placeholder="Nom" name="lname"
-                                                             required=""></div>
+                                <div class="col-sm-6">
+                                    <input class="form-control form-control-user" type="text"
+                                           id="exampleFirstName" placeholder="Nom" name="lname"
+                                           required="">
+                                </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
-                                                                          type="text" id="exampleFirstName-1"
-                                                                          placeholder="CIN" name="cin" required=""
-                                                                          minlength="6"></div>
-                                <div class="col-sm-6"><input class="form-control form-control-user" type="text"
-                                                             id="exampleFirstName-2" placeholder="CNE" name="cne"
-                                                             required="" minlength="10"></div>
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input class="form-control form-control-user"
+                                           type="text" id="exampleFirstName-1"
+                                           placeholder="CIN" name="cin" required=""
+                                           minlength="6">
+                                </div>
+                                <div class="col-sm-6">
+                                    <input class="form-control form-control-user" type="text"
+                                           id="exampleFirstName-2" placeholder="CNE" name="cne"
+                                           required="" minlength="10">
+                                </div>
                             </div>
-                            <div class="mb-3"><label class="form-label d-flex flex-column flex-grow-1 flex-fill">Date de
-                                    naissance<input class="form-control form-control-user" id="exampleInputEmail-2"
+                            <div class="mb-3">
+                                <label class="form-label d-flex flex-column flex-grow-1 flex-fill">Date de naissance
+                                    <input class="form-control form-control-user" id="exampleInputEmail-2"
                                                     aria-describedby="emailHelp" placeholder="Telephone"
-                                                    name="date-naiss" required="" type="date"></label></div>
+                                                    name="date-naiss" required="" type="date">
+                                </label>
+                            </div>
                             <div class="row mb-3">
-                                <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
-                                                                          type="text" id="exampleFirstName-3"
-                                                                          placeholder="Promotion : (annee d'inscription) "
-                                                                          name="promotion" required=""
-                                                                          pattern="^20[0-9]{2}$"></div>
-                                <div class="col-sm-6"><input class="form-control form-control-user" type="text"
-                                                             id="exampleFirstName-4"
-                                                             placeholder="Formation (Ex. ILISI, GMI...)"
-                                                             name="formation" required="" minlength="2" maxlength="15">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input class="form-control form-control-user"
+                                           type="text" id="exampleFirstName-3"
+                                           placeholder="Promotion : (annee d'inscription) "
+                                           name="promotion" required=""
+                                           pattern="^20[0-9]{2}$">
+                                </div>
+                                <div class="col-sm-6">
+                                    <input class="form-control form-control-user" type="text"
+                                           id="exampleFirstName-4"
+                                           placeholder="Formation (Ex. ILISI, GMI...)"
+                                           name="formation" required="" minlength="2" maxlength="15">
                                 </div>
                             </div>
-                            <div class="mb-3"><input class="form-control form-control-user" type="tel"
-                                                     id="exampleInputEmail-1" aria-describedby="emailHelp"
-                                                     placeholder="Telephone" name="phone" required=""></div>
-                            <div class="mb-3"><input class="form-control form-control-user" type="email"
-                                                     id="exampleInputEmail" aria-describedby="emailHelp"
-                                                     placeholder="Email Address" name="email" required=""></div>
+                            <div class="mb-3">
+                                <input class="form-control form-control-user" type="tel"
+                                       id="exampleInputEmail-1" aria-describedby="emailHelp"
+                                       placeholder="Telephone" name="phone" required="">
+                            </div>
+                            <div class="mb-3">
+                                <input class="form-control form-control-user" type="email"
+                                       id="exampleInputEmail" aria-describedby="emailHelp"
+                                       placeholder="Email Address" name="email" required="">
+                            </div>
                             <div class="row mb-3">
-                                <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
-                                                                          type="password" id="examplePasswordInput-1"
-                                                                          placeholder="Password" name="password"
-                                                                          required=""></div>
-                                <div class="col-sm-6"><input class="form-control form-control-user" type="password"
-                                                             id="exampleRepeatPasswordInput-1"
-                                                             placeholder="Repeat Password" name="rpassword" required="">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input class="form-control form-control-user"
+                                           type="password" id="examplePasswordInput-1"
+                                           placeholder="Password" name="password"
+                                           required="">
+                                </div>
+                                <div class="col-sm-6">
+                                    <input class="form-control form-control-user" type="password"
+                                           id="exampleRepeatPasswordInput-1"
+                                           placeholder="Repeat Password" name="rpassword" required="">
                                 </div>
                             </div>
                             <?php if (!empty($error)) { ?>

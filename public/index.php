@@ -92,15 +92,12 @@ switch ($request) {
     case '/etudiants' :
         require __DIR__ . '/../views/resp/etudiant.resp.php';
         break;
-
- 
-    case '/detailoffre' :
-         require __DIR__ . '/../views/resp/detailOffre.resp.php';
-         break;
-    case '/detailetudiant' :
+    case '/etudiants/view' :
         require __DIR__ . '/../views/resp/detailetudiant.resp.php';
-         break;
- 
+        break;
+
+
+
     case '/test-mail' :
         require __DIR__ . '/../views/testmail.php';
         break;
@@ -125,10 +122,21 @@ switch ($request) {
     case '/entreprises':
         require __DIR__ . '/../views/admin/entreprise.admin.php';
         break;
-
     case '/entreprises/update':
         require __DIR__ . '/../views/admin/updateEntreprise.admin.php';
         break;
+
+    case '/enseignants':
+        require __DIR__ . '/../views/admin/enseignant.admin.php';
+        break;
+    case '/enseignants/update':
+        require __DIR__ . '/../views/admin/updateEntreprise.admin.php';
+        break;
+
+    case '/formations':
+        require __DIR__ . '/../views/admin/formation.admin.php';
+        break;
+
 
     default:
         http_response_code(404);

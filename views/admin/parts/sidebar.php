@@ -14,14 +14,14 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/formations">
-                    <i class="fa fa-users"></i>
+                    <i class="fa fa-"></i>
                     <span>Formations</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/offres">
-                    <i class="fa fa-gift"></i>
-                    <span>Offres de stage</span>
+                <a class="nav-link" href="/enseignants">
+                    <i class="fa fa-users"></i>
+                    <span>Enseignants</span>
                 </a>
             </li>
             <li class="nav-item">

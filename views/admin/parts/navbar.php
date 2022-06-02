@@ -1,4 +1,3 @@
-
 <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
     <div class="container-fluid">
         <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button">
@@ -39,13 +38,13 @@
                 <div class="nav-item dropdown no-arrow">
                     <a class="dropdown-toggle nav-link" aria-expanded="false"
                        data-bs-toggle="dropdown" href="#">
-                                        <span class="d-none d-lg-inline me-2 text-gray-600 small">
-                                            <?php echo "{$curr_user['lname']} {$curr_user['fname']}" ?>
-                                            <br>
-                                            <small class="text-muted">
-                                                <?php echo $curr_user['type']; ?>
-                                            </small>
-                                        </span>
+                        <span class="d-none d-lg-inline me-2 text-gray-600 small">
+                            <?php echo "{$curr_user['lname']} {$curr_user['fname']}" ?>
+                            <br>
+                            <small class="text-muted">
+                                <?php echo $curr_user['type']; ?>
+                            </small>
+                        </span>
                         <img class="border rounded-circle img-profile"
                              src="/assets/img/avatars/avatar1.jpeg">
                     </a>
