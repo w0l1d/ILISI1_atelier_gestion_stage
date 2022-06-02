@@ -19,6 +19,25 @@
                     <span>Offres de stage</span>
                 </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/candidature">
+                    <i class="fa fa-gift"></i>
+                    <span>Mes condidature</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/messtages">
+                    <i class="fa fa-gift"></i>
+                    <span>Mes Stages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/consulterstages">
+                    <i class="fa fa-gift"></i>
+                    <span>Consulter l’historique des stages</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="/entreprises">
                     <i class="fa fa-gift"></i>

@@ -1,38 +1,8 @@
 <?php
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
-
 $curr_user = $_SESSION['user'];
-if(isset($_POST['button1']) ) {
-    if(  $_POST['offreid']){
-
-        $student_id = $curr_user ['id'];
-        $offre_id = $_POST['offreid'];
-        $statue="applied";                   
-            
-        $query = "SELECT c.id FROM candidature c  WHERE offre_id = $offre_id
-                     AND etudiant_id = $student_id  " ;
-
-            $stmt = $pdo->query($query);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (!empty($rows)) {
-                $error = "  vous avez deja postuler dans cette offre N° :" . $offre_id;
-           }
-             else {
-                $query = "INSERT INTO candidature (id, created_date, status, updated_date,etudiant_id,offre_id,position)
-                    VALUES (null,cast(now() as datetime),:statue,cast(now() as datetime),:student_id,:offre_id,NULL)";
-                $stmt = $pdo->prepare($query);
-                $stmt->bindParam(':statue', $statue);
-                $stmt->bindParam(':student_id', $student_id);
-                $stmt->bindParam(':offre_id', $offre_id);
-               
-                if ($stmt->execute())
-                    $msg = "vous avez postule à  offre";
-                else
-                    $error = "ne peux pas postuler";
-            }
-    }
-}
+$statue_att="WAITING";
 ?>
 
 <!DOCTYPE html>
@@ -62,31 +32,22 @@ if(isset($_POST['button1']) ) {
             <?php require_once 'parts/navbar.html' ?>
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-dark mb-0">Offres de stages<br></h3>
-                   
+                    <h3 class="text-dark mb-0">Mes candidatures<br></h3>
+                    
                 </div>
-
-              
 
                 <div class="card shadow">
                     <div class="card-header py-3">
-                        <p class="text-primary m-0 fw-bold">LISTES DE OFFRES</p>
+                        <p class="text-primary m-0 fw-bold">Liste</p>
                     </div>
                     <div class="card-body">
                         <table id="myTable" class="table table-striped nowrap"
                                style="width:100%; font-size: calc(0.5em + 1vmin); ">
                             <thead>
-                            <th>ID</th>
-                            <th>Titre</th>
-                            <th>Statue</th>
-                            <th>Type</th>
-                            <th>Entreprise</th>
-                            <th>Dernier Delai</th>
-                            <th>Duree en jours</th>
-                            <th>Nombre de stagiaires</th>
-                            <th>Date Debut</th>
-                            <th>Date Fin</th>
-                            <th>Description</th>
+                            <th>CONDIDATURE ID </th>
+                            <th>OFFRE ID</th>
+                            <th>TITRE DE L'OFFRE</th>
+                            <th>STATUE</th>
                             <th>Date de creation</th>
                             <th>Date de Maj</th>
                             <th class="all">Action</th>
@@ -94,67 +55,46 @@ if(isset($_POST['button1']) ) {
                             <?php
                             try {
                                
-                                $query = "SELECT o.id, o.created_date, o.delai_offre, o.description, 
-                                            o.duree_stage, o.end_stage, o.nbr_stagiaire, o.start_stage,
-                                            o.statue, o.title, o.updated_date, o.formation_id,
-                                            o.type_stage, e.short_name, e.name
-                                            FROM offre o, entreprise e WHERE o.formation_id = :formation_id
-                                            AND o.entreprise_id = e.id  and o.delai_offre>= cast(now() as date)" ;
+                                $query = "SELECT c.id as candidature_id,c.created_date,c.status,c.updated_date,
+                                        c.offre_id,c.position,o.title
+                                            FROM offre o, candidature c WHERE  c.etudiant_id = :id  AND o.id =c.offre_id   ";
 
                                 $stmt = $pdo->prepare($query);
-                                $stmt->bindParam(':formation_id', $curr_user['formation_id']);
+                                $stmt->bindParam(':id', $curr_user['id']);
                                 $stmt->execute();
                                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 if (!empty($rows)) {
                                     foreach ($rows as $key => $value) {
                                         ?>
-                                        <tr>
-                                            <td><?php echo $value['id']; ?></td>
+                                         <tr>
+                                            <td><?php echo $value['candidature_id']; ?></td>
+                                            <td><?php echo $value['offre_id']; ?></td>
                                             <td><?php echo $value['title']; ?></td>
-                                            <td><?php echo $value['statue']; ?></td>
-                                            <td><?php echo $value['type_stage']; ?></td>
-                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>">
-                                                <?php echo $value['short_name']; ?>
-                                            </td>
-                                            <td><?php echo $value['delai_offre']; ?></td>
-                                            <td><?php echo $value['duree_stage']; ?></td>
-                                            <td><?php echo $value['nbr_stagiaire']; ?></td>
-                                            <td><?php echo $value['start_stage']; ?></td>
-                                            <td><?php echo $value['end_stage']; ?></td>
-                                            <td><?php echo $value['description']; ?></td>
+                                            <td><?php echo $value['status'];
+                                                    if (strcmp($value['status'], $statue_att) == 0) {
+                                                        echo " ( " . $value['position'] . " )" ;
+                                                    }
+                                                            ?></td>
                                             <td><?php echo $value['created_date']; ?></td>
                                             <td><?php echo $value['updated_date']; ?></td>
                                             <td>
-                                            <form method='POST' action="/offres">
-                                            <input class="btn btn-primary d-none d-sm-block d-md-block"  type="submit" name="button1" value="postuler" />
-                                            <input type="hidden" name="offreid" value="<?php echo $value['id']; ?>"/>
-                                            </form>
+                                            <a class="btn btn-secondary btn-circle btn-sm"
+                                                   href="/offres/view?id=<?php echo $value['offre_id']; ?>">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                
                                             </td>
                                         </tr>
                                         <?php
                                     }
                                 } else
                                     echo "Nothing found";
-                                } catch (Exception $e) {
+                            } catch (Exception $e) {
                                 echo 'Erreur : ' . $e->getMessage();
                             }
                             ?>
-                             <?php
-                if (!empty($error)) {
-                    ?>
-                    <div class="alert alert-danger" role="alert">
-                    <span>
-                        <strong>Erreur : </strong>
-                        <?php echo $error; ?>
-                    </span>
-                    </div>
-                <?php } elseif (!empty($msg)) { ?>
-                    <div class="alert alert-success" role="alert">
-                    <span>
-                        <?php echo $msg; ?>
-                    </span>
-                    </div>
-                <?php } ?>
+
+
                         </table>
                     </div>
                 </div>
@@ -168,8 +108,6 @@ if(isset($_POST['button1']) ) {
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
 </div>
-
-
 
 
 <script src="/assets/js/jquery.min.js"></script>

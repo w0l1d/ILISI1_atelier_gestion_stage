@@ -48,10 +48,24 @@ switch ($request) {
     case '/offres':
         require __DIR__ . '/../views/student/offre.student.php';
         break;
+
+    case '/candidature':
+        require __DIR__ . '/../views/student/candidature.student.php';
+        break;
+
+    case '/messtages':
+        require __DIR__ . '/../views/student/messtages.student.php';
+        break;
+
+        case '/consulterstages':
+            require __DIR__ . '/../views/student/consulterstages.student.php';
+            break;
         case '/entreprises':
             require __DIR__ . '/../views/student/entreprise.student.php';
             break;
- 
+        case '/offres/view' :
+            require __DIR__ . '/../views/student/detailoffre.student.php';
+            break;
 
     default:
         http_response_code(404);
