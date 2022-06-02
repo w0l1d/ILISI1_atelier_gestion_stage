@@ -175,7 +175,7 @@ $id='10';
 </div>
 
 
-<!--ADD OFFRE MODAL-->
+ 
 
 
 <script src="/assets/js/jquery.min.js"></script>
