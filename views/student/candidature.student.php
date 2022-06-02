@@ -8,6 +8,7 @@ $statue_att="WAITING";
 <!DOCTYPE html>
 <html lang="fr">
 
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -44,12 +45,12 @@ $statue_att="WAITING";
                         <table id="myTable" class="table table-striped nowrap"
                                style="width:100%; font-size: calc(0.5em + 1vmin); ">
                             <thead>
-                            <th>CONDIDATURE ID </th>
+                            <th>CANDIDATURE ID </th>
                             <th>OFFRE ID</th>
                             <th>TITRE DE L'OFFRE</th>
                             <th>STATUE</th>
-                            <th>Date de creation</th>
-                            <th>Date de Maj</th>
+                            <th>DATE DE CREATION</th>
+                            <th>DATE DE MAJ</th>
                             <th class="all">Action</th>
                             </thead>
                             <?php
