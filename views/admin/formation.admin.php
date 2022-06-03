@@ -157,7 +157,7 @@ skip_process:
                                             </td>
                                             <td><?php echo $value['type']   ; ?></td>
                                             <td>
-                                                <a class="btn btn-primary btn-circle btn-sm"
+                                                <a class="btn btn-primary bg-primary btn-circle btn-sm"
                                                    href="/formations/update?id=<?php echo $value['id']; ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </a>

@@ -184,7 +184,7 @@ skip_process:
                                             <td><?php echo $value['web_site']; ?></td>
                                             <td><?php echo $value['description']; ?></td>
                                             <td>
-                                                <a class="btn btn-primary btn-circle btn-sm"
+                                                <a class="btn btn-primary btn-circle bg-primary btn-sm"
                                                    href="/entreprises/update?id=<?php echo $value['id']; ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </a>

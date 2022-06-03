@@ -3,34 +3,33 @@ require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
 $curr_user = $_SESSION['user'];
-if(isset($_POST['button1']) ) {
-    if(  $_POST['offreid']){
+if (isset($_POST['button1'])) {
+    if ($_POST['offreid']) {
 
         $student_id = $curr_user ['id'];
         $offre_id = $_POST['offreid'];
-        $statue="applied";                   
-            
-        $query = "SELECT c.id FROM candidature c  WHERE offre_id = $offre_id
-                     AND etudiant_id = $student_id  " ;
+        $statue = "applied";
 
-            $stmt = $pdo->query($query);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (!empty($rows)) {
-                $error = "  vous avez deja postuler dans cette offre N° :" . $offre_id;
-           }
-             else {
-                $query = "INSERT INTO candidature (id, created_date, status, updated_date,etudiant_id,offre_id,position)
+        $query = "SELECT c.id FROM candidature c  WHERE offre_id = $offre_id
+                     AND etudiant_id = $student_id ";
+
+        $stmt = $pdo->query($query);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($rows)) {
+            $error = "  vous avez deja postuler dans cette offre N° :" . $offre_id;
+        } else {
+            $query = "INSERT INTO candidature (id, created_date, status, updated_date,etudiant_id,offre_id,position)
                     VALUES (null,cast(now() as datetime),:statue,cast(now() as datetime),:student_id,:offre_id,NULL)";
-                $stmt = $pdo->prepare($query);
-                $stmt->bindParam(':statue', $statue);
-                $stmt->bindParam(':student_id', $student_id);
-                $stmt->bindParam(':offre_id', $offre_id);
-               
-                if ($stmt->execute())
-                    $msg = "vous avez postule à  offre";
-                else
-                    $error = "ne peux pas postuler";
-            }
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':statue', $statue);
+            $stmt->bindParam(':student_id', $student_id);
+            $stmt->bindParam(':offre_id', $offre_id);
+
+            if ($stmt->execute())
+                $msg = "vous avez postule à l'offre `$offre_id`";
+            else
+                $error = "ne peux pas postuler";
+        }
     }
 }
 ?>
@@ -63,10 +62,9 @@ if(isset($_POST['button1']) ) {
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">Offres de stages<br></h3>
-                   
+
                 </div>
 
-              
 
                 <div class="card shadow">
                     <div class="card-header py-3">
@@ -93,13 +91,13 @@ if(isset($_POST['button1']) ) {
                             </thead>
                             <?php
                             try {
-                               
+
                                 $query = "SELECT o.id, o.created_date, o.delai_offre, o.description, 
                                             o.duree_stage, o.end_stage, o.nbr_stagiaire, o.start_stage,
                                             o.statue, o.title, o.updated_date, o.formation_id,
                                             o.type_stage, e.short_name, e.name
                                             FROM offre o, entreprise e WHERE o.formation_id = :formation_id
-                                            AND o.entreprise_id = e.id  and o.delai_offre>= cast(now() as date)" ;
+                                            AND o.entreprise_id = e.id  and o.delai_offre >= cast(now() as date)";
 
                                 $stmt = $pdo->prepare($query);
                                 $stmt->bindParam(':formation_id', $curr_user['formation_id']);
@@ -125,36 +123,43 @@ if(isset($_POST['button1']) ) {
                                             <td><?php echo $value['created_date']; ?></td>
                                             <td><?php echo $value['updated_date']; ?></td>
                                             <td>
-                                            <form method='POST' action="/offres">
-                                            <input class="btn btn-primary d-none d-sm-block d-md-block"  type="submit" name="button1" value="postuler" />
-                                            <input type="hidden" name="offreid" value="<?php echo $value['id']; ?>"/>
-                                            </form>
+                                                <?php if ($value['statue'] === 'NEW') { ?>
+                                                    <form method='POST' action="/offres">
+                                                        <input type="hidden" name="offreid"
+                                                        value="<?php echo $value['id']; ?>"/>
+                                                        <input class="btn btn-primary btn-sm text-uppercase"
+                                                               type="submit" name="button1" value="postuler"/>
+                                                    </form>
+                                                <?php } else { ?>
+                                                    <span class="badge bg-secondary text-uppercase font-monospace"
+                                                          bs-cut="1"><?php echo $value['status']; ?></span>
+                                                <?php } ?>
                                             </td>
                                         </tr>
                                         <?php
                                     }
                                 } else
                                     echo "Nothing found";
-                                } catch (Exception $e) {
+                            } catch (Exception $e) {
                                 echo 'Erreur : ' . $e->getMessage();
                             }
                             ?>
-                             <?php
-                if (!empty($error)) {
-                    ?>
-                    <div class="alert alert-danger" role="alert">
+                            <?php
+                            if (!empty($error)) {
+                                ?>
+                                <div class="alert alert-danger" role="alert">
                     <span>
                         <strong>Erreur : </strong>
                         <?php echo $error; ?>
                     </span>
-                    </div>
-                <?php } elseif (!empty($msg)) { ?>
-                    <div class="alert alert-success" role="alert">
+                                </div>
+                            <?php } elseif (!empty($msg)) { ?>
+                                <div class="alert alert-success" role="alert">
                     <span>
                         <?php echo $msg; ?>
                     </span>
-                    </div>
-                <?php } ?>
+                                </div>
+                            <?php } ?>
                         </table>
                     </div>
                 </div>
@@ -168,8 +173,6 @@ if(isset($_POST['button1']) ) {
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
 </div>
-
-
 
 
 <script src="/assets/js/jquery.min.js"></script>

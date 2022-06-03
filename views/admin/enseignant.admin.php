@@ -160,7 +160,7 @@ skip_process:
                                             <td><?php echo $value['phone']; ?></td>
                                             <td><?php echo $value['date_naiss']; ?></td>
                                             <td>
-                                                <a class="btn btn-primary btn-circle btn-sm"
+                                                <a class="btn btn-primary bg-primary btn-circle btn-sm"
                                                    href="/enseignants/update?id=<?php echo $value['id']; ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </a>

@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query = "INSERT INTO offre 
                     (id, created_date, delai_offre, description, duree_stage, end_stage, nbr_stagiaire,
                      start_stage, statue, title, type_stage, updated_date, entreprise_id, formation_id)
-                    VALUES (null,NOW(),:delai_offre,:description,:duree_stage,:end_stage,:nbr_stagiaire,
-                            :start_stage,:statue,:title,:type_stage,NOW(),:entreprise_id, :formation_id)";
+                    VALUES (null,cast(NOW() as datetime ),:delai_offre,:description,:duree_stage,:end_stage,:nbr_stagiaire,
+                            :start_stage,:statue,:title,:type_stage,cast(NOW() as datetime ),:entreprise_id, :formation_id)";
         $stmt = $pdo->prepare($query);
 
         $stmt->bindParam(':delai_offre', $delai_offre);
@@ -169,11 +169,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <td><?php echo $value['created_date']; ?></td>
                                             <td><?php echo $value['updated_date']; ?></td>
                                             <td>
-                                                <a class="btn btn-secondary btn-circle btn-sm"
+                                                <a class="btn btn-secondary bg-secondary btn-circle btn-sm"
                                                    href="/offres/view?id=<?php echo $value['id']; ?>">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a class="btn btn-primary btn-circle btn-sm"
+                                                <a class="btn btn-primary bg-primary btn-circle btn-sm"
                                                    href="/offres/update?id=<?php echo $value['id']; ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
