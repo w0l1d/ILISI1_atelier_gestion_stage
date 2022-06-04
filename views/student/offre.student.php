@@ -94,7 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 $query = "SELECT o.id, o.created_date, o.delai_offre, o.description, 
                                             o.duree_stage, o.end_stage, o.nbr_stagiaire, o.start_stage,
-                                            o.statue, o.title, o.updated_date, o.formation_id,
+                                            o.statue, (SELECT c.status FROM candidature c WHERE c.offre_id = o.id) AS candidature_statue,
+                                            o.title, o.updated_date, o.formation_id,
                                             o.type_stage, e.short_name, e.name
                                             FROM offre o, entreprise e WHERE o.formation_id = :formation_id
                                             AND o.entreprise_id = e.id  and o.delai_offre >= cast(now() as date)";
@@ -123,16 +124,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <td><?php echo $value['created_date']; ?></td>
                                             <td><?php echo $value['updated_date']; ?></td>
                                             <td>
-                                                <?php if ($value['statue'] === 'NEW') { ?>
-                                                    <form method='POST' action="/offres">
-                                                        <input type="hidden" name="offreid"
-                                                               value="<?php echo $value['id']; ?>"/>
-                                                        <input class="btn btn-primary btn-sm text-uppercase"
-                                                               type="submit" name="button1" value="postuler"/>
-                                                    </form>
+                                                <?php if (empty($value['candidature_statue'])) { ?>
+                                                    <?php if ($value['statue'] === 'NEW') { ?>
+                                                        <form method='POST' action="/offres">
+                                                            <input type="hidden" name="offreid"
+                                                                   value="<?php echo $value['id']; ?>"/>
+                                                            <input class="btn btn-primary btn-sm text-uppercase"
+                                                                   type="submit" name="button1" value="postuler"/>
+                                                        </form>
+                                                    <?php } else { ?>
+                                                        <span class="badge bg-secondary text-uppercase font-monospace"
+                                                              bs-cut="1"><?php echo $value['statue']; ?></span>
+                                                    <?php } ?>
                                                 <?php } else { ?>
-                                                    <span class="badge bg-secondary text-uppercase font-monospace"
-                                                          bs-cut="1"><?php echo $value['status']; ?></span>
+                                                    <span class="badge bg-success text-uppercase font-monospace"
+                                                          bs-cut="1"><?php echo $value['candidature_statue']; ?></span>
                                                 <?php } ?>
                                             </td>
                                         </tr>
@@ -188,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script>
     $(document).ready(function () {
         $('#myTable').DataTable({
-            
+
             responsive: {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({
@@ -206,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json"
             }
 
-        
+
         });
     });
 </script>
