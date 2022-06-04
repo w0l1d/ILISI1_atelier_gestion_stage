@@ -79,7 +79,7 @@ $statue_att="WAITING";
                                             <td><?php echo $value['created_date']; ?></td>
                                             <td><?php echo $value['updated_date']; ?></td>
                                             <td>
-                                            <a class="btn btn-secondary btn-circle btn-sm"
+                                            <a class="btn btn-secondary bg-secondary btn-circle btn-sm"
                                                    href="/offres/view?id=<?php echo $value['offre_id']; ?>">
                                                     <i class="fas fa-eye"></i>
                                                 </a>

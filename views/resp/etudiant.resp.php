@@ -188,7 +188,7 @@ skip_process:
                                             <td>
                                                 <?php if (!$value['IsValidated']) { ?>
                                                     <div class="btn-toolbar" bs-cut="1">
-                                                        <div class="btn-group" role="group">
+                                                        <div class="btn-group btn-group-sm" role="group">
                                                             <a class="btn btn-success" role="button"
                                                                href="/etudiants?validate=<?php echo $value['id']; ?>">
                                                                 <i class="fa fa-check"></i></a>
