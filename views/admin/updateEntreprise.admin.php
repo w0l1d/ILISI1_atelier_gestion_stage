@@ -33,10 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $phone = $_POST['phone'] ?? '';
         $web_site = $_POST['web_site'] ?? '';
         $description = $_POST['description'] ?? '';
-        $logo = '';
+
+        require_once(__DIR__ . '/../../private/shared/tools.functions.php');
+
+
         if (!empty($_FILES["logo"])) {
             $filename = $_FILES["logo"]["name"];
-            $logo = $entreprise['logo'];
+            $now = new DateTime();
+            $logo = $entreprise['logo'] ?? generateRandomString(10) . '-' . $filename;
             $tempname = $_FILES["logo"]["tmp_name"];
             $folder = __DIR__ . "/../../private/uploads/images/logo/" . $logo;
             if (!move_uploaded_file($tempname, $folder)) {
@@ -49,9 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->beginTransaction();
 
             $query = "UPDATE entreprise SET domaine = :domaine, email = :email,
-                      logo = :logo, short_name = :short_name, `name` = :name,
+                      logo = :logo, short_name = :short_name, `name` = `:name`,
                       phone = :phone, web_site = :web_site, 
-                      `description` = :description WHERE id = :id" ;
+                      `description` = `:description` WHERE id = :id" ;
             $stmt = $pdo->prepare($query);
             $stmt->bindParam(':id', $entreprise_id);
             $stmt->bindParam(':domaine', $domaine);
@@ -73,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $entreprise['phone'] = $phone;
                 $entreprise['web_site'] = $web_site;
                 $entreprise['description'] = $description;
+                $entreprise['logo'] = $logo;
 
                 $pdo->commit();
             }else {

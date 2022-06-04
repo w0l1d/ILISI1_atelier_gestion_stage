@@ -14,7 +14,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/formations">
-                    <i class="fa fa-"></i>
+                    <i class="fa fa-folder"></i>
                     <span>Formations</span>
                 </a>
             </li>
@@ -26,7 +26,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/entreprises">
-                    <i class="fa fa-gift"></i>
+                    <i class="fa fa-building"></i>
                     <span>Entreprises</span></a>
             </li>
         </ul>

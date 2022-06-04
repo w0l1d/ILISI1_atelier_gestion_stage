@@ -55,14 +55,11 @@ try {
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">information sur l'offre n° <?php echo $offre_id ?> <br></h3>
-
                 </div>
 
                 <div class="card shadow">
                     <div class="card-body">
-
-                        <table class="table">
-
+                        <table class="table" style="font-size: calc(0.5em + 1vmin);">
                             <tbody style="width: 913.6px;">
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
