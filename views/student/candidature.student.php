@@ -2,7 +2,7 @@
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 $curr_user = $_SESSION['user'];
-$statue_att="WAITING";
+$statue_att = "WAITING";
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +32,7 @@ $statue_att="WAITING";
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">Mes candidatures<br></h3>
-                    
+
                 </div>
 
                 <div class="card shadow">
@@ -43,7 +43,7 @@ $statue_att="WAITING";
                         <table id="myTable" class="table table-striped nowrap"
                                style="width:100%; font-size: calc(0.5em + 1vmin); ">
                             <thead>
-                            <th>CANDIDATURE ID </th>
+                            <th>CANDIDATURE ID</th>
                             <th>OFFRE ID</th>
                             <th>TITRE DE L'OFFRE</th>
                             <th>STATUE</th>
@@ -53,7 +53,7 @@ $statue_att="WAITING";
                             </thead>
                             <?php
                             try {
-                               
+
                                 $query = "SELECT c.id as candidature_id,c.created_date,c.status,c.updated_date,
                                         c.offre_id,c.position,o.title
                                             FROM offre o, candidature c WHERE  c.etudiant_id = :id_etudiant  AND o.id =c.offre_id";
@@ -65,23 +65,39 @@ $statue_att="WAITING";
                                 if (!empty($rows)) {
                                     foreach ($rows as $key => $value) {
                                         ?>
-                                         <tr>
+                                        <tr>
                                             <td><?php echo $value['candidature_id']; ?></td>
                                             <td><?php echo $value['offre_id']; ?></td>
                                             <td><?php echo $value['title']; ?></td>
-                                            <td><?php echo $value['status'];
+                                            <td>
+                                                <span class="badge bg-<?php
+                                                switch ($value['status']) {
+                                                    case 'APPLIED': echo 'info'; break;
+                                                    case 'CANCELED': echo 'secondary'; break;
+                                                    case 'ACCEPTED': echo 'gradient-success'; break;
+                                                    case 'WAITING': echo 'gradient-info'; break;
+                                                    case 'NACCEPTED': echo 'gradient-warning'; break;
+                                                    case 'AGREED': echo 'success'; break;
+                                                    case 'NAGREED': echo 'warning'; break;
+                                                }
+
+                                                ?> text-uppercase font-monospace" bs-cut="1">
+                                                    <?php echo $value['status'];
                                                     if (strcmp($value['status'], $statue_att) == 0) {
-                                                        echo " ( " . $value['position'] . " )" ;
+                                                        echo " ( " . $value['position'] . " )";
                                                     }
-                                                            ?></td>
+                                                    ?>
+                                                </span>
+
+                                            </td>
                                             <td><?php echo $value['created_date']; ?></td>
                                             <td><?php echo $value['updated_date']; ?></td>
                                             <td>
-                                            <a class="btn btn-secondary bg-secondary btn-circle btn-sm"
+                                                <a class="btn btn-secondary bg-secondary btn-circle btn-sm"
                                                    href="/offres/view?id=<?php echo $value['offre_id']; ?>">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                
+
                                             </td>
                                         </tr>
                                         <?php
