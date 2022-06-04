@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 $stmt = $pdo->prepare($query);
                                 $stmt->bindParam(':formation_id', $curr_user['formation_id']);
-                                $stmt->bindParam(':id', $curr_user['id']);
+                                $stmt->bindParam(':id_etud', $curr_user['id']);
                                 $stmt->execute();
                                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 if (!empty($rows)) {
