@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 ?>
                                 <div class="alert alert-danger" role="alert">
                     <span>
-                        <strong>Erreur : </strong>
+                        <strong>Erreur : </strong>
                         <?php echo $error; ?>
                     </span>
                                 </div>
@@ -221,6 +221,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
 
 </html>
-
-
-
