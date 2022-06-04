@@ -26,12 +26,7 @@
                     <span>Mes condidature</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/messtages">
-                    <i class="fa fa-gift"></i>
-                    <span>Mes Stages</span>
-                </a>
-            </li>
+           
             <li class="nav-item">
                 <a class="nav-link" href="/consulterstages">
                     <i class="fa fa-gift"></i>

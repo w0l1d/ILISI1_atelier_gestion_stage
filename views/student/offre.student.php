@@ -184,9 +184,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="/assets/datatable/js/dataTables.responsive.min.js"></script>
 <script src="/assets/datatable/js/responsive.bootstrap5.min.js"></script>
 
+
 <script>
     $(document).ready(function () {
         $('#myTable').DataTable({
+            
             responsive: {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({
@@ -203,6 +205,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json"
             }
+
+        
         });
     });
 </script>

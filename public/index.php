@@ -53,10 +53,7 @@ switch ($request) {
         require __DIR__ . '/../views/student/candidature.student.php';
         break;
 
-    case '/messtages':
-        require __DIR__ . '/../views/student/messtages.student.php';
-        break;
-
+   
         case '/consulterstages':
             require __DIR__ . '/../views/student/consulterstages.student.php';
             break;
