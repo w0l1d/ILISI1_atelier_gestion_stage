@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 $query = "SELECT o.id, o.created_date, o.delai_offre, o.description, 
                                             o.duree_stage, o.end_stage, o.nbr_stagiaire, o.start_stage,
-                                            o.statue, (SELECT c.status FROM candidature c WHERE c.offre_id = o.id) AS candidature_statue,
+                                            o.statue, (SELECT c.status FROM candidature c WHERE c.offre_id = o.id AND c.etudiant_id = :id_etud) AS candidature_statue,
                                             o.title, o.updated_date, o.formation_id,
                                             o.type_stage, e.short_name, e.name
                                             FROM offre o, entreprise e WHERE o.formation_id = :formation_id
@@ -102,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 $stmt = $pdo->prepare($query);
                                 $stmt->bindParam(':formation_id', $curr_user['formation_id']);
+                                $stmt->bindParam(':id', $curr_user['id']);
                                 $stmt->execute();
                                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 if (!empty($rows)) {
