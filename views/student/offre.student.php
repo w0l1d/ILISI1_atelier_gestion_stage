@@ -94,7 +94,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 $query = "SELECT o.id, o.created_date, o.delai_offre, o.description, 
                                             o.duree_stage, o.end_stage, o.nbr_stagiaire, o.start_stage,
-                                            o.statue, (SELECT c.status FROM candidature c WHERE c.offre_id = o.id AND c.etudiant_id = :id_etud) AS candidature_statue,
+                                            o.statue, (SELECT IF(c.status = 'WAITING', 
+                                                                    concat(c.status, '{', c.position, '}'), 
+                                                                    c.status
+                                                                ) FROM candidature c 
+                                                        WHERE c.offre_id = o.id 
+                                                          AND c.etudiant_id = :id_etud ) AS candidature_statue,
                                             o.title, o.updated_date, o.formation_id,
                                             o.type_stage, e.short_name, e.name
                                             FROM offre o, entreprise e WHERE o.formation_id = :formation_id
@@ -102,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 $stmt = $pdo->prepare($query);
                                 $stmt->bindParam(':formation_id', $curr_user['formation_id']);
-                                $stmt->bindParam(':id', $curr_user['id']);
+                                $stmt->bindParam(':id_etud', $curr_user['id']);
                                 $stmt->execute();
                                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 if (!empty($rows)) {
@@ -125,12 +130,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <td><?php echo $value['created_date']; ?></td>
                                             <td><?php echo $value['updated_date']; ?></td>
                                             <td>
-                                                <?php if (empty($value['candidature_statue'])) { ?>
-                                                    <?php if ($value['statue'] === 'NEW') { ?>
+                                                <?php if (empty($value['candidature_statue'])) { 
+                                                     if ($value['statue'] === 'NEW') { ?>
                                                         <form method='POST' action="/offres">
                                                             <input type="hidden" name="offreid"
                                                                    value="<?php echo $value['id']; ?>"/>
-                                                            <input class="btn btn-primary btn-sm text-uppercase"
+                                                            <input class="btn btn-primary btn-sm "
                                                                    type="submit" name="button1" value="postuler"/>
                                                         </form>
                                                     <?php } else { ?>
@@ -138,8 +143,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                               bs-cut="1"><?php echo $value['statue']; ?></span>
                                                     <?php } ?>
                                                 <?php } else { ?>
-                                                    <span class="badge bg-success text-uppercase font-monospace"
-                                                          bs-cut="1"><?php echo $value['candidature_statue']; ?></span>
+                                                    <span class="badge bg-<?php
+                                                    echo match ($value['candidature_statue']) {
+                                                        'APPLIED' => 'info',
+                                                        'CANCELED' => 'secondary',
+                                                        'ACCEPTED' => 'gradient-success',
+                                                        'NACCEPTED' => 'gradient-warning',
+                                                        'AGREED' => 'success',
+                                                        'NAGREED' => 'warning',
+                                                        default => 'gradient-info',
+                                                    };
+                                                    ?> text-uppercase font-monospace" bs-cut="1">
+                                                    <?php echo $value['candidature_statue']; ?>
+                                                </span>
                                                 <?php } ?>
                                             </td>
                                         </tr>
