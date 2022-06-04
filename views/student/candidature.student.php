@@ -7,8 +7,6 @@ $statue_att="WAITING";
 
 <!DOCTYPE html>
 <html lang="fr">
-
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -58,10 +56,10 @@ $statue_att="WAITING";
                                
                                 $query = "SELECT c.id as candidature_id,c.created_date,c.status,c.updated_date,
                                         c.offre_id,c.position,o.title
-                                            FROM offre o, candidature c WHERE  c.etudiant_id = :id  AND o.id =c.offre_id   ";
+                                            FROM offre o, candidature c WHERE  c.etudiant_id = :id_etudiant  AND o.id =c.offre_id";
 
                                 $stmt = $pdo->prepare($query);
-                                $stmt->bindParam(':id', $curr_user['id']);
+                                $stmt->bindParam(':id_etudiant', $curr_user['id']);
                                 $stmt->execute();
                                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 if (!empty($rows)) {
@@ -88,8 +86,7 @@ $statue_att="WAITING";
                                         </tr>
                                         <?php
                                     }
-                                } else
-                                    echo "Nothing found";
+                                }
                             } catch (Exception $e) {
                                 echo 'Erreur : ' . $e->getMessage();
                             }

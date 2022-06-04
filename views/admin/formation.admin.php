@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $formation = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!empty($formation)) {
-            if ($formation['responsable_id'] == $responsable_id) {
+            if ($formation['responsable_id'] === $responsable_id) {
                 $error = "Enseignant `{$formation['responsable_id']}` est deja responsable du fillier `{$formation['short_title']}`";
                 goto skip_process;
             } elseif (!strcasecmp($formation['short_title'],$short_title)) {
@@ -32,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 goto skip_process;
             }
         }
-
         try {
             $pdo->beginTransaction();
 

@@ -20,13 +20,13 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/offres">
-                    <i class="fa fa-gift"></i>
+                    <i class="fa fa-"></i>
                     <span>Offres de stage</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/entreprises">
-                    <i class="fa fa-gift"></i>
+                    <i class="fa fa-building"></i>
                     <span>Entreprises</span></a>
             </li>
         </ul>

@@ -144,11 +144,14 @@ switch ($request) {
         require __DIR__ . '/../views/admin/enseignant.admin.php';
         break;
     case '/enseignants/update':
-        require __DIR__ . '/../views/admin/updateEntreprise.admin.php';
+        require __DIR__ . '/../views/admin/updateEnseignant.admin.php';
         break;
 
     case '/formations':
         require __DIR__ . '/../views/admin/formation.admin.php';
+        break;
+    case '/formations/update':
+        require __DIR__ . '/../views/admin/updateFormation.admin.php';
         break;
 
 

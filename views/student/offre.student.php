@@ -3,7 +3,7 @@ require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
 $curr_user = $_SESSION['user'];
-if (isset($_POST['button1'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['offreid']) {
 
         $student_id = $curr_user ['id'];
@@ -126,7 +126,7 @@ if (isset($_POST['button1'])) {
                                                 <?php if ($value['statue'] === 'NEW') { ?>
                                                     <form method='POST' action="/offres">
                                                         <input type="hidden" name="offreid"
-                                                        value="<?php echo $value['id']; ?>"/>
+                                                               value="<?php echo $value['id']; ?>"/>
                                                         <input class="btn btn-primary btn-sm text-uppercase"
                                                                type="submit" name="button1" value="postuler"/>
                                                     </form>

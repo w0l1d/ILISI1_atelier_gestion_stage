@@ -7,7 +7,7 @@ if (empty($_GET['id'])) {
     header('Location: /offres');
 }
 $offre_id = $_GET['id'];
-$statue_att="WAITING";
+$statue_att = "WAITING";
 
 try {
     $query = "SELECT o.*, e.name FROM offre o, entreprise e WHERE o.id = :id AND o.entreprise_id = e.id";
@@ -60,9 +60,7 @@ try {
 
                 <div class="card shadow">
                     <div class="card-body">
-
-                        <table class="table">
-
+                        <table class="table" style="font-size: calc(0.5em + 1vmin);">
                             <tbody style="width: 913.6px;">
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
@@ -137,9 +135,7 @@ try {
                                 <td class="text-center text-uppercase"><?php echo $offre['description']; ?></td>
                             </tr>
                             </tbody>
-
                         </table>
-
                     </div>
                 </div>
                 <br>
@@ -157,18 +153,16 @@ try {
                             <th>Nom</th>
                             <th>Prenom</th>
                             <th>STATUS DE CONDIDATURE</th>
-                            
                             <th>DATE DE CREATION</th>
-                            <th>DATE DE MODIFICATION </th>
-                            
-
+                            <th>DATE DE MODIFICATION</th>
                             </thead>
                             <?php
                             try {
-                                $query = "SELECT p.*, c.*, e.*, e.id AS etudiantid,c.id AS candidatureId  FROM etudiant e, candidature c, person p
-                                WHERE offre_id = :id AND c.etudiant_id = p.id AND e.id = c.etudiant_id";
+                                $query = "SELECT p.*, c.*, e.*, e.id AS etudiantid,
+                                            c.id AS candidatureId FROM etudiant e, candidature c, person p
+                                WHERE offre_id = :offre_id AND c.etudiant_id = p.id AND e.id = c.etudiant_id";
                                 $stmt = $pdo->prepare($query);
-                                $stmt->bindParam(':id', $offre_id);
+                                $stmt->bindParam(':offre_id', $offre_id);
                                 $stmt->execute();
                                 $condidatures = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 foreach ($condidatures as $key => $value) {
@@ -179,14 +173,15 @@ try {
                                         <td><?php echo $value['lname']; ?></td>
                                         <td><?php echo $value['fname']; ?></td>
                                         <td><?php echo $value['status'];
-                                                    if (strcmp($value['status'], $statue_att) == 0) {
-                                                        echo " ( " . $value['position'] . " )" ;
-                                                    }
-                                                            ?></td>
-                                        
+                                            if (strcmp($value['status'], $statue_att) == 0) {
+                                                echo " ( " . $value['position'] . " )";
+                                            }
+                                            ?>
+                                        </td>
+
                                         <td><?php echo $value['created_date']; ?></td>
                                         <td><?php echo $value['updated_date']; ?></td>
-                                       
+
                                     </tr>
                                     <?php
                                 }
@@ -227,7 +222,7 @@ try {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({
                         header: function (row) {
-                            var data = row.data();
+                            let data = row.data();
                             return 'Details for ' + data[0] + ' ' + data[1];
                         }
                     }),

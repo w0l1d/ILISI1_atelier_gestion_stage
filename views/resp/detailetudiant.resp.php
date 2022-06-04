@@ -52,10 +52,10 @@ $id='10';
                                     foreach ($rows as $key => $value) {
                                         ?>
                           
-                                <table class="table">
+                                <table class="table" style="font-size: calc(0.5em + 1vmin);">
                                    
                                     <tbody style="width: 913.6px;">
-                                        <tr class="d-flex flex-column flex-grow-1 style="padding: -2px;">
+                                        <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                             <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">Nom </td>
                                             <td class="text-end text-uppercase"><?php echo $value['lname']; ?></td>
                                         </tr>

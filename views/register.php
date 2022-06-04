@@ -101,7 +101,7 @@ skip_process:
             <div class="row">
                 <div class="col-lg-5 d-none d-lg-flex">
                     <div class="flex-grow-1 bg-register-image"
-                         style="background: url('assets/img/uh2c_logo.jpg') round;background-size: contain;">
+                         style="background: url('/assets/img/uh2c_logo.jpg') round;background-size: contain;">
 
                     </div>
                 </div>
