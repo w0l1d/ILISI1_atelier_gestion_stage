@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $query = "SELECT o.id, o.created_date, o.delai_offre, o.description, 
                                             o.duree_stage, o.end_stage, o.nbr_stagiaire, o.start_stage,
                                             o.statue, o.title, o.updated_date, o.formation_id,
-                                            o.type_stage, e.short_name, e.name
+                                            o.type_stage, e.short_name, e.name,o.entreprise_id
                                             FROM offre o, entreprise e WHERE o.formation_id = :formation_id
                                             AND o.entreprise_id = e.id";
 
@@ -158,7 +158,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <td><?php echo $value['statue']; ?></td>
                                             <td><?php echo $value['type_stage']; ?></td>
                                             <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>">
-                                                <?php echo $value['short_name']; ?>
+                                                <a href="/entreprises/view?id=<?php echo $value['entreprise_id'];
+                                                  ?>">
+                                                    <?php echo $value['short_name']; ?>
+                                                </a>
                                             </td>
                                             <td><?php echo $value['delai_offre']; ?></td>
                                             <td><?php echo $value['duree_stage']; ?></td>

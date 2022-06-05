@@ -146,6 +146,7 @@ skip_process:
                             <th>Telephone</th>
                             <th>Site Web</th>
                             <th>Description</th>
+                            <th class="all">Action</th>
                             </thead>
                             <?php
                             try {
@@ -176,6 +177,12 @@ skip_process:
                                             <td><?php echo $value['phone']; ?></td>
                                             <td><?php echo $value['web_site']; ?></td>
                                             <td><?php echo $value['description']; ?></td>
+                                            <td>
+                                                <a class="btn btn-secondary bg-secondary btn-circle btn-sm"
+                                                   href="/entreprises/view?id=<?php echo $value['id']; ?>">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
                                         </tr>
                                         <?php
                                     }

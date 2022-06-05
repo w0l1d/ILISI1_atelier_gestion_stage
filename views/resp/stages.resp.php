@@ -1,4 +1,4 @@
-<?php
+a<?php
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
@@ -79,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="/assets/fonts/fontawesome-all.min.css">
     <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="/assets/css/code.css">
 </head>
 
 <body id="page-top">
@@ -185,8 +186,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <td><?php echo $value['stage_id']; ?></td>
                                             <td><?php echo $value['statue']; ?></td>
                                             <td><?php echo $value['stagiaire_id'].":". $value['etu_fname']. $value['etu_lname']; ?></td>                 
-                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>">
+                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>"><a
+                                            href="/entreprises/view?id=<?php echo $value['entreprise_id']; ?>">
                                                 <?php echo $value['short_name']; ?>
+                                             </a>
                                             </td>
                                             <td><?php echo $value['encadrant_id'].":". $value['ens_fname']. $value['ens_lname']; ?></td> 
                                             <td><?php echo $value['start']; ?></td>
@@ -256,13 +259,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 <?php
                                 try {
-                                    $query = "SELECT e.id as etudiant, fname ,lname FROM etudiant e , person p 
-                                    where p.id=e.id and e.formation_id=:formation and e.id not in ( SELECT e.id 
-                                    FROM etudiant e , stage s  where s.stagiaire_id=e.id and e.formation_id=:formation
+                                    $query = "SELECT e1.id as etudiant, fname ,lname FROM etudiant e1 , person p 
+                                    where p.id=e1.id and e1.formation_id=:formation and e1.id not in ( SELECT e.id 
+                                    FROM etudiant e , stage s  where s.stagiaire_id=e.id  
                                     and cast(s.end as datetime ) >= cast(NOW() as datetime )) ";
 
                                     $stmt = $pdo->prepare($query);
-                                    $stmt->bindParam(':formation', $value['formation']);
+                                    $stmt->bindParam(':formation', $curr_user['formation_id']);
                                     $stmt->execute();
                                     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     if (!empty($rows)) {
