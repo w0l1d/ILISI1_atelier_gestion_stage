@@ -125,7 +125,9 @@ switch ($request) {
         require __DIR__ . '/../views/resp/updatestage.resp.php';
         break;
 
-
+    case '/entreprises/view' :
+        require __DIR__ . '/../views/resp/detailEntreprise.resp.php';
+        break;
     case '/test-mail' :
         require __DIR__ . '/../views/testmail.php';
         break;

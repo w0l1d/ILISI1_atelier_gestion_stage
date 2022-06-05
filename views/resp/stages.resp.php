@@ -3,7 +3,7 @@ require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
 $curr_user = $_SESSION['user'];
-$note = "0";
+$note="0";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['encadrant_id']) &&
@@ -173,8 +173,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <tr>
                                             <td><?php echo $value['stage_id']; ?></td>
                                             <td><?php echo $value['statue']; ?></td>
-                                            <td><?php echo $value['stagiaire_id'] . ":" . $value['etu_fname'] . $value['etu_lname']; ?></td>
-                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>">
+                                            <td><?php echo $value['stagiaire_id'].":". $value['etu_fname']. $value['etu_lname']; ?></td>                 
+                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>"><a
+                                            href="/entreprises/view?id=<?php echo $value['entreprise_id']; ?>">
                                                 <?php echo $value['short_name']; ?>
                                             </td>
                                             <td><?php echo $value['encadrant_id'] . ":" . $value['ens_fname'] . $value['ens_lname']; ?></td>
@@ -238,42 +239,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Etudiant<span
-                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
-                        <select name="stagiaire_id" class="form-select flex-grow-1" required="">
+                            <label class="form-label">Etudiant<span
+                                        style="color: var(--bs-red);font-weight: bold;">*</span></label>
+                            <select name="stagiaire_id" class="form-select flex-grow-1" required="">
 
-                            <?php
-                            try {
-                                $query = "SELECT e.id as etudiant, fname ,lname FROM etudiant e , person p 
-                                    where p.id=e.id and e.formation_id=:formation and e.id not in ( SELECT e.id 
-                                    FROM etudiant e , stage s  where s.stagiaire_id=e.id and e.formation_id=:formation
+                                <?php
+                                try {
+                                    $query = "SELECT e1.id as etudiant, fname ,lname FROM etudiant e1 , person p 
+                                    where p.id=e1.id and e1.formation_id=:formation and e1.id not in ( SELECT e.id 
+                                    FROM etudiant e , stage s  where s.stagiaire_id=e.id  
                                     and cast(s.end as datetime ) >= cast(NOW() as datetime )) ";
 
-                                $stmt = $pdo->prepare($query);
-                                $stmt->bindParam(':formation', $value['formation']);
-                                $stmt->execute();
-                                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                if (!empty($rows)) {
-                                    foreach ($rows as $key => $value) {
-                                        ?>
-                                        <option value="<?php echo $value['etudiant']; ?>">
-                                            <?php echo "{$value['etudiant']} :{$value['fname']} {$value['lname']}"; ?>
-                                        </option>
-                                        <?php
+                                    $stmt = $pdo->prepare($query);
+                                    $stmt->bindParam(':formation', $curr_user['formation_id']);
+                                    $stmt->execute();
+                                    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                    if (!empty($rows)) {
+                                        foreach ($rows as $key => $value) {
+                                            ?>
+                                            <option value="<?php echo $value['etudiant']; ?>">
+                                                <?php echo "{$value['etudiant']} :{$value['fname']} {$value['lname']}"; ?>
+                                            </option>
+                                            <?php
+                                        }
                                     }
+                                } catch (Exception $e) {
+                                    echo 'Erreur : ' . $e->getMessage();
                                 }
-                            } catch (Exception $e) {
-                                echo 'Erreur : ' . $e->getMessage();
-                            }
-                            ?>
+                                ?>
 
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Entreprise<span
-                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
-                        <select name="entreprise_id" class="form-select flex-grow-1" required="">
+                            </select>
+                        </div>
+                
+                        <div class="mb-3">
+                            <label class="form-label">Entreprise<span
+                                        style="color: var(--bs-red);font-weight: bold;">*</span></label>
+                            <select name="entreprise_id" class="form-select flex-grow-1" required="">
 
                             <?php
                             try {
