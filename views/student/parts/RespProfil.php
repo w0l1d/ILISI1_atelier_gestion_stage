@@ -24,7 +24,7 @@ $curr_user = $_SESSION['user'];
     <?php require_once 'sidebar.php' ?>
     <div class="d-flex flex-column" id="content-wrapper">
         <div id="content">
-            <?php require_once 'navbar.html' ?>
+            <?php require_once 'navbar.php' ?>
             <div class="container-fluid">
                 <h3 class="text-dark mb-4">Profile</h3>
                 <div class="row row-cols-2">

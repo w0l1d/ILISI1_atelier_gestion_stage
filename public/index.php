@@ -16,8 +16,11 @@ switch ($request) {
             header('Location: /');
         require_once __DIR__ . '/../views/register.php';
         die();
-    case '/entreprises/logo':
-        require_once __DIR__ . '/../views/logoManagement.php';
+    case '/uploads':
+        require_once __DIR__ . '/../views/fileManagement.php';
+        die();
+    case '/offres/resultat':
+        require_once __DIR__ . '/../views/offreResult.php';
         die();
 
 }
@@ -51,6 +54,9 @@ switch ($request) {
 
     case '/candidature':
         require __DIR__ . '/../views/student/candidature.student.php';
+        break;
+    case '/profile':
+        require __DIR__ . '/../views/student/profile.student.php';
         break;
 
    

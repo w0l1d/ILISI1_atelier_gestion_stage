@@ -30,7 +30,7 @@ $id='10';
     ?>
     <div class="d-flex flex-column" id="content-wrapper" style="font-size: calc(0.5em + 1vmin);">
         <div id="content">
-            <?php require_once 'parts/navbar.html' ?>
+            <?php require_once 'parts/navbar.php' ?>
             
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
