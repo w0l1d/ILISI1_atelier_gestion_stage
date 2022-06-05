@@ -1,4 +1,4 @@
-<?php
+a<?php
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
@@ -22,8 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statue = $_POST['statue'];
         $id_encadrant = $_POST['encadrant_id'];
         $entreprise_id = $_POST['entreprise_id'];
-
-
+  
+       
+        
         $query = "INSERT INTO stage 
                     (id, candidature_id, encadrant_id, stagiaire_id, entreprise_id, statue, start,
                     end, description, created_date,updated_date,encadrant_ext_note,encardant_note)
@@ -71,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="/assets/fonts/fontawesome-all.min.css">
     <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="/assets/css/code.css">
 </head>
 
 <body id="page-top">
@@ -177,6 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>"><a
                                             href="/entreprises/view?id=<?php echo $value['entreprise_id']; ?>">
                                                 <?php echo $value['short_name']; ?>
+                                             </a>
                                             </td>
                                             <td><?php echo $value['encadrant_id'] . ":" . $value['ens_fname'] . $value['ens_lname']; ?></td>
                                             <td><?php echo $value['start']; ?></td>
