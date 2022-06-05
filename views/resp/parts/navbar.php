@@ -48,7 +48,7 @@
                         </span>
                         <img class="border img-profile img-profile rounded-circle img-fluid"
                              src="<?php
-                             if (!empty($curr_user['cv']))
+                             if (!empty($curr_user['profile_img']))
                                  echo "/uploads?profile_id={$curr_user['id']}";
                              else
                                  echo "/assets/img/avatars/default_profile.png";
