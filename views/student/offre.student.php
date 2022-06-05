@@ -130,12 +130,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <td><?php echo $value['created_date']; ?></td>
                                             <td><?php echo $value['updated_date']; ?></td>
                                             <td>
-                                                <?php if (empty($value['candidature_statue'])) { ?>
-                                                    <?php if ($value['statue'] === 'NEW') { ?>
+                                                <?php if (empty($value['candidature_statue'])) { 
+                                                     if ($value['statue'] === 'NEW') { ?>
                                                         <form method='POST' action="/offres">
                                                             <input type="hidden" name="offreid"
                                                                    value="<?php echo $value['id']; ?>"/>
-                                                            <input class="btn btn-primary btn-sm text-uppercase"
+                                                            <input class="btn btn-primary btn-sm "
                                                                    type="submit" name="button1" value="postuler"/>
                                                         </form>
                                                     <?php } else { ?>

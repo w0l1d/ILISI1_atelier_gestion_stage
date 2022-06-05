@@ -23,6 +23,7 @@ $autre="autre";
     <link rel="stylesheet" href="/assets/fonts/fontawesome-all.min.css">
     <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/fonts/fontawesome5-overrides.min.css">
+    <link href="https://nightly.datatables.net/scroller/css/scroller.dataTables.css?_=cd11977a9e85e84b9a1ebeb03f7b1a10.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body id="page-top">
@@ -46,29 +47,14 @@ $autre="autre";
                         <table id="myTable" class="table table-striped nowrap"
                                style="width:100%; font-size: calc(0.5em + 1vmin);">
                             <thead>
-                                <tr>
-                            <th class="filterhead"></th>
-                            <th class="filterhead">ENTREPRISE</th>
-                            <th class="filterhead">STATUE</th>
-                            <th class="filterhead">ENCADRANT</th>
-                            <th class="filterhead" >PROPRIETAIRE</th>
-                            <th class="filterhead"></th>
-                            <th class="filterhead"></th>
-                            <th class="filterhead"></th>
-                            <th class="filterhead"></th>
-                            
-                            <th class="filterhead"></th>
-                            <th class="filterhead"></th>
-                                    
-                                     
-                                </tr>
+                          
                                 <tr>
                 
                             <th>ID</th>
                             <th>ENTREPRISE</th>
                             <th>STATUE</th>
                             <th>ENCADRANT</th>
-                            <th>PROPRIETAIRE</th>
+                            <th>stagiaire</th>
                             <th>DATE DEBUT</th>
                             <th>DATE FIN</th>
                             <th>DATE DE CREATION</th>
@@ -76,6 +62,22 @@ $autre="autre";
                             <th>CANDIDATURE ID</th>
                             <th>Description</th>
                             </tr>
+                            <tr>
+                            <th class="filterhead">ID</th>
+                            <th class="filterhead">ENTREPRISE</th>
+                            <th class="filterhead">STATUE</th>
+                            <th class="filterhead">ENCADRANT</th>
+                            <th class="filterhead" >stagiaire</th>
+                            <th class="filterhead">DATE DEBUT</th>
+                            <th class="filterhead">DATE FIN</th>
+                            <th class="filterhead">DATE DE CREATION</th>
+                            <th class="filterhead">DATE DE MODIFICATION</th>
+                            
+                            <th class="filterhead">CANDIDATURE ID</th>
+                            <th class="filterhead">Description</th>
+                                    
+                                     
+                                </tr>
                             </thead>
                             <?php
                             try {
@@ -141,41 +143,75 @@ $autre="autre";
 <script src="/assets/datatable/js/dataTables.bootstrap5.min.js"></script>
 <script src="/assets/datatable/js/dataTables.responsive.min.js"></script>
 <script src="/assets/datatable/js/responsive.bootstrap5.min.js"></script>
-
+<script src="https://nightly.datatables.net/scroller/js/dataTables.scroller.js?_=cd11977a9e85e84b9a1ebeb03f7b1a10"></script>
 <script>
-    $(document).ready(function () {
-       var table= $('#myTable').DataTable({
-            "bLengthChange": false,
-         "iDisplayLength": 15,
-            responsive: {
-                details: {
-                    display: $.fn.dataTable.Responsive.display.modal({
-                        header: function (row) {
-                            var data = row.data();
-                            return 'Details for ' + data[0] + ' ' + data[1];
-                        }
-                    }),
-                    renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+    $(document).ready(function() {
+
+function hideSearchInputs(columns) {
+  for (i=0; i<columns.length; i++) {
+    if (columns[i]) {
+      $('.filterhead:eq(' + i + ')' ).show();
+    } else {
+      $('.filterhead:eq(' + i + ')' ).hide();
+    }
+  }
+}
+
+var table = $('#myTable').DataTable({
+    orderCellsTop: true,
+      dom: 'Bfrtip',
+  responsive: {
+          details: {
+              display: $.fn.dataTable.Responsive.display.modal( {
+                  header: function ( row ) {
+                      var data = row.data();
+                      return 'Details for '+data[0]+' '+data[1];
+                  }
+              } ),
+              renderer: $.fn.dataTable.Responsive.renderer.tableAll({
                         tableClass: 'table'
                     })
-                }
-            },
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json"
-            }
-        });
-        $(".filterhead").not(":eq(8),:eq(5),:eq(6),:eq(7),:eq(9),:eq(10)").each( function ( i ) {
-        var select = $('<select><option value=""></option></select>')
-            .appendTo( $(this).empty() )
-            .on( 'change', function () {
-               var term = $(this).val();
-                table.column( i ).search(term, false, false ).draw();
-            } );
- 	      table.column( i ).data().unique().sort().each( function ( d, j ) {
-            	select.append( '<option value="'+d+'">'+d+'</option>' )
-        } );
-		} );
-} );
+          }
+  },
+      scrollY:        200,
+      scrollCollapse: true,
+      scroller:       true,
+  buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ],
+      initComplete: function () {
+        var api = this.api();
+          $('.filterhead', api.table().header()).each( function (i) {
+            var column = api.column(i);
+              var select = $('<select><option value=""></option></select>')
+                  .appendTo( $(this).empty() )
+                  .on( 'change', function () {
+                      var val = $.fn.dataTable.util.escapeRegex(
+                          $(this).val()
+                      );
+
+                      column
+                          .search( val ? '^'+val+'$' : '', true, false )
+                          .draw();
+                  } );
+
+              column.data().unique().sort().each( function ( d, j ) {
+                  select.append( '<option value="'+d+'">'+d+'</option>' );
+              } );
+          } );
+        hideSearchInputs(api.columns().responsiveHidden().toArray());
+      }
+  } );
+
+  table.on( 'responsive-resize', function ( e, datatable, columns ) {
+      hideSearchInputs( columns );
+ 
+  } );
+
+});
+
+
+
 </script>
 
 
