@@ -33,7 +33,7 @@ require_once(__DIR__ . '/../../private/shared/tools.functions.php');
 
     <div class="d-flex flex-column" id="content-wrapper">
         <div id="content">
-            <?php require_once 'parts/navbar.html' ?>
+            <?php require_once 'parts/navbar.php' ?>
             <div class="container-fluid">
                 <div class="d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">Entreprises</h3>
@@ -71,7 +71,7 @@ require_once(__DIR__ . '/../../private/shared/tools.functions.php');
                                             <td><?php echo $value['id']; ?></td>
                                             <td>
                                                 <?php if (!empty($value['logo'])) { ?>
-                                                    <img src="/entreprises/logo?id=<?php echo $value['id'] ?>"
+                                                    <img src="/uploads?logo_id=<?php echo $value['id'] ?>"
                                                          width="50px" height="50px"/>
                                                 <?php } else { ?>
                                                     <span class="badge bg-secondary text-uppercase font-monospace fw-light"

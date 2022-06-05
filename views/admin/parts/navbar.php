@@ -46,8 +46,13 @@
                                 <?php echo $curr_user['type']; ?>
                             </small>
                         </span>
-                        <img class="border rounded-circle img-profile"
-                             src="/assets/img/avatars/avatar1.jpeg">
+                        <img class="border img-profile img-profile rounded-circle img-fluid"
+                             src="<?php
+                             if (!empty($curr_user['cv']))
+                                 echo "/uploads?profile_id={$curr_user['id']}";
+                             else
+                                 echo "/assets/img/avatars/default_profile.png";
+                             ?>">
                     </a>
                     <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
                         <a class="dropdown-item" href="/profile">
