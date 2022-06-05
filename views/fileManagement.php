@@ -18,7 +18,7 @@ function showDoc(string $filepath): void
 if (isset($_GET['logo_id'])) {
     require_once(__DIR__ . '/../private/shared/DBConnection.php');
     $pdo = getDBConnection();
-    $id = $_GET['id'];
+    $id = $_GET['logo_id'];
 
     $query = "SELECT logo FROM entreprise where id = :id";
     $stmt = $pdo->prepare($query);
