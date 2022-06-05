@@ -17,7 +17,9 @@
 .pulse a:hover{ 
     animation: pulse 0.4s  ;
      animation-timing-function: linear;   
+     
 }
+ 
 
 @keyframes pulse {
   0% { transform: scale(1); }
@@ -36,7 +38,7 @@
                 <ul class="navbar-nav text-light" id="accordionSidebar">
                     <li class="nav-item  pulse" >
                         <a class="nav-link"  href="/">
-                            <i class="material-icons" style="color: rgb(125, 141, 161);">dashboard</i>
+                        <i  class="fa fa-dashboard" style="color: rgb(125, 141, 161);"></i>
                             <span style="color: rgb(115, 128, 236);">Tableau De Board</span>
                         </a>
                     </li>
@@ -63,7 +65,7 @@
 
                     <li class="nav-item pulse"  >
                         <a class="nav-link" href="/stages">
-                            <i class="material-icons" style="color: rgb(125, 141, 161);">work</i>
+                            <i  class="fas fa-suitcase" style="color: rgb(125, 141, 161);"></i>
                             <span style="color: rgb(115, 128, 236);">Stages</span>
                         </a>
                     </li>
