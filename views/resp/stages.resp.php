@@ -418,9 +418,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     })
                 }
             },
-            scrollY: 200,
-            scrollCollapse: false,
-            scroller: false,
+
 
             initComplete: function () {
                 var api = this.api();
