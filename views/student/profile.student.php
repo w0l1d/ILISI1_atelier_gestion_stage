@@ -112,16 +112,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = $e->getMessage();
         }
     } elseif (isset($_POST['cv-form'])) {
-        if (!empty($_FILES["cv"])) {
+        if (!empty($_FILES['cv'])) {
             require_once __DIR__ . '/../../private/shared/tools.functions.php';
 
-            $filename = $_FILES["cv"]["name"];
+            $filename = $_FILES['cv']['name'];
             $now = new DateTime();
 
             $cv_file = !empty($curr_user['cv']) ?
                 $curr_user['cv'] : (generateRandomString(10) . '-' . $filename);
-            $tempname = $_FILES["cv"]["tmp_name"];
-            $folder = __DIR__ . "/../../private/uploads/Docs/CVs/" . $cv_file;
+            $tempname = $_FILES['cv']['tmp_name'];
+            $folder = __DIR__ . '/../../private/uploads/Docs/CVs/' . $cv_file;
             if (!move_uploaded_file($tempname, $folder)) {
                 $error = "Failed to upload CV";
                 goto skip_process;
