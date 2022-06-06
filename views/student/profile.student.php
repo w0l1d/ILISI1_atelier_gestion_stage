@@ -78,7 +78,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $profile_img = !empty($curr_user['profile_img']) ?
                 $curr_user['profile_img'] : (generateRandomString(10) . '-' . $filename);
             $tempname = $_FILES["profile_picture"]["tmp_name"];
-            $folder = __DIR__ . "/../../private/uploads/images/profiles/" . $profile_img;
+            $folder = __DIR__ . '/../../private/uploads/images/profiles/' . $profile_img;
+
+           print_r($curr_user);
+            die($folder);
             if (!move_uploaded_file($tempname, $folder)) {
                 $error = "Failed to upload image";
                 goto skip_process;
