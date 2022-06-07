@@ -29,7 +29,6 @@ if (!empty($_GET['key'])) {
 }
 
 
-
 ?>
 
 
@@ -100,7 +99,7 @@ if (!empty($_GET['key'])) {
                                                 </h6>
                                                 <table class="table">
                                                     <tr>
-                                                        <th> CIN </th>
+                                                        <th> CIN</th>
                                                         <td><?php echo strtoupper($value['cin']); ?></td>
                                                     </tr>
                                                     <tr>
@@ -199,11 +198,6 @@ if (!empty($_GET['key'])) {
     $(function () {
         $(".sortable_list").sortable({
             connectWith: ".connectedSortable",
-            /*stop: function(event, ui) {
-                var item_sortable_list_id = $(this).attr('id');
-                console.log(ui);
-                //alert($(ui.sender).attr('id'))
-            },*/
             stop: function (event, ui) {
                 const droppedOn = this;
                 const draggedElem = ui.item[0];
@@ -218,26 +212,33 @@ if (!empty($_GET['key'])) {
                     console.log(draggedElem)
                     console.log($('#accepted_list').children().length)
                 }
-            }/*,
-            receive: function(event, ui) {
-                const droppedOn = this;
-                const cameFrom = ui.sender[0];
-                const draggedElem = ui.item[0];
-
-                console.log(droppedOn)
-                console.log(cameFrom)
-                console.log(draggedElem)
-
-                if (droppedOn.id === 'accepted_list') {
-                    if (droppedOn.children.length >= MAX_RETENUE)
-                        droppedOn.sortable('cancel');
-                }
-
-            }*/
+            }
         }).disableSelection();
 
 
     });
+
+
+
+    $.ajax({
+        type: 'POST',
+        url: 'myFormProcessor.php',
+        data: data,
+        dataType: 'json'
+    }).done(function(data) {
+        //The code below is executed asynchronously,
+        //meaning that it does not execute until the
+        //Ajax request has finished, and the response has been loaded.
+        //This code may, and probably will, load *after* any code that
+        //that is defined outside of it.
+        alert("Thanks for the submission!");
+        console.log("Response Data" + data); //Log the server response to console
+    });
+    alert("Does this alert appear first or second?");
+
+
+
+
 </script>
 
 
