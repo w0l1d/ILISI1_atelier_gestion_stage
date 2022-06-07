@@ -20,7 +20,7 @@ try {
 
 
 try {
-    $query_ent = "SELECT e.name, e.short_name,e.email,e.logo,e.domaine,e.web_site  FROM entreprise e 
+    $query_ent = "SELECT e.name, e.short_name,e.email,e.logo,e.domaine,e.web_site, e.id  FROM entreprise e 
                                    
                                      ORDER BY e.id DESC limit 3";
 
@@ -369,8 +369,15 @@ try {
                                                 ?>
                                                 <!--Element-->
                                                 <div class="row mb-3">
-                                                    <div class="icon-circle col">
-                                                        <i class="fa fa-dollar"></i>
+                                                    <div class="col text-center">
+                                                        <img class="border img-profile rounded-circle img-fluid"
+                                                             style="max-block-size: 100px"
+                                                             src="<?php
+                                                             if (!empty($rStud['profile_img']))
+                                                                 echo "/uploads?profile_id={$rStud['id']}";
+                                                             else
+                                                                 echo "/assets/img/avatars/default_profile.png";
+                                                             ?>">
                                                     </div>
                                                     <div class="col-9">
                                                         <div class="card-subtitle">
@@ -402,9 +409,10 @@ try {
                                             foreach ($recent_companies as $rComp) {
                                                 ?>
                                                 <!--Element-->
-                                                <div class="row mb-3">
-                                                    <div class="icon-circle col">
-                                                        <i class="fa fa-dollar"></i>
+                                                <div class="row mb-3 ">
+                                                    <div class="col text-center" >
+                                                        <img class="border img-fluid" style="max-block-size: 100px"
+                                                             src="/uploads?logo_id=<?php echo $rComp['id']; ?>">
                                                     </div>
                                                     <div class="col-9">
                                                         <div class="card-subtitle">
