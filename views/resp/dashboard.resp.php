@@ -1,6 +1,6 @@
 <?php
 $curr_user = $_SESSION['user'];
-
+ $zero='0';
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
@@ -18,7 +18,62 @@ try {
     $error = $e->getMessage();
 }
 
+
+try {
+    $query_ent = "SELECT e.name, e.short_name,e.email,e.logo,e.domaine,e.web_site  FROM entreprise e 
+                                   
+                                     ORDER BY e.id DESC limit 3";
+
+    $stmt_ent = $pdo->prepare($query_ent );
+   
+    $stmt_ent ->execute();
+    $recent_companies = $stmt_ent ->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (Exception $e) {
+    $error = $e->getMessage();
+}
+
 ?>
+
+
+
+<?php //stage
+
+try {
+        $query1="SELECT statue ,count(*) as number FROM stage GROUP BY statue";
+        
+        $stmt1 = $pdo->prepare($query1);
+        $stmt1 ->execute();
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
+    
+        ?>
+ <?php  //ofres
+ try {
+        $query2="SELECT statue ,count(*) as number FROM offre GROUP BY statue";
+        
+        $stmt2 = $pdo->prepare($query2);
+        $stmt2 ->execute();
+
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
+    
+        ?>      
+  <?php  //candidature
+  try {
+        $query3="SELECT status ,count(*) as number FROM candidature GROUP BY status";
+        
+        $stmt3 = $pdo->prepare($query3);
+        $stmt3 ->execute();
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
+         ?>  
+         
+ 
+                 
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -33,6 +88,103 @@ try {
     <link rel="stylesheet" href="/assets/fonts/fontawesome-all.min.css">
     <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+     
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+            ['statue','number'],
+            <?php
+               $row=$stmt1->fetchAll(PDO::FETCH_ASSOC);
+               if (!empty($row)) {
+                foreach ($row as $key => $value1) {
+                    echo "['".$value1["statue"]."',".$value1["number"]."],";
+                }}
+                ?>
+            ]);
+
+        var options = {
+            slices: {  1: {offset: 0.2},
+                   2: {offset: 0.3},
+                    3: {offset: 0.4},
+                    4: {offset: 0.5},
+          },
+         
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechartStage'));
+
+        chart.draw(data, options);
+        
+      }
+
+
+    </script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+     
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+            ['statue','number'],
+            <?php
+               $row=$stmt2->fetchAll(PDO::FETCH_ASSOC);
+               if (!empty($row)) {
+                foreach ($row as $key => $value2) {
+                    echo "['".$value2["statue"]."',".$value2["number"]."],";
+                }}
+                ?>
+            ]);
+      
+        var options = {
+            is3D:true,
+            
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechartOffre'));
+
+        chart.draw(data, options);
+      }
+
+      
+    </script>
+      <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+     
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+            ['statue','number' ],
+            <?php
+               $row=$stmt3->fetchAll(PDO::FETCH_ASSOC);
+               if (!empty($row)) {
+                foreach ($row as $key => $value3) {
+                    echo "['".$value3["status"]."',".$value3["number"]."],";
+                }}
+                ?>
+            ]);
+
+        var options = {
+            pieHole: 0.4,
+            pieSliceTextStyle: {
+            color: 'black',
+          },
+         
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechartCandidature'));
+
+        chart.draw(data, options);
+      }
+
+      
+    </script>
 </head>
 
 <body id="page-top">
@@ -40,333 +192,211 @@ try {
     <?php require_once 'parts/sidebar.php'; ?>
     <div class="d-flex flex-column" id="content-wrapper">
         <div id="content">
-            <?php require_once 'parts/navbar.php'; ?>
-
-            <div class="container-fluid">
-                <div class="d-sm-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-dark mb-0">Dashboard</h3><a class="btn btn-primary btn-sm d-none d-sm-inline-block"
-                                                                role="button" href="#"><i
-                                class="fas fa-download fa-sm text-white-50"></i>&nbsp;Generate Report</a>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 col-xl-3 mb-4">
-                        <div class="card shadow border-start-primary py-2">
-                            <div class="card-body">
-                                <div class="row align-items-center no-gutters">
-                                    <div class="col me-2">
-                                        <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>Earnings (monthly)</span>
-                                        </div>
-                                        <div class="text-dark fw-bold h5 mb-0"><span>$40,000</span></div>
-                                    </div>
-                                    <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
-                                </div>
-                            </div>
-                        </div>
+            <?php require_once 'parts/navbar.php' ?>
+                <div class="container-fluid">
+                    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                        <h3 class="text-dark mb-0">Tableau De Board</h3>
                     </div>
-                    <div class="col-md-6 col-xl-3 mb-4">
-                        <div class="card shadow border-start-success py-2">
-                            <div class="card-body">
-                                <div class="row align-items-center no-gutters">
-                                    <div class="col me-2">
-                                        <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>Earnings (annual)</span>
-                                        </div>
-                                        <div class="text-dark fw-bold h5 mb-0"><span>$215,000</span></div>
-                                    </div>
-                                    <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xl-3 mb-4">
-                        <div class="card shadow border-start-info py-2">
-                            <div class="card-body">
-                                <div class="row align-items-center no-gutters">
-                                    <div class="col me-2">
-                                        <div class="text-uppercase text-info fw-bold text-xs mb-1"><span>Tasks</span>
-                                        </div>
-                                        <div class="row g-0 align-items-center">
-                                            <div class="col-auto">
-                                                <div class="text-dark fw-bold h5 mb-0 me-3"><span>50%</span></div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="progress progress-sm">
-                                                    <div class="progress-bar bg-info" aria-valuenow="50"
-                                                         aria-valuemin="0" aria-valuemax="100" style="width: 50%;"><span
-                                                                class="visually-hidden">50%</span></div>
-                                                </div>
-                                            </div>
+                    <div class="row">
+                        <div class="col-lg-5 col-xl-4 bounce animated" style="width: 365.862px;height: 398px;margin-left: 4px;">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0" data-bss-hover-animate="swing" style="font-size: 18px;">Stages</h6>
+                                    <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                        <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                            <p class="text-center dropdown-header">plus de détails</p><a class="dropdown-item" href="/stages">&nbsp;afficher tous les stages</a> 
+                                            
                                         </div>
                                     </div>
-                                    <div class="col-auto"><i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                    </div>
                                 </div>
+                                <div class="card-body" id="piechartStage"></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-xl-3 mb-4">
-                        <div class="card shadow border-start-warning py-2">
-                            <div class="card-body">
-                                <div class="row align-items-center no-gutters">
-                                    <div class="col me-2">
-                                        <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>Pending Requests</span>
+                        <div class="col-lg-5 col-xl-4 bounce animated" style="width: 365.862px;height: 398px;margin-left: 4px;">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0" data-bss-hover-animate="swing" style="font-size: 18px;">Offres</h6>
+                                    <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                        <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                            <p class="text-center dropdown-header">plus de détails</p><a class="dropdown-item" href="/offres">&nbsp;afficher tous les Offres</a>
                                         </div>
-                                        <div class="text-dark fw-bold h5 mb-0"><span>18</span></div>
                                     </div>
-                                    <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"></i></div>
                                 </div>
+                                <div class="card-body" id="piechartOffre"></div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="text-primary m-0 fw-bold">Stage en cours</h6>
-                            </div>
-                            <div class="card-body"></div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="text-primary m-0 fw-bold">Etudiants recent</h6>
-                            </div>
-                            <div class="card-body">
-                                <!-- Todo ::   add recently added students -->
-                                <?php
-
-                                if (empty($recent_students)) {
-                                    echo "aucun etudiant";
-                                } else
-                                    foreach ($recent_students as $rStud) {
-                                        ?>
-                                        <!--Element-->
-                                        <div class="row mb-3">
-                                            <div class="icon-circle col">
-                                                <i class="fa fa-dollar"></i>
-                                            </div>
-                                            <div class="col-9">
-                                                <div class="card-subtitle">
-                                                     <?php echo "{$rStud['lname']} {$rStud['fname']}" ?>
-                                                </div>
-                                                <small class="text-muted"><?php echo "{$rStud['cne']} --- {$rStud['promotion']} " ?></small>
-
-                                            </div>
+                        <div class="col-lg-5 col-xl-4 bounce animated" style="width: 365.862px;height: 398px;margin-left: 4px;">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0" data-bss-hover-animate="swing" style="font-size: 18px;">Candidatures</h6>
+                                    <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                        <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                            <p class="text-center dropdown-header">plus de détails</p><a class="dropdown-item" href="#">&nbsp;afficher tous les candidatures</a> 
                                         </div>
-                                        <hr>
-                                        <!-- End of element-->
-                                        <?php
-                                    }
-
-                                ?>
-
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-7 col-xl-8">
-                        <div class="card shadow mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h6 class="text-primary fw-bold m-0">Earnings Overview</h6>
-                                <div class="dropdown no-arrow">
-                                    <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false"
-                                            data-bs-toggle="dropdown" type="button"><i
-                                                class="fas fa-ellipsis-v text-gray-400"></i></button>
-                                    <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
-                                        <p class="text-center dropdown-header">dropdown header:</p><a
-                                                class="dropdown-item" href="#">&nbsp;Action</a><a class="dropdown-item"
-                                                                                                  href="#">&nbsp;Another
-                                            action</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">&nbsp;Something else here</a>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-area">
-                                    <canvas data-bss-chart="{&quot;type&quot;:&quot;line&quot;,&quot;data&quot;:{&quot;labels&quot;:[&quot;Jan&quot;,&quot;Feb&quot;,&quot;Mar&quot;,&quot;Apr&quot;,&quot;May&quot;,&quot;Jun&quot;,&quot;Jul&quot;,&quot;Aug&quot;],&quot;datasets&quot;:[{&quot;label&quot;:&quot;Earnings&quot;,&quot;fill&quot;:true,&quot;data&quot;:[&quot;0&quot;,&quot;10000&quot;,&quot;5000&quot;,&quot;15000&quot;,&quot;10000&quot;,&quot;20000&quot;,&quot;15000&quot;,&quot;25000&quot;],&quot;backgroundColor&quot;:&quot;rgba(78, 115, 223, 0.05)&quot;,&quot;borderColor&quot;:&quot;rgba(78, 115, 223, 1)&quot;}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:false,&quot;labels&quot;:{&quot;fontStyle&quot;:&quot;normal&quot;}},&quot;title&quot;:{&quot;fontStyle&quot;:&quot;normal&quot;},&quot;scales&quot;:{&quot;xAxes&quot;:[{&quot;gridLines&quot;:{&quot;color&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;zeroLineColor&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;drawBorder&quot;:false,&quot;drawTicks&quot;:false,&quot;borderDash&quot;:[&quot;2&quot;],&quot;zeroLineBorderDash&quot;:[&quot;2&quot;],&quot;drawOnChartArea&quot;:false},&quot;ticks&quot;:{&quot;fontColor&quot;:&quot;#858796&quot;,&quot;fontStyle&quot;:&quot;normal&quot;,&quot;padding&quot;:20}}],&quot;yAxes&quot;:[{&quot;gridLines&quot;:{&quot;color&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;zeroLineColor&quot;:&quot;rgb(234, 236, 244)&quot;,&quot;drawBorder&quot;:false,&quot;drawTicks&quot;:false,&quot;borderDash&quot;:[&quot;2&quot;],&quot;zeroLineBorderDash&quot;:[&quot;2&quot;]},&quot;ticks&quot;:{&quot;fontColor&quot;:&quot;#858796&quot;,&quot;fontStyle&quot;:&quot;normal&quot;,&quot;padding&quot;:20}}]}}}"></canvas>
-                                </div>
+                                <div class="card-body" id="piechartCandidature"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-5 col-xl-4">
-                        <div class="card shadow mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h6 class="text-primary fw-bold m-0">Revenue Sources</h6>
-                                <div class="dropdown no-arrow">
-                                    <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false"
-                                            data-bs-toggle="dropdown" type="button"><i
-                                                class="fas fa-ellipsis-v text-gray-400"></i></button>
-                                    <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
-                                        <p class="text-center dropdown-header">dropdown header:</p><a
-                                                class="dropdown-item" href="#">&nbsp;Action</a><a class="dropdown-item"
-                                                                                                  href="#">&nbsp;Another
-                                            action</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">&nbsp;Something else here</a>
-                                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 mb-4" style="width: 330.8px;">
+                            <div class="card textwhite bg-primary text-white shadow" style="background: rgb(253,253,253);">
+                                <div class="card-header py-3">
+                                    <h6 class="text-primary fw-bold m-0" data-bss-hover-animate="shake" style="font-size: 18px;">En Chiffre</h6>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-area">
-                                    <canvas data-bss-chart="{&quot;type&quot;:&quot;doughnut&quot;,&quot;data&quot;:{&quot;labels&quot;:[&quot;Direct&quot;,&quot;Social&quot;,&quot;Referral&quot;],&quot;datasets&quot;:[{&quot;label&quot;:&quot;&quot;,&quot;backgroundColor&quot;:[&quot;#4e73df&quot;,&quot;#1cc88a&quot;,&quot;#36b9cc&quot;],&quot;borderColor&quot;:[&quot;#ffffff&quot;,&quot;#ffffff&quot;,&quot;#ffffff&quot;],&quot;data&quot;:[&quot;50&quot;,&quot;30&quot;,&quot;15&quot;]}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:false,&quot;labels&quot;:{&quot;fontStyle&quot;:&quot;normal&quot;}},&quot;title&quot;:{&quot;fontStyle&quot;:&quot;normal&quot;}}}"></canvas>
-                                </div>
-                                <div class="text-center small mt-4"><span class="me-2"><i
-                                                class="fas fa-circle text-primary"></i>&nbsp;Direct</span><span
-                                            class="me-2"><i
-                                                class="fas fa-circle text-success"></i>&nbsp;Social</span><span
-                                            class="me-2"><i class="fas fa-circle text-info"></i>&nbsp;Refferal</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6 mb-4">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="text-primary fw-bold m-0">Projects</h6>
-                            </div>
-                            <div class="card-body">
-                                <h4 class="small fw-bold">Server migration<span class="float-end">20%</span></h4>
-                                <div class="progress mb-4">
-                                    <div class="progress-bar bg-danger" aria-valuenow="20" aria-valuemin="0"
-                                         aria-valuemax="100" style="width: 20%;"><span
-                                                class="visually-hidden">20%</span></div>
-                                </div>
-                                <h4 class="small fw-bold">Sales tracking<span class="float-end">40%</span></h4>
-                                <div class="progress mb-4">
-                                    <div class="progress-bar bg-warning" aria-valuenow="40" aria-valuemin="0"
-                                         aria-valuemax="100" style="width: 40%;"><span
-                                                class="visually-hidden">40%</span></div>
-                                </div>
-                                <h4 class="small fw-bold">Customer Database<span class="float-end">60%</span></h4>
-                                <div class="progress mb-4">
-                                    <div class="progress-bar bg-primary" aria-valuenow="60" aria-valuemin="0"
-                                         aria-valuemax="100" style="width: 60%;"><span
-                                                class="visually-hidden">60%</span></div>
-                                </div>
-                                <h4 class="small fw-bold">Payout Details<span class="float-end">80%</span></h4>
-                                <div class="progress mb-4">
-                                    <div class="progress-bar bg-info" aria-valuenow="80" aria-valuemin="0"
-                                         aria-valuemax="100" style="width: 80%;"><span
-                                                class="visually-hidden">80%</span></div>
-                                </div>
-                                <h4 class="small fw-bold">Account setup<span class="float-end">Complete!</span></h4>
-                                <div class="progress mb-4">
-                                    <div class="progress-bar bg-success" aria-valuenow="100" aria-valuemin="0"
-                                         aria-valuemax="100" style="width: 100%;"><span
-                                                class="visually-hidden">100%</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="text-primary fw-bold m-0">Todo List</h6>
-                            </div>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <div class="row align-items-center no-gutters">
+                                <div class="card-body" style="background: var(--bs-body-bg);">
+                                    <div class="row align-items-center bounce animated no-gutters" style="padding-bottom: 38px;border-style: solid;border-color: #7380ec;border-top-style: none;border-right-style: none;border-bottom-style: none;border-bottom-color: rgb(115,128,236);border-left-style: none;">
                                         <div class="col me-2">
-                                            <h6 class="mb-0"><strong>Lunch meeting</strong></h6><span class="text-xs">10:30 AM</span>
+                                            <div class="text-uppercase text-success rubberBand animated fw-bold text-xs mb-1"><span style="color: rgba(157,179,130,0.79);font-size: 14.2px;font-weight: bold;font-style: italic;text-align: justify;">Entreprise</span></div>
+                                            <div class="text-dark fw-bold h5 mb-0"><span class="flash animated">
+                                                     <?php  //nbr ENTREPRISE
+                                                    try {
+                                                        $staff=$pdo->prepare("SELECT count(*) FROM entreprise"); 
+                                                        $staff->execute();
+                                                        $staffrow = $staff->fetch(PDO::FETCH_NUM);
+                                                        $staffcount = $staffrow[0];
+                                                    
+                                                    
+                                                        echo $staffcount;
+
+                                                        
+                                                    } catch (Exception $e) {
+                                                        $error = $e->getMessage();
+                                                    }
+                                                            ?>  
+                                            </span></div>
                                         </div>
-                                        <div class="col-auto">
-                                            <div class="form-check"><input class="form-check-input" type="checkbox"
-                                                                           id="formCheck-1"><label
-                                                        class="form-check-label" for="formCheck-1"></label></div>
-                                        </div>
+                                        <div class="col-auto"><i class="fas fa-university fa-2x text-gray-300" data-bss-hover-animate="swing"></i></div>
                                     </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row align-items-center no-gutters">
+                                    <div class="row align-items-center no-gutters" style="padding-bottom: 38px;border-style: solid;border-right-style: none;border-right-color: rgb(115, 128, 236);border-bottom-style: none;border-left-style: none;border-left-color: rgb(115, 128, 236);">
                                         <div class="col me-2">
-                                            <h6 class="mb-0"><strong>Lunch meeting</strong></h6><span class="text-xs">11:30 AM</span>
+                                            <div class="text-uppercase text-success rubberBand animated fw-bold text-xs mb-1"><span style="color: rgba(157,179,130,0.79);font-size: 14.2px;font-weight: bold;font-style: italic;text-align: justify;">Demande de validation</span></div>
+                                            <div class="text-dark flash animated fw-bold h5 mb-0"><span><?php  //nbr validation
+                                                    try {
+                                                        $staff=$pdo->prepare("SELECT count(*) FROM etudiant e where e.formation_id=:formation and e.IsValidated=:valide"); 
+                                                        $staff->bindParam(':formation', $curr_user['formation_id']);
+                                                        $staff->bindParam(':valide', $zero);
+                                                        $staff->execute();
+                                                        $staffrow = $staff->fetch(PDO::FETCH_NUM);
+                                                        $staffcount = $staffrow[0];
+                                                    
+                                                    
+                                                        echo $staffcount;
+
+                                                        
+                                                    } catch (Exception $e) {
+                                                        $error = $e->getMessage();
+                                                    }
+                                                            ?>  
+                                                
+                                            </span></div>
                                         </div>
-                                        <div class="col-auto">
-                                            <div class="form-check"><input class="form-check-input" type="checkbox"
-                                                                           id="formCheck-2"><label
-                                                        class="form-check-label" for="formCheck-2"></label></div>
-                                        </div>
+                                        <div class="col-auto"><i class="fas fa-user-check fa-2x text-gray-300" data-bss-hover-animate="swing"></i></div>
                                     </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row align-items-center no-gutters">
+                                    <div class="row align-items-center no-gutters" style="padding-bottom: 38px;background: var(--bs-body-bg);border-style: solid;border-color: #7380ec;border-top-style: none;border-top-color: rgb(115, 128, 236);border-right-style: none;border-bottom-style: none;border-bottom-color: rgb(115,128,236);border-left-style: none;">
                                         <div class="col me-2">
-                                            <h6 class="mb-0"><strong>Lunch meeting</strong></h6><span class="text-xs">12:30 AM</span>
+                                            <div class="text-uppercase text-success rubberBand animated fw-bold text-xs mb-1"><span style="color: rgba(157,179,130,0.79);font-size: 14.2px;font-weight: bold;font-style: italic;text-align: justify;">Etudiants</span></div>
+                                            <div class="text-dark flash animated fw-bold h5 mb-0"><span><?php  //nbr etudiants
+                                                    try {
+                                                        $staff=$pdo->prepare("SELECT count(*) FROM etudiant e where e.formation_id=:formation"); 
+                                                        $staff->bindParam(':formation', $curr_user['formation_id']);
+                                                        $staff->execute();
+                                                        $staffrow = $staff->fetch(PDO::FETCH_NUM);
+                                                        $staffcount = $staffrow[0];
+                                                    
+                                                    
+                                                        echo $staffcount;
+
+                                                        
+                                                    } catch (Exception $e) {
+                                                        $error = $e->getMessage();
+                                                    }
+                                                            ?>  </span></div>
                                         </div>
-                                        <div class="col-auto">
-                                            <div class="form-check"><input class="form-check-input" type="checkbox"
-                                                                           id="formCheck-3"><label
-                                                        class="form-check-label" for="formCheck-3"></label></div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="row">
-                            <div class="col-lg-6 mb-4">
-                                <div class="card textwhite bg-primary text-white shadow">
-                                    <div class="card-body">
-                                        <p class="m-0">Primary</p>
-                                        <p class="text-white-50 small m-0">#4e73df</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-4">
-                                <div class="card textwhite bg-success text-white shadow">
-                                    <div class="card-body">
-                                        <p class="m-0">Success</p>
-                                        <p class="text-white-50 small m-0">#1cc88a</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-4">
-                                <div class="card textwhite bg-info text-white shadow">
-                                    <div class="card-body">
-                                        <p class="m-0">Info</p>
-                                        <p class="text-white-50 small m-0">#36b9cc</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-4">
-                                <div class="card textwhite bg-warning text-white shadow">
-                                    <div class="card-body">
-                                        <p class="m-0">Warning</p>
-                                        <p class="text-white-50 small m-0">#f6c23e</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-4">
-                                <div class="card textwhite bg-danger text-white shadow">
-                                    <div class="card-body">
-                                        <p class="m-0">Danger</p>
-                                        <p class="text-white-50 small m-0">#e74a3b</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-4">
-                                <div class="card textwhite bg-secondary text-white shadow">
-                                    <div class="card-body">
-                                        <p class="m-0">Secondary</p>
-                                        <p class="text-white-50 small m-0">#858796</p>
+                                        <div class="col-auto"><i class="fas fa-user-graduate fa-2x text-gray-300" data-bss-hover-animate="swing"></i></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="col">
+                            <div class="card textwhite bg-primary text-white shadow" style="background: rgb(253,253,253);">
+                                
+                                <div class="card-body" style="background: var(--bs-body-bg);">
+                                   
+                                        <div class="card shadow mb-4">
+                                            <div class="card-header py-3">
+                                                <h6 class="text-primary m-0 fw-bold">Nouveaux Etudiants Ajoutes</h6>
+                                            </div>
+                                            <div class="card-body" style="background: rgba(133,135,150,0.29);">
+                                                <!-- Todo ::   add recently added students -->
+                                                <?php
+
+                                                if (empty($recent_students)) {
+                                                    echo "aucun etudiant";
+                                                } else
+                                                    foreach ($recent_students as $rStud) {
+                                                        ?>
+                                                        <!--Element-->
+                                                        <div class="row mb-3">
+                                                            <div class="icon-circle col">
+                                                                <i class="fa fa-dollar"></i>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <div class="card-subtitle">
+                                                                    <?php echo "{$rStud['lname']} {$rStud['fname']}" ?>
+                                                                </div>
+                                                                <small class="text-muted"><?php echo "{$rStud['cne']} --- {$rStud['promotion']} " ?></small>
+
+                                                            </div>
+                                                        </div>
+                                                             <hr>
+                                                                <?php
+                                                    }
+
+                                        ?></div>
+                                         <div class="card shadow mb-4">
+                                            <div class="card-header py-3">
+                                                <h6 class="text-primary m-0 fw-bold">Nouveaux Entreprise ajoutees</h6>
+                                            </div>
+                                            <div class="card-body" style="background: rgba(133,135,150,0.29);">
+                                                <!-- Todo ::   add recently added companies -->
+                                                <?php
+
+                                                if (empty($recent_companies)) {
+                                                    echo "aucun Entreprise";
+                                                } else
+                                                    foreach ($recent_companies as $rComp) {
+                                                        ?>
+                                                        <!--Element-->
+                                                        <div class="row mb-3">
+                                                            <div class="icon-circle col">
+                                                                <i class="fa fa-dollar"></i>
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <div class="card-subtitle">
+                                                                    <?php echo "{$rComp['name']} {$rComp['web_site']}" ?>
+                                                                </div>
+                                                                <small class="text-muted"><?php echo "{$rComp['email']} --- {$rComp['domaine']} " ?></small>
+
+                                                            </div>
+                                                        </div>
+                                                             <hr>
+                                                                <?php
+                                                    }
+
+                                        ?></div>
+                                    
+                            </div>
+                        </div>
+                    
                 </div>
             </div>
-        </div>
-        <footer class="bg-white sticky-footer">
-            <div class="container my-auto">
-                <div class="text-center my-auto copyright"><span>Copyright © Gestion de stage 2022</span></div>
-            </div>
-        </footer>
+            <footer class="bg-white sticky-footer">
+                 <div class="container my-auto">
+                      <div class="text-center my-auto copyright"><span>Copyright © Gestion de stage 2022</span></div>
+                 </div>
+            </footer>
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
 </div>

@@ -11,9 +11,12 @@
     background: rgb(132,139,200,0.18);
     border-radius: 0.4rem;
   }
- 
+/*******grow***** */
+.pulse { transition: all .2s ease-in-out; }
+.pulse:hover { transform: scale(1.15); 
+                margin-left:3px;} 
 /***** Pulse *****/
-
+/*
 .pulse a:hover{ 
     animation: pulse 0.4s  ;
      animation-timing-function: linear;   
@@ -26,7 +29,7 @@
   50% { transform: scale(1.1);
   100% { transform: scale(1); }
   }
-}
+}*/
 </style>
 
 <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: rgb(249, 249, 249);">
