@@ -39,7 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $error = (empty($_POST['email']) ? 'email' : 'Telephone') . 'est obligatoire';
         }
-    } elseif (isset($_POST['password-form'])) {
+    }
+    elseif (isset($_POST['password-form'])) {
         if (!empty($_POST['old-pwd']) &&
             !empty($_POST['new-pwd']) &&
             !empty($_POST['rnew-pwd'])) {
@@ -68,7 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else
             $error = "veuillez renseigner tous les champs";
 
-    } elseif (isset($_POST['profile-img-form'])) {
+    }
+    elseif (isset($_POST['profile-img-form'])) {
         if (!empty($_FILES["profile_picture"])) {
             require_once __DIR__ . '/../../private/shared/tools.functions.php';
 
@@ -78,10 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $profile_img = !empty($curr_user['profile_img']) ?
                 $curr_user['profile_img'] : (generateRandomString(10) . '-' . $filename);
             $tempname = $_FILES["profile_picture"]["tmp_name"];
-            $folder = __DIR__ . '/../../private/uploads/images/profiles/' . $profile_img;
-
-           print_r($curr_user);
-            die($folder);
+            $folder = __DIR__ . "/../../private/uploads/images/profiles/" . $profile_img;
             if (!move_uploaded_file($tempname, $folder)) {
                 $error = "Failed to upload image";
                 goto skip_process;
@@ -114,7 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->rollback();
             $error = $e->getMessage();
         }
-    } elseif (isset($_POST['cv-form'])) {
+    }
+    elseif (isset($_POST['cv-form'])) {
         if (!empty($_FILES['cv'])) {
             require_once __DIR__ . '/../../private/shared/tools.functions.php';
 
@@ -222,7 +222,7 @@ skip_process:
                                 ?>
                                 <div class="alert alert-danger" role="alert">
                     <span>
-                        <strong>Erreur : </strong>
+                        <strong>Erreur : </strong>
                         <?php echo $error; ?>
                     </span>
                                 </div>
@@ -253,7 +253,7 @@ skip_process:
                             ?>
                             <div class="alert alert-danger" role="alert">
                     <span>
-                        <strong>Erreur : </strong>
+                        <strong>Erreur : </strong>
                         <?php echo $error; ?>
                     </span>
                             </div>
@@ -297,7 +297,7 @@ skip_process:
                             ?>
                             <div class="alert alert-danger" role="alert">
                     <span>
-                        <strong>Erreur : </strong>
+                        <strong>Erreur : </strong>
                         <?php echo $error; ?>
                     </span>
                             </div>
@@ -440,7 +440,7 @@ skip_process:
 <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
 <script src="/assets/js/bs-init.js"></script>
 <script src="/assets/js/theme.js"></script>
-<script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
+<script src="/assets/pdf viewer/pdf.min.js"></script>
 <script>
     // If absolute URL from the remote server is provided, configure the CORS
     // header on that server.
@@ -450,7 +450,7 @@ skip_process:
     var pdfjsLib = window['pdfjs-dist/build/pdf'];
 
     // The workerSrc property shall be specified.
-    pdfjsLib.GlobalWorkerOptions.workerSrc = '/assets/pdf viewer/pdf.worker.js';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/assets/pdf viewer/pdf.worker.min.js';
 
     // Asynchronous download of PDF
     var loadingTask = pdfjsLib.getDocument(url);
