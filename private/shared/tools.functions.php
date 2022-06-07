@@ -17,7 +17,7 @@ class Combine
         if(substr($base, -1)!=DIRECTORY_SEPARATOR) $base.=DIRECTORY_SEPARATOR;
         if($com) $base.=$com;
         $base = preg_replace('/(\/+|\\\\+)/', DIRECTORY_SEPARATOR, $base);
-        while(preg_match('/(\/[\w\s_-]+\/\.\.)/', $base)){
+        while(preg_match('/(\/[\w\s_-]+\/\.\.)/', $base)) {
             $base = preg_replace('/(\/[\w\s_-]+\/\.\.)/', "", $base);
             if(preg_match('/\/\.\.\//', $base))
                 throw new \Exception("Error directory don't have parent folder!", 1);

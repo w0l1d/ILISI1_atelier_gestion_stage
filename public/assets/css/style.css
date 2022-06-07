@@ -620,4 +620,10 @@ main .recent-event a{
     }
 
 }
+
+
+
+.sortable_list {
+    min-height: 2rem;
+}
 /**/
