@@ -39,9 +39,11 @@ try {
 <?php //stage
 
 try {
-    $query1 = "SELECT statue ,count(*) as number FROM stage GROUP BY statue";
+    $query1 = "SELECT statue ,count(*) as number FROM stage s ,etudiant e
+                WHERE s.stagiaire_id  = e.id AND e.formation_id =:id_formation  GROUP BY statue";
 
     $stmt1 = $pdo->prepare($query1);
+    $stmt1->bindParam(':id_formation',$curr_user['formation_id']);
     $stmt1->execute();
 } catch (Exception $e) {
     $error = $e->getMessage();
@@ -50,9 +52,11 @@ try {
 ?>
 <?php //ofres
 try {
-    $query2 = "SELECT statue ,count(*) as number FROM offre GROUP BY statue";
+    $query2 = "SELECT statue ,count(*) as number FROM offre o
+                WHERE o.formation_id= :id_formation GROUP BY statue";
 
     $stmt2 = $pdo->prepare($query2);
+    $stmt2->bindParam(':id_formation',$curr_user['formation_id']);
     $stmt2->execute();
 
 } catch (Exception $e) {
@@ -62,9 +66,11 @@ try {
 ?>
 <?php //candidature
 try {
-    $query3 = "SELECT status ,count(*) as number FROM candidature GROUP BY status";
+    $query3 = "SELECT status ,count(*) as number FROM candidature c ,etudiant e
+    WHERE c.etudiant_id  = e.id AND e.formation_id =:id_formation GROUP BY status";
 
     $stmt3 = $pdo->prepare($query3);
+    $stmt3->bindParam(':id_formation',$curr_user['formation_id']);
     $stmt3->execute();
 } catch (Exception $e) {
     $error = $e->getMessage();
@@ -400,7 +406,7 @@ try {
 
                                 <div class="card shadow mb-4">
                                     <div class="card-header py-3">
-                                        <h6 class="text-primary m-0 fw-bold">Nouveaux Entreprise ajoutees</h6>
+                                        <h6 class="text-primary m-0 fw-bold">Nouvelles Entreprises ajoutées</h6>
                                     </div>
                                     <div class="card-body" style="background: rgba(133,135,150,0.29);">
                                         <!-- Todo ::   add recently added companies -->
