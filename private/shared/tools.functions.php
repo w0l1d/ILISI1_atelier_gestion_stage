@@ -10,6 +10,10 @@ function generateRandomString($length = 10): string
     return $randomString;
 }
 
+function pathToLogo(string $logo):string {
+    return __DIR__ . "/../../private/uploads/images/logo/" . $logo;
+}
+
 class Combine
 {
     public static function path($base, $com = null, $isReal = false)

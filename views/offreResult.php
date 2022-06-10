@@ -193,9 +193,9 @@ if (!empty($_GET['key'])) {
 <script src="/assets/jquery/jquery-ui.js"></script>
 
 <script>
+    $(document).ready(function () {
+        const MAX_RETENUE = <?php echo $form['nbr_stagiaire']; ?>;
 
-    const MAX_RETENUE = <?php echo $form['nbr_stagiaire']; ?>;
-    $(function () {
         $(".sortable_list").sortable({
             connectWith: ".connectedSortable",
             stop: function (event, ui) {
@@ -215,30 +215,25 @@ if (!empty($_GET['key'])) {
             }
         }).disableSelection();
 
+        $('')
+
+        $.ajax({
+            type: 'POST',
+            url: '/offres/resultat',
+            data: data,
+            dataType: 'json'
+        }).done(function (data) {
+            //The code below is executed asynchronously,
+            //meaning that it does not execute until the
+            //Ajax request has finished, and the response has been loaded.
+            //This code may, and probably will, load *after* any code that
+            //that is defined outside of it.
+            alert("Thanks for the submission!");
+            console.log("Response Data" + data); //Log the server response to console
+        });
+        alert("Does this alert appear first or second?");
 
     });
-
-
-
-    $.ajax({
-        type: 'POST',
-        url: 'myFormProcessor.php',
-        data: data,
-        dataType: 'json'
-    }).done(function(data) {
-        //The code below is executed asynchronously,
-        //meaning that it does not execute until the
-        //Ajax request has finished, and the response has been loaded.
-        //This code may, and probably will, load *after* any code that
-        //that is defined outside of it.
-        alert("Thanks for the submission!");
-        console.log("Response Data" + data); //Log the server response to console
-    });
-    alert("Does this alert appear first or second?");
-
-
-
-
 </script>
 
 
