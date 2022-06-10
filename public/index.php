@@ -22,6 +22,9 @@ switch ($request) {
     case '/offres/resultat':
         require_once __DIR__ . '/../views/offreResult.php';
         die();
+    case '/testMail':
+        require_once __DIR__ . '/../views/Mailing.php';
+        die();
 
 }
 
@@ -127,9 +130,6 @@ switch ($request) {
 
     case '/entreprises/view' :
         require __DIR__ . '/../views/resp/detailEntreprise.resp.php';
-        break;
-    case '/test-mail' :
-        require __DIR__ . '/../views/testmail.php';
         break;
 
  

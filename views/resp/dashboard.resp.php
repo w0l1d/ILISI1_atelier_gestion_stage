@@ -1,6 +1,5 @@
 <?php
 $curr_user = $_SESSION['user'];
-$zero = '0';
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
@@ -297,11 +296,14 @@ try {
                                         <div class="text-uppercase text-success rubberBand animated fw-bold text-xs mb-1">
                                             <span style="color: rgba(157,179,130,0.79);font-size: 14.2px;font-weight: bold;font-style: italic;text-align: justify;">Demande de validation</span>
                                         </div>
-                                        <div class="text-dark flash animated fw-bold h5 mb-0"><span><?php //nbr validation
+                                        <div class="text-dark flash animated fw-bold h5 mb-0">
+                                            <span>
+                                                <?php //nbr validation
                                                 try {
-                                                    $staff = $pdo->prepare("SELECT count(*) FROM etudiant e where e.formation_id=:formation and e.IsValidated=:valide");
+                                                    $staff = $pdo->prepare("SELECT count(*) FROM etudiant e 
+                                                                                    WHERE e.formation_id=:formation 
+                                                                                      AND e.IsValidated IS FALSE");
                                                     $staff->bindParam(':formation', $curr_user['formation_id']);
-                                                    $staff->bindParam(':valide', $zero);
                                                     $staff->execute();
                                                     $staffrow = $staff->fetch(PDO::FETCH_NUM);
                                                     $staffcount = $staffrow[0];
@@ -315,7 +317,8 @@ try {
                                                 }
                                                 ?>
 
-                                            </span></div>
+                                            </span>
+                                        </div>
                                     </div>
                                     <div class="col-auto"><i class="fas fa-user-check fa-2x text-gray-300"
                                                              data-bss-hover-animate="swing"></i></div>
@@ -410,7 +413,7 @@ try {
                                                 ?>
                                                 <!--Element-->
                                                 <div class="row mb-3 ">
-                                                    <div class="col text-center" >
+                                                    <div class="col text-center">
                                                         <img class="border img-fluid" style="max-block-size: 100px"
                                                              src="/uploads?logo_id=<?php echo $rComp['id']; ?>">
                                                     </div>
