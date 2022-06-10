@@ -1,5 +1,7 @@
 <?php
 
+ 
+
 /// logout user
 if (isset($_GET['logout'])) {
     unset($_SESSION['user']);
@@ -84,13 +86,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="/assets/fonts/fontawesome-all.min.css">
     <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/fonts/fontawesome5-overrides.min.css">
+    <style>
+        body {
+            overflow:hidden;}
+        </style>
+ 
 </head>
 
-<body class="bg-gradient-primary">
+<body  >
+
+<?php
+    require_once __DIR__ . '/background.php'
+    ?>
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-9 col-lg-12 col-xl-10">
-            <div class="card shadow-lg o-hidden border-0 my-5">
+ 
+
+    <div class="row justify-content-center" >
+        <div class="col-md-9 col-lg-12 col-xl-10"  >
+            <div class="card shadow-lg o-hidden border-0 my-5" id="main">
                 <div class="card-body p-0">
                     <div class="row">
                         <div class="col-lg-6 d-none d-lg-flex">
@@ -127,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     Me</label></div>
                                         </div>
                                     </div>
-                                    <button class="btn btn-primary d-block btn-user w-100" type="submit">Login</button>
+                                    <button class="btn btn-primary  d-block btn-user w-100"  type="submit">Login</button>
                                     <hr>
                                     <hr>
                                 </form>
