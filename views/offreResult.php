@@ -17,6 +17,11 @@ if (!empty($_GET['key'])) {
             require_once(__DIR__ . '/404.php');
             die();
         }
+        if (!empty($form['submited_at'])) {
+            $error = "la resultat du Formulaire `$key` est deja sauvegarde";
+            require_once(__DIR__ . '/404.php');
+            die();
+        }
     } catch (Exception $e) {
         header('Location: /offres');
     }
@@ -28,6 +33,95 @@ if (!empty($_GET['key'])) {
     die();
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $response = array();
+
+    $retenu = json_decode($_POST['retenu']);
+    $non_retenu = json_decode($_POST['non-retenu']);
+    $waiting = json_decode($_POST['waiting']);
+
+    if (count($retenu) > $form['nbr_stagiaire']) {
+        $response['error'] = "Nombre de stagiaires doit etre inferieure ou egal au nombre demande " . $form['nbr_stagiaire'];
+        goto respond_lbl;
+    }
+
+
+    try {
+        $pdo->beginTransaction();
+
+        $query = "UPDATE offreresults set submited_at = NOW() where `key` = :rst_key";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':rst_key', $key);
+        $stmt->execute();
+
+        $nbr_retenu = count($retenu);
+
+        if ($nbr_retenu > 0) {
+
+            $results = in_params($nbr_retenu);
+            $in = join(", ", $results);
+
+            $query = "UPDATE candidature SET status = 'ACCEPTED'
+                   WHERE offre_id = :offre_id AND status NOT LIKE 'CANCELED' AND etudiant_id in ($in)";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':offre_id', $form['offre_id']);
+            for ($i = 0; $i < $nbr_retenu; $i++)
+                $stmt->bindParam(':stud' . $i, $retenu[$i]);
+
+            $stmt->execute();
+        }
+
+        $nbr_non_retenu = count($non_retenu);
+
+        if ($nbr_non_retenu > 0) {
+
+            $results = in_params($nbr_non_retenu);
+            $in = join(", ", $results);
+
+            $query = "UPDATE candidature SET status = 'NACCEPTED'
+                   WHERE offre_id = :offre_id AND status NOT LIKE 'CANCELED' AND etudiant_id in ($in)";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':offre_id', $form['offre_id']);
+            for ($i = 0; $i < $nbr_non_retenu; $i++)
+                $stmt->bindParam(':stud' . $i, $non_retenu[$i]);
+
+            $stmt->execute();
+        }
+
+        $nbr_waiting = count($waiting);
+
+        if ($nbr_waiting > 0) {
+
+            for ($i = 1; $i <= $nbr_waiting; $i++) {
+                $query = "UPDATE candidature SET status = 'WAITING', position = :etud_pos
+                   WHERE offre_id = :offre_id AND status NOT LIKE 'CANCELED' AND etudiant_id = :etud_id";
+                $stmt = $pdo->prepare($query);
+                $stmt->bindParam(':offre_id', $form['offre_id']);
+                $stmt->bindParam(':etud_pos', $i);
+                $stmt->bindParam(':etud_id', $waiting[$i-1]);
+                $stmt->execute();
+            }
+        }
+        $pdo->commit();
+    } catch (Exception $e) {
+        $pdo->rollback();
+        $response['error'] = $e->getMessage();
+        goto respond_lbl;
+    }
+
+
+    respond_lbl:
+    echo json_encode($response);
+    exit();
+}
+
+function in_params($c)
+{
+    $result = array();
+    for ($i = 0; $i < $c; $i++)
+        array_push($result, ':stud' . $i);
+    return $result;
+}
 
 ?>
 
@@ -84,7 +178,7 @@ if (!empty($_GET['key'])) {
                             if (!empty($rows)) {
                                 foreach ($rows as $key => $value) {
                                     ?>
-                                    <li style="margin-bottom: 1rem;">
+                                    <li style="margin-bottom: 1rem;" id="student-<?php echo $value['id']; ?>">
                                         <div class="card d-flex flex-row" style="font-size: calc(0.4rem + 1vmin);">
                                             <div class="card-header d-flex flex-column justify-content-center">
                                                 <img class="img-thumbnail img-fluid"
@@ -179,7 +273,7 @@ if (!empty($_GET['key'])) {
                 <button class="btn btn-light" type="button"
                         data-bs-dismiss="modal">Fermer
                 </button>
-                <button class="btn btn-primary"
+                <button class="btn btn-primary" id="save-btn"
                         type="button">Sauvegarder
                 </button>
             </div>
@@ -187,8 +281,6 @@ if (!empty($_GET['key'])) {
     </div>
 </div>
 <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
-
-
 <script src="/assets/jquery/jquery-1.10.2.js"></script>
 <script src="/assets/jquery/jquery-ui.js"></script>
 
@@ -207,33 +299,48 @@ if (!empty($_GET['key'])) {
                         console.log('checked');
                         $(this).sortable('cancel');
                     }
-                    console.log(droppedOn)
-                    console.log(ui)
-                    console.log(draggedElem)
-                    console.log($('#accepted_list').children().length)
+                    // console.log(droppedOn)
+                    // console.log(ui)
+                    // console.log(draggedElem)
+                    // console.log($('#accepted_list').children().length)
                 }
             }
         }).disableSelection();
 
-        $('')
+        $('#save-btn').click(function (event) {
 
-        $.ajax({
-            type: 'POST',
-            url: '/offres/resultat',
-            data: data,
-            dataType: 'json'
-        }).done(function (data) {
-            //The code below is executed asynchronously,
-            //meaning that it does not execute until the
-            //Ajax request has finished, and the response has been loaded.
-            //This code may, and probably will, load *after* any code that
-            //that is defined outside of it.
-            alert("Thanks for the submission!");
-            console.log("Response Data" + data); //Log the server response to console
+            const waiting_list = $('ol#waiting_list li[id^="student"]').map(function () {
+                return this.id.split('-')[1];
+            }).get()
+            const retenu_list = $('ul#accepted_list li[id^="student"]').map(function () {
+                return this.id.split('-')[1];
+            }).get()
+            const non_retenu_list = $('ul#naccepted_list li[id^="student"]').map(function () {
+                return this.id.split('-')[1];
+            }).get()
+
+            if (retenu_list.length > MAX_RETENUE) {
+                alert("Nombre des stagiares retenues doit etre inferieure a " + MAX_RETENUE);
+                return;
+            }
+
+            const data = {
+                "retenu": JSON.stringify(retenu_list),
+                "non-retenu": JSON.stringify(non_retenu_list),
+                "waiting": JSON.stringify(waiting_list)
+            };
+            $.ajax({
+                type: 'POST',
+                url: window.location.href,
+                data: data,
+                dataType: 'json'
+            }).done(function (data) {
+                console.log(data);
+            });
+            alert("Does this alert appear first or second?");
         });
-        alert("Does this alert appear first or second?");
-
     });
+
 </script>
 
 
