@@ -1,4 +1,4 @@
-a<?php
+<?php
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
