@@ -390,7 +390,7 @@ try {
             $(this).bind('blur', function (e) {
                 if ($(this).attr('default-note') != $(this).val()) {
                     console.log("changed");
-                    $(this).parent()
+                    $(this).closest('')
                     $(this).data("previousValue", $(this).val());
                 }
 
