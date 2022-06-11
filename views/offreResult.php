@@ -18,7 +18,7 @@ if (!empty($_GET['key'])) {
             die();
         }
         if (!empty($form['submited_at'])) {
-            $error = "la resultat du Formulaire `$key` est deja sauvegarde";
+            $error = "la resultat de l'offre `{$form['title']}` est deja sauvegarde";
             require_once(__DIR__ . '/404.php');
             die();
         }
@@ -151,14 +151,14 @@ function in_params($c)
             <h1 class="display-4">
                 Resultat de l'Offre `<?php echo $form['id']; ?>`:
             </h1>
-            <h5>Developpeur Web<br></h5>
+            <h5>`<?php echo $form['title']; ?>`</h5>
         </div>
         <div class="w-100"></div>
         <div class="col" style="margin-bottom: 1rem;">
             <div class="card" style="height: 100%;">
                 <div class="card-header">
                     <h4>Etudiant Non Retenue</h4>
-                    <h6 class="text-muted mb-2">MAX = 3</h6>
+                    <h6 class="text-muted mb-2">Par Default</h6>
                 </div>
                 <div class="card-body">
                     <ul id="naccepted_list"
