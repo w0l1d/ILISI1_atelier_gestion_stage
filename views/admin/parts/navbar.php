@@ -48,7 +48,7 @@
                         </span>
                         <img class="border img-profile img-profile rounded-circle img-fluid"
                              src="<?php
-                             if (!empty($curr_user['cv']))
+                             if (!empty($curr_user['profile_img']))
                                  echo "/uploads?profile_id={$curr_user['id']}";
                              else
                                  echo "/assets/img/avatars/default_profile.png";
@@ -57,20 +57,14 @@
                     <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
                         <a class="dropdown-item" href="/profile">
                             <i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>
-                            &nbsp;Profile
+                            &nbsp;Profil
                         </a>
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>
-                            &nbsp;Settings
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-list fa-sm fa-fw me-2 text-gray-400"></i>
-                            &nbsp;Activity log
-                        </a>
+                        
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/login?logout">
                             <i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>
-                            &nbsp;Logout
+                            &nbsp;
+                            Se déconnecter
                         </a>
                     </div>
                 </div>

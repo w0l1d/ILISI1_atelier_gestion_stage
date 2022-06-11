@@ -57,13 +57,14 @@
                     <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
                         <a class="dropdown-item" href="/profile">
                             <i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>
-                            &nbsp;Profile
+                            &nbsp;Profil
                         </a>
                         
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/login?logout">
                             <i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>
-                            &nbsp;Logout
+                            &nbsp;
+                            Se déconnecter
                         </a>
                     </div>
                 </div>
