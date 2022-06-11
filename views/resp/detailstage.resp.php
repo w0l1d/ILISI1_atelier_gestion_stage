@@ -48,6 +48,24 @@ try {
 }
 
 ?>
+<?php
+
+try {
+    $query = "SELECT d.id, d.titre, d.type, d.name 
+                FROM document d, doc_categorie c
+                 WHERE d.stage_id = :stage_id 
+                   AND c.id = d.categorie_id AND c.student_visible is true";
+
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':stage_id', $stage_id);
+    $stmt->execute();
+    $stage_docs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (Exception $e) {
+    $error = $e->getMessage();
+}
+
+?>
 
 
 <!DOCTYPE html>
@@ -80,7 +98,6 @@ try {
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">information sur le stage n° <?php echo $stage_id ?> <br></h3>
-
                 </div>
 
                 <div class="card shadow mb-3">
@@ -263,40 +280,92 @@ try {
                         if (empty($stage_jury)) {
                             echo "Aucun Jury";
                         } else
-                        foreach ($stage_jury as $jury) {
-                        ?>
-                        <div class="row mb-3">
-                            <div class="col-auto col-3 col-sm-3 text-center">
-                                <img class="border img-profile rounded-circle img-fluid"
-                                     style="max-block-size: 100px"
-                                     src="<?php
-                                     if (!empty($jury['profile_img']))
-                                         echo "/uploads?profile_id={$jury['id']}";
-                                     else
-                                         echo "/assets/img/avatars/default_profile.png";
-                                     ?>">
-                            </div>
-                            <div class="col">
-                                <div class="card-subtitle">
-                                    <?php
-                                    $jury['lname'] = strtoupper($jury['lname']);
-                                    echo "{$jury['lname']} {$jury['fname']}"; ?>
-                                </div>
-                                <small class="text-muted"><?php echo "{$jury['email']} --- {$jury['phone']} " ?></small>
-                            </div>
-                            <div class="col-3 d-flex justify-content-center align-items-center text-lg">
-                                <span class="badge bg-info">
-                                <?php
-                                    echo (!empty( $jury['note'])) ? $jury['note'] : '-';
-                                 ?>
-                                </span>
-                            </div>
-                        </div>
+                            foreach ($stage_jury as $jury) {
+                                ?>
+                                <div class="row d-flex mb-3">
+                                    <div class="col-auto col-2 text-center">
+                                        <img class="border img-profile rounded-circle img-fluid"
+                                             style="max-block-size: 100px"
+                                             src="<?php
+                                             if (!empty($jury['profile_img']))
+                                                 echo "/uploads?profile_id={$jury['id']}";
+                                             else
+                                                 echo "/assets/img/avatars/default_profile.png";
+                                             ?>">
+                                    </div>
+                                    <div class="col">
+                                        <div class="card-subtitle">
+                                            <?php
+                                            $jury['lname'] = strtoupper($jury['lname']);
+                                            echo "{$jury['lname']} {$jury['fname']}"; ?>
+                                        </div>
+                                        <small class="text-muted">
+                                            <?php echo "{$jury['email']} --- {$jury['phone']} " ?>
+                                        </small>
+                                    </div>
+                                    <div class="col d-flex justify-content-center align-items-center flex-column text-lg">
+                                        <input class="note-jury form-control text-center form-control-sm w-auto bg-info text-white border-0"
+                                               type="number" max="20" min="0"
+                                               default-note="<?php echo $jury['note']; ?>"
+                                               size="6" minlength="1"
+                                               value="<?php echo $jury['note']; ?>">
+                                    </div>
+                                    <div class="col d-flex gap-1 justify-content-center align-items-center">
+                                        <a class="btn btn-primary btn-sm btn-circle visually-hidden"
+                                           href="/stages?update&id=<?php echo $stage_id . "&jury={$jury['id']}" ?>">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a class="btn btn-danger btn-sm btn-circle"><i class="fa fa-trash"></i></a>
+                                    </div>
 
-                        <?php } ?>
+                                </div>
+
+                            <?php } ?>
                     </div>
                 </div>
+                <div class="card shadow mb-3">
+                    <div class="card-header">
+                        <h5 class="text-dark mb-0">Document</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php
+                        if (empty($stage_docs)) {
+                            echo "Aucun Document";
+                        } else
+                            foreach ($stage_docs as $doc) {
+                                ?>
+                                <div class="row d-flex mb-3">
+                                    <div class="col-auto col-2 text-center">
+                                        <img class="border img-profile rounded-circle img-fluid"
+                                             style="max-block-size: 100px"
+                                             src="<?php
+                                             echo "/uploads?doc_id={$doc['id']}";
+                                             ?>">
+                                    </div>
+                                    <div class="col">
+                                        <div class="card-subtitle">
+                                            <?php
+                                            echo $doc['name']; ?>
+                                        </div>
+                                        <small class="text-muted">
+                                            <?php echo $doc['categorie'] ?>
+                                        </small>
+                                    </div>
+                                    <div class="col  d-flex justify-content-center align-items-center text-lg">
+                                        <a class="btn btn-sm btn-warning"
+                                           href="<?php echo "/uploads?id_doc={$doc['id']}"; ?>">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        ...
+                                    </div>
 
+                                </div>
+
+                            <?php } ?>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -311,33 +380,21 @@ try {
 
 
 <script src="/assets/js/jquery.min.js"></script>
-<script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/datatable/js/jquery.dataTables.min.js"></script>
+<script src="/assets/bootstrap/js/bootstrap.min.js"></script>
 <script src="/assets/js/bs-init.js"></script>
 <script src="/assets/js/theme.js"></script>
-<script src="/assets/datatable/js/dataTables.bootstrap5.min.js"></script>
-<script src="/assets/datatable/js/dataTables.responsive.min.js"></script>
-<script src="/assets/datatable/js/responsive.bootstrap5.min.js"></script>
 
 <script>
     $(document).ready(function () {
-        $('#myTable').DataTable({
-            responsive: {
-                details: {
-                    display: $.fn.dataTable.Responsive.display.modal({
-                        header: function (row) {
-                            let data = row.data();
-                            return 'Details for ' + data[0] + ' ' + data[1];
-                        }
-                    }),
-                    renderer: $.fn.dataTable.Responsive.renderer.tableAll({
-                        tableClass: 'table'
-                    })
+        $(".note-jury").each(function () {
+            $(this).bind('blur', function (e) {
+                if ($(this).attr('default-note') != $(this).val()) {
+                    console.log("changed");
+                    $(this).parent()
+                    $(this).data("previousValue", $(this).val());
                 }
-            },
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json"
-            }
+
+            });
         });
     });
 </script>

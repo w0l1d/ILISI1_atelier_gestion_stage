@@ -65,4 +65,21 @@ if (isset($_GET['logo_id'])) {
         showDoc($filepath);
         exit;
     }
+} elseif (isset($_GET['id_doc'])) {
+
+    require_once(__DIR__ . '/../private/shared/DBConnection.php');
+    $pdo = getDBConnection();
+    $id = $_GET['id_doc'];
+
+    $query = "SELECT path FROM document where id = :id";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':id', $id);
+
+    if ($stmt->execute()) {
+        $file = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $filepath = __DIR__ . '/../private/uploads/Docs/' . $file['path'];
+        showDoc($filepath);
+        exit;
+    }
 }
