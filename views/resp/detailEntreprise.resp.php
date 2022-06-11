@@ -85,7 +85,7 @@ try {
                                    Logo
                                 </td>
                                 <td class="text-center text-uppercase"> <?php if (!empty($entreprise['logo'])) { ?>
-                                                    <img src="/entreprises/logo?id=<?php echo $entreprise['id'] ?>"
+                                                    <img src="/uploads?logo_id=<?php echo $entreprise['id'] ?>"
                                                          width="50px" height="50px"/>
                                                 <?php } else { ?>
                                                     <span class="badge bg-secondary text-uppercase font-monospace fw-light"

@@ -6,8 +6,8 @@ $curr_user = $_SESSION['user'];
 if (empty($_GET['id'])) {
     header('Location: /stages');
 }
- $stage_id = $_GET['id'];
- 
+$stage_id = $_GET['id'];
+
 
 try {
     $query = "SELECT   e.*,s.* , pe.* ,ps.*,e.id as entreprise_id , s.id as staage_id  ,
@@ -15,7 +15,7 @@ try {
                 ps.fname as etu_fname,ps.lname as etu_lname, pe.fname as ens_fname,pe.lname as ens_lname
                 FROM  entreprise e,stage s,person ps,person pe
                 WHERE s.id =:stage_id and s.stagiaire_id=ps.id and e.id=s.entreprise_id and pe.id=s.encadrant_id
-                " ;
+                ";
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':stage_id', $stage_id);
     $stmt->execute();
@@ -29,6 +29,26 @@ try {
 //  header('Location: /stages');
 }
 ?>
+
+
+<?php
+
+try {
+    $query = "SELECT p.id, email, fname, lname, phone, profile_img, j.note 
+                FROM person p, note_jury j WHERE j.stage_id = :stage_id 
+                                             AND j.jury_id = p.id";
+
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':stage_id', $stage_id);
+    $stmt->execute();
+    $stage_jury = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (Exception $e) {
+    $error = $e->getMessage();
+}
+
+?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -51,11 +71,11 @@ try {
 <body id="page-top">
 <div id="wrapper">
     <?php
-    require_once 'parts/sidebar.php'
+    require_once __DIR__ . '/parts/sidebar.php'
     ?>
     <div class="d-flex flex-column" id="content-wrapper" style="font-size: calc(0.5em + 1vmin);">
         <div id="content">
-            <?php require_once 'parts/navbar.html' ?>
+            <?php require_once __DIR__ . '/parts/navbar.php' ?>
 
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
@@ -63,10 +83,10 @@ try {
 
                 </div>
 
-                <div class="card shadow">
-                     <div class="card-header">
-                     <h5 class="text-dark mb-0">stage  <br></h5>
-                     </div>
+                <div class="card shadow mb-3">
+                    <div class="card-header">
+                        <h5 class="text-dark mb-0">stage <br></h5>
+                    </div>
                     <div class="card-body">
                         <table class="table" style="font-size: calc(0.5em + 1vmin);">
                             <tbody style="width: 913.6px;">
@@ -84,34 +104,34 @@ try {
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                stagiaire
+                                    stagiaire
                                 </td>
-                                <td class="text-center"><?php echo $stage['stagiaire_id'].":".$stage['etu_fname']. $stage['etu_lname']; ?></td>
+                                <td class="text-center"><?php echo $stage['stagiaire_id'] . ":" . $stage['etu_fname'] . $stage['etu_lname']; ?></td>
                             </tr>
-                           
-                            
+
+
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
                                     Entreprise
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $stage['entreprise_id'].":".$stage['short_name']; ?></td>
+                                <td class="text-center text-uppercase"><?php echo $stage['entreprise_id'] . ":" . $stage['short_name']; ?></td>
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
                                     duree de stage
                                 </td>
-                                <td class="text-center text-uppercase"><?php 
-                                
+                                <td class="text-center text-uppercase"><?php
 
-                                $date1 = new DateTime($stage['start']);
-                                $date2 = new DateTime($stage['end']);
 
-                                $diff = $date2->diff($date1);
+                                    $date1 = new DateTime($stage['start']);
+                                    $date2 = new DateTime($stage['end']);
 
-                                echo  $diff->days . " days ";
+                                    $diff = $date2->diff($date1);
 
-                                
-                                 ?><br></td>
+                                    echo $diff->days . " days ";
+
+
+                                    ?><br></td>
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
@@ -127,106 +147,157 @@ try {
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    date de creation de le stage 
+                                    date de creation de le stage
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $stage['stage_created_date']; ?><br></td>
+                                <td class="text-center text-uppercase"><?php echo $stage['stage_created_date']; ?><br>
+                                </td>
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                   Encadrant 
+                                    Encadrant
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $stage['encadrant_id'].":".$stage['ens_fname']. $stage['ens_lname']; ?><br></td>
+                                <td class="text-center text-uppercase"><?php echo $stage['encadrant_id'] . ":" . $stage['ens_fname'] . $stage['ens_lname']; ?>
+                                    <br></td>
                             </tr>
-                            <?php if( $stage['statue'] === "FINISHED") {?>
+                            <?php if ($stage['statue'] === "FINISHED") { ?>
                                 <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    Note de l'Encadrant
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $stage['encardant_note']; ?><br></td>
-                            </tr>       
+                                    <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
+                                        Note de l'Encadrant
+                                    </td>
+                                    <td class="text-center text-uppercase"><?php echo $stage['encardant_note']; ?><br>
+                                    </td>
+                                </tr>
+                                <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
+                                    <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
+                                        Note de l'Encadrant Exterieur
+                                    </td>
+                                    <td class="text-center text-uppercase"><?php echo $stage['encadrant_ext_note']; ?>
+                                        <br></td>
+                                </tr>
+                            <?php } ?>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    Note de l'Encadrant Exterieur
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $stage['encadrant_ext_note']; ?><br></td>
-                            </tr>
-                           <?php }?>
-                           <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                   Description
+                                    Description
                                 </td>
                                 <td class="text-center text-uppercase"><?php echo $stage['description']; ?><br></td>
                             </tr>
 
-                            <?php if(!empty( $stage['candidature_id'])){?>
+                            <?php if (!empty($stage['candidature_id'])) { ?>
                                 <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    numero de candidature
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $stage['candidature_id']; ?><br></td>
-                            </tr>
-                            <?php  try {  $query = "SELECT c.*,o.*,o.id as offre_id, c.id as candidature_id ,
+                                    <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
+                                        numero de candidature
+                                    </td>
+                                    <td class="text-center text-uppercase"><?php echo $stage['candidature_id']; ?><br>
+                                    </td>
+                                </tr>
+                                <?php try {
+                                    $query = "SELECT c.*,o.*,o.id as offre_id, c.id as candidature_id ,
                                             c.created_date as cand_created_date, o.created_date as offre_created_date,
                                             c.status as cand_statue, o.statue as off_statue
                                             FROM offre o, candidature c  where  c.id=:candidature AND o.id=c.offre_id";
-                                 $stmt = $pdo->prepare($query);
-                                 $stmt->bindParam(':candidature', $stage['candidature_id']);
-                                  $stmt->execute();
-                                  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                  if (!empty($rows)) {
-                                      foreach ($rows as $key => $value) {
-                                          ?>
-                           
-                              <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    numero d'offre
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $value['offre_id']; ?><br></td>
-                            </tr>
-                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    date de creation de l'offre
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $value['offre_created_date']; ?><br></td>
-                            </tr>
-                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    date de creation de candidature
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $value['cand_created_date']; ?><br></td>
-                            </tr>
-                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    statue de candidature
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $value['cand_statue']; ?><br></td>
-                            </tr>
-                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    statue de l'offre
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $value['off_statue']; ?><br></td>
-                            </tr>
-                               
-                                <?php
-                                    }
-                                } else
-                                    echo "Nothing found";
-                            } catch (Exception $e) {
-                                echo 'Erreur : ' . $e->getMessage();
+                                    $stmt = $pdo->prepare($query);
+                                    $stmt->bindParam(':candidature', $stage['candidature_id']);
+                                    $stmt->execute();
+                                    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                    if (!empty($rows)) {
+                                        foreach ($rows as $key => $value) {
+                                            ?>
+
+                                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
+                                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
+                                                    numero d'offre
+                                                </td>
+                                                <td class="text-center text-uppercase"><?php echo $value['offre_id']; ?>
+                                                    <br></td>
+                                            </tr>
+                                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
+                                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
+                                                    date de creation de l'offre
+                                                </td>
+                                                <td class="text-center text-uppercase"><?php echo $value['offre_created_date']; ?>
+                                                    <br></td>
+                                            </tr>
+                                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
+                                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
+                                                    date de creation de candidature
+                                                </td>
+                                                <td class="text-center text-uppercase"><?php echo $value['cand_created_date']; ?>
+                                                    <br></td>
+                                            </tr>
+                                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
+                                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
+                                                    statue de candidature
+                                                </td>
+                                                <td class="text-center text-uppercase"><?php echo $value['cand_statue']; ?>
+                                                    <br></td>
+                                            </tr>
+                                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
+                                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
+                                                    statue de l'offre
+                                                </td>
+                                                <td class="text-center text-uppercase"><?php echo $value['off_statue']; ?>
+                                                    <br></td>
+                                            </tr>
+
+                                            <?php
+                                        }
+                                    } else
+                                        echo "Nothing found";
+                                } catch (Exception $e) {
+                                    echo 'Erreur : ' . $e->getMessage();
+                                }
                             }
-                        }
                             ?>
-                           
-                            
-                            
+
+
                             </tbody>
                         </table>
                     </div>
                 </div>
+                <div class="card shadow mb-3">
+                    <div class="card-header">
+                        <h5 class="text-dark mb-0">Jury</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php
+                        if (empty($stage_jury)) {
+                            echo "Aucun Jury";
+                        } else
+                        foreach ($stage_jury as $jury) {
+                        ?>
+                        <div class="row mb-3">
+                            <div class="col-auto col-3 col-sm-3 text-center">
+                                <img class="border img-profile rounded-circle img-fluid"
+                                     style="max-block-size: 100px"
+                                     src="<?php
+                                     if (!empty($jury['profile_img']))
+                                         echo "/uploads?profile_id={$jury['id']}";
+                                     else
+                                         echo "/assets/img/avatars/default_profile.png";
+                                     ?>">
+                            </div>
+                            <div class="col">
+                                <div class="card-subtitle">
+                                    <?php
+                                    $jury['lname'] = strtoupper($jury['lname']);
+                                    echo "{$jury['lname']} {$jury['fname']}"; ?>
+                                </div>
+                                <small class="text-muted"><?php echo "{$jury['email']} --- {$jury['phone']} " ?></small>
+                            </div>
+                            <div class="col-3 d-flex justify-content-center align-items-center text-lg">
+                                <span class="badge bg-info">
+                                <?php
+                                    echo (!empty( $jury['note'])) ? $jury['note'] : '-';
+                                 ?>
+                                </span>
+                            </div>
+                        </div>
+
+                        <?php } ?>
+                    </div>
+                </div>
 
 
-                
             </div>
         </div>
         <footer class="bg-white sticky-footer">

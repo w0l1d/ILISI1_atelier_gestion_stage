@@ -50,7 +50,7 @@ try {
 }
 
 ?>
-<?php //ofres
+<?php //offres
 try {
     $query2 = "SELECT statue ,count(*) as number FROM offre o
                 WHERE o.formation_id= :id_formation GROUP BY statue";
