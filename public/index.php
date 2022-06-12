@@ -161,6 +161,9 @@ switch ($request) {
     case '/':
         require __DIR__ . '/../views/admin/index.admin.php';
         break;
+    case '/profile' :
+        require __DIR__ . '/../views/admin/profile.admin.php';
+        break;
 
     case '/entreprises':
         require __DIR__ . '/../views/admin/entreprise.admin.php';
