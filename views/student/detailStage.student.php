@@ -9,41 +9,6 @@ if (empty($_GET['id'])) {
 }
 $stage_id = $_GET['id'];
 
-if (isset($_GET['update_jury']) && !empty($_GET['jury'])) {
-    $jury_id = $_GET['jury'];
-    $note = $_GET['note'] ?? '';
-    $query = 'UPDATE note_jury SET note = :note where jury_id = :jury AND stage_id = :stage_id';
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':note', $note);
-    $stmt->bindParam(':jury', $jury_id);
-    $stmt->bindParam(':stage_id', $stage_id);
-    $stmt->execute();
-    header("Location: /stages/view?id=$stage_id");
-    exit();
-}
-if (isset($_GET['delete_jury']) && !empty($_GET['jury'])) {
-    $jury_id = $_GET['jury'];
-    $query = 'DELETE FROM note_jury where jury_id = :jury AND stage_id = :stage_id';
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':jury', $jury_id);
-    $stmt->bindParam(':stage_id', $stage_id);
-    $stmt->execute();
-    header("Location: /stages/view?id=$stage_id");
-    exit();
-}
-if (isset($_GET['add_jury']) && !empty($_GET['jury_id'])) {
-    $jury_id = $_GET['jury_id'];
-    $note = empty($_GET['note']) ? null : $_GET['note'];
-    $query = 'INSERT INTO note_jury (note, jury_id, stage_id) VALUES (:note, :jury, :stage_id)';
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':note', $note);
-    $stmt->bindParam(':jury', $jury_id);
-    $stmt->bindParam(':stage_id', $stage_id);
-    $stmt->execute();
-    header("Location: /stages/view?id=$stage_id");
-    exit();
-}
-
 
 try {
     $query = "SELECT   e.*,s.* , pe.* ,ps.*,e.id as entreprise_id , s.id as staage_id  ,
@@ -85,11 +50,12 @@ try {
 
 ?>
 <?php
+
 try {
     $query = "SELECT d.id, d.titre, d.type, d.name 
                 FROM document d, doc_categorie c
                  WHERE d.stage_id = :stage_id 
-                   AND c.id = d.categorie_id";
+                   AND c.id = d.categorie_id AND c.student_visible is true";
 
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':stage_id', $stage_id);
@@ -309,11 +275,6 @@ try {
                 <div class="card shadow mb-3">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="text-dark mb-0">Jury</h5>
-                        <button class="btn btn-primary" type="button" data-bs-target="#modal-jury"
-                                data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i>
-                            <span class="d-none d-sm-inline-block d-md-inline-block">Ajouter Jury</span>
-                        </button>
-                    </div>
                     <div class="card-body">
                         <?php
                         if (empty($stage_jury)) {
@@ -340,35 +301,6 @@ try {
                                                 <?php echo "{$jury['email']} --- {$jury['phone']} " ?>
                                             </small>
                                         </div>
-                                        <div class="d-flex justify-content-center align-items-center flex-column text-lg">
-
-                                            <form method="GET" id="update-jury-<?php echo $jury['id']; ?>">
-                                                <input hidden name="update_jury">
-                                                <input type="number" name="id" value="<?php echo $stage_id; ?>" hidden>
-                                                <input type="number" name="jury" value="<?php echo $jury['id']; ?>"
-                                                       hidden>
-                                                <input class="note-jury form-control text-center form-control-sm w-auto bg-info text-white border-0"
-                                                       type="number" max="20" min="0" size="6" minlength="1"
-                                                       default-note="<?php echo $jury['note']; ?>"
-                                                       name="note" step=".01"
-                                                       value="<?php echo $jury['note']; ?>">
-                                            </form>
-                                        </div>
-                                        <div class="d-flex gap-1 justify-content-center align-items-center">
-                                            <button class="btn btn-primary btn-sm btn-circle visually-hidden update-button"
-                                                    type="submit" form="update-jury-<?php echo $jury['id']; ?>">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <form method="get">
-                                                <input hidden name="delete_jury">
-                                                <input type="number" name="id" value="<?php echo $stage_id; ?>" hidden>
-                                                <input type="number" name="jury" value="<?php echo $jury['id']; ?>"
-                                                       hidden>
-                                                <button type="submit" class="btn btn-danger btn-sm btn-circle">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -379,10 +311,6 @@ try {
                 <div class="card shadow mb-3">
                     <div class="card-header">
                         <h5 class="text-dark mb-0">Document</h5>
-                        <button class="btn btn-primary" type="button" data-bs-target="#modal-doc"
-                                data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i>
-                            <span class="d-none d-sm-inline-block d-md-inline-block">Ajouter Document</span>
-                        </button>
                     </div>
                     <div class="card-body">
                         <?php
@@ -436,10 +364,10 @@ try {
 </div>
 
 
-<!--ADD JURY MODAL-->
+<!--ADD OFFRE MODAL-->
 <form class="d-flex flex-column flex-fill justify-content-around align-content-start" method="get"
       style="font-size: calc(0.5em + 1vmin);">
-    <div class="modal fade" role="dialog" tabindex="-1" id="modal-jury">
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -499,66 +427,6 @@ try {
     </div>
 </form>
 
-<!--ADD DOCUMENT MODAL-->
-<form class="d-flex flex-column flex-fill justify-content-around align-content-start" method="get"
-      style="font-size: calc(0.5em + 1vmin);">
-    <div class="modal fade" role="dialog" tabindex="-1" id="modal-jury">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Ajouter Document</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input hidden name="add_doc">
-                    <input type="number" name="id" value="<?php echo $stage_id; ?>" hidden>
-                    <div class="mb-3">
-                        <label class="form-label">Document</label>
-                        <input class="note-jury form-control text-center form-control-sm w-auto bg-info text-white border-0"
-                               type="number" max="20" min="0" size="6" minlength="1" id="new_note"
-                               name="note" step=".01">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Jury<span
-                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
-                        <select name="jury_id" class="form-select flex-grow-1" required="">
-
-                            <?php
-                            try {
-                                $req = "SELECT * FROM doc_categorie";
-
-                                $stmt = $pdo->prepare($req);
-                                $stmt->execute();
-                                $select = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                if (!empty($select)) {
-                                    foreach ($select as $key => $data) {
-                                        ?>
-                                        <option value="<?php echo $data['id']; ?>">
-                                            <?php echo "{$data['cin']}: {$data['lname']} {$data['fname']}"; ?>
-                                            <i class="fa fa-eye<?php if ($data['student_visible']) ?>-slash"></i>
-                                        </option>
-                                        <?php
-                                    }
-                                }
-                            } catch (Exception $e) {
-                                echo 'Erreur : ' . $e->getMessage();
-                            }
-                            ?>
-
-                        </select>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-light" type="button" data-bs-dismiss="modal">Fermer</button>
-                    <button class="btn btn-primary" type="submit">Ajouter</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-
 
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
@@ -567,7 +435,33 @@ try {
 
 <script>
     $(document).ready(function () {
+        $(".note-jury").each(function () {
+            $(this).bind('blur keyup', function (e) {
+                let vnote = $(this).val()
+                var rnote = new RegExp('^([012]?[0-9](\.[0-9]{1,2})?)?$');
 
+                if ((!rnote.test(vnote) || vnote < 0 || 20 < vnote))
+                    $(this).val($(this).data("previousValue") ?? $(this).attr('default-note'));
+                else {
+                    const jury = $(this).closest('div[id^="jury-"]');
+                    if ($(this).attr('default-note') != $(this).val()) {
+                        console.log("changed");
+                        $('button[type="submit"]', jury).removeClass('visually-hidden');
+                        $(this).data("previousValue", $(this).val());
+                    } else {
+                        $('button.update-button', jury).addClass('visually-hidden');
+                    }
+                }
+            });
+        });
+
+        $('#new_note').bind('blur keyup', function (e) {
+            let vnote = $(this).val()
+            var rnote = new RegExp('^([012]?[0-9](\.[0-9]{1,2})?)?$');
+
+            if ((!rnote.test(vnote) || vnote < 0 || 20 < vnote))
+                $(this).val($(this).data("previousValue"));
+        });
     });
 </script>
 

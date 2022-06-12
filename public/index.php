@@ -47,7 +47,6 @@ switch ($request) {
     case '':
     case '/dashboard':
     case '/':
- 
         require __DIR__ . '/../views/student/dashboard.student.php';
         break;
 
@@ -62,20 +61,25 @@ switch ($request) {
         require __DIR__ . '/../views/student/profile.student.php';
         break;
 
-   
-        case '/consulterstages':
-            require __DIR__ . '/../views/student/consulterstages.student.php';
-            break;
-        case '/entreprises':
-            require __DIR__ . '/../views/student/entreprise.student.php';
-            break;
-        case '/offres/view' :
-            require __DIR__ . '/../views/student/detailoffre.student.php';
-            break;
+
+    case '/stages':
+        require __DIR__ . '/../views/student/stages.student.php';
+        break;
+    case '/stages/view':
+        require __DIR__ . '/../views/student/detailStage.student.php';
+        break;
+
+
+    case '/entreprises':
+        require __DIR__ . '/../views/student/entreprise.student.php';
+        break;
+    case '/offres/view' :
+        require __DIR__ . '/../views/student/detailoffre.student.php';
+        break;
 
     default:
         http_response_code(404);
-        echo $request."<br>";
+        echo $request . "<br>";
         require __DIR__ . '/../views/404.php';
         break;
 }
@@ -115,15 +119,15 @@ switch ($request) {
     case '/etudiants/view' :
         require __DIR__ . '/../views/resp/detailetudiant.resp.php';
         break;
-    
+
     case '/stages' :
         require __DIR__ . '/../views/resp/stages.resp.php';
         break;
-    
+
     case '/stages/view' :
         require __DIR__ . '/../views/resp/detailstage.resp.php';
         break;
-    
+
     case '/stages/update' :
         require __DIR__ . '/../views/resp/updatestage.resp.php';
         break;
@@ -132,10 +136,10 @@ switch ($request) {
         require __DIR__ . '/../views/resp/detailEntreprise.resp.php';
         break;
 
- 
+
     default:
         http_response_code(404);
-        echo $request."<br>";
+        echo $request . "<br>";
         require __DIR__ . '/../views/404.php';
         break;
 }
@@ -173,7 +177,7 @@ switch ($request) {
 
     default:
         http_response_code(404);
-        echo $request."<br>";
+        echo $request . "<br>";
         require __DIR__ . '/../views/404.php';
         break;
 }
