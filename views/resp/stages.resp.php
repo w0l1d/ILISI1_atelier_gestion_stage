@@ -86,11 +86,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">Liste Des stages<br></h3>
-                    <button class="btn btn-primary d-none d-sm-block d-md-block" type="button" data-bs-target="#modal-1"
-                            data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i>&nbsp;Ajouter Stage
+
+                    <button class="btn btn-primary" type="button" data-bs-target="#modal-1"
+                            data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i>
+                    <span class="d-none d-sm-inline-block d-md-inline-block">Ajouter Stage</span>
                     </button>
-                    <button class="btn btn-primary d-block d-sm-none d-md-none" type="button" data-bs-target="#modal-1"
-                            data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i></button>
                 </div>
 
                 <?php

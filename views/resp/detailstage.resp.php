@@ -5,8 +5,44 @@ $pdo = getDBConnection();
 $curr_user = $_SESSION['user'];
 if (empty($_GET['id'])) {
     header('Location: /stages');
+    exit();
 }
 $stage_id = $_GET['id'];
+
+if (isset($_GET['update_jury']) && !empty($_GET['jury'])) {
+    $jury_id = $_GET['jury'];
+    $note = $_GET['note'] ?? '';
+    $query = 'UPDATE note_jury SET note = :note where jury_id = :jury AND stage_id = :stage_id';
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':note', $note);
+    $stmt->bindParam(':jury', $jury_id);
+    $stmt->bindParam(':stage_id', $stage_id);
+    $stmt->execute();
+    header("Location: /stages/view?id=$stage_id");
+    exit();
+}
+if (isset($_GET['delete_jury']) && !empty($_GET['jury'])) {
+    $jury_id = $_GET['jury'];
+    $query = 'DELETE FROM note_jury where jury_id = :jury AND stage_id = :stage_id';
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':jury', $jury_id);
+    $stmt->bindParam(':stage_id', $stage_id);
+    $stmt->execute();
+    header("Location: /stages/view?id=$stage_id");
+    exit();
+}
+if (isset($_GET['add_jury']) && !empty($_GET['jury_id'])) {
+    $jury_id = $_GET['jury_id'];
+    $note = empty($_GET['note']) ? null : $_GET['note'];
+    $query = 'INSERT INTO note_jury (note, jury_id, stage_id) VALUES (:note, :jury, :stage_id)';
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':note', $note);
+    $stmt->bindParam(':jury', $jury_id);
+    $stmt->bindParam(':stage_id', $stage_id);
+    $stmt->execute();
+    header("Location: /stages/view?id=$stage_id");
+    exit();
+}
 
 
 try {
@@ -272,8 +308,12 @@ try {
                     </div>
                 </div>
                 <div class="card shadow mb-3">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between">
                         <h5 class="text-dark mb-0">Jury</h5>
+                        <button class="btn btn-primary" type="button" data-bs-target="#modal-1"
+                                data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i>
+                            <span class="d-none d-sm-inline-block d-md-inline-block">Ajouter Jury</span>
+                        </button>
                     </div>
                     <div class="card-body">
                         <?php
@@ -282,44 +322,57 @@ try {
                         } else
                             foreach ($stage_jury as $jury) {
                                 ?>
-                                <div class="row d-flex mb-3">
-                                    <div class="col-auto col-2 text-center">
+                                <div id="jury-<?php echo $jury['id'] ?>"
+                                     class="d-flex mb-3 justify-content-between g-3">
+                                    <div class="text-center w-25 p-2">
                                         <img class="border img-profile rounded-circle img-fluid"
-                                             style="max-block-size: 100px"
-                                             src="<?php
-                                             if (!empty($jury['profile_img']))
-                                                 echo "/uploads?profile_id={$jury['id']}";
-                                             else
-                                                 echo "/assets/img/avatars/default_profile.png";
-                                             ?>">
+                                             style="max-block-size: 100px" src="<?php
+                                        if (!empty($jury['profile_img'])) echo "/uploads?profile_id={$jury['id']}";
+                                        else echo "/assets/img/avatars/default_profile.png";
+                                        ?>">
                                     </div>
-                                    <div class="col">
-                                        <div class="card-subtitle">
-                                            <?php
-                                            $jury['lname'] = strtoupper($jury['lname']);
-                                            echo "{$jury['lname']} {$jury['fname']}"; ?>
+                                    <div class="d-flex flex-grow-1 gap-2 gap-lg-5 flex-fill justify-content-evenly flex-wrap">
+                                        <div class="flex-fill">
+                                            <div class="card-subtitle">
+                                                <?php $jury['lname'] = strtoupper($jury['lname']);
+                                                echo "{$jury['lname']} {$jury['fname']}"; ?>
+                                            </div>
+                                            <small class="text-muted">
+                                                <?php echo "{$jury['email']} --- {$jury['phone']} " ?>
+                                            </small>
                                         </div>
-                                        <small class="text-muted">
-                                            <?php echo "{$jury['email']} --- {$jury['phone']} " ?>
-                                        </small>
-                                    </div>
-                                    <div class="col d-flex justify-content-center align-items-center flex-column text-lg">
-                                        <input class="note-jury form-control text-center form-control-sm w-auto bg-info text-white border-0"
-                                               type="number" max="20" min="0"
-                                               default-note="<?php echo $jury['note']; ?>"
-                                               size="6" minlength="1"
-                                               value="<?php echo $jury['note']; ?>">
-                                    </div>
-                                    <div class="col d-flex gap-1 justify-content-center align-items-center">
-                                        <a class="btn btn-primary btn-sm btn-circle visually-hidden"
-                                           href="/stages?update&id=<?php echo $stage_id . "&jury={$jury['id']}" ?>">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        <a class="btn btn-danger btn-sm btn-circle"><i class="fa fa-trash"></i></a>
-                                    </div>
+                                        <div class="d-flex justify-content-center align-items-center flex-column text-lg">
 
+                                            <form method="GET" id="update-jury-<?php echo $jury['id']; ?>">
+                                                <input hidden name="update_jury">
+                                                <input type="number" name="id" value="<?php echo $stage_id; ?>" hidden>
+                                                <input type="number" name="jury" value="<?php echo $jury['id']; ?>" hidden>
+                                                <input class="note-jury form-control text-center form-control-sm w-auto bg-info text-white border-0"
+                                                       type="number" max="20" min="0" size="6" minlength="1"
+                                                       default-note="<?php echo $jury['note']; ?>"
+                                                       name="note" step=".01"
+                                                       value="<?php echo $jury['note']; ?>">
+                                            </form>
+                                        </div>
+                                        <div class="d-flex gap-1 justify-content-center align-items-center">
+                                            <button class="btn btn-primary btn-sm btn-circle visually-hidden update-button"
+                                                    type="submit" form="update-jury-<?php echo $jury['id']; ?>">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <form method="get">
+                                                <input hidden name="delete_jury">
+                                                <input type="number" name="id" value="<?php echo $stage_id; ?>" hidden>
+                                                <input type="number" name="jury" value="<?php echo $jury['id']; ?>"
+                                                       hidden>
+                                                <button type="submit" class="btn btn-danger btn-sm btn-circle">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
 
+                                <hr>
                             <?php } ?>
                     </div>
                 </div>
@@ -379,6 +432,70 @@ try {
 </div>
 
 
+<!--ADD OFFRE MODAL-->
+<form class="d-flex flex-column flex-fill justify-content-around align-content-start" method="get"
+      style="font-size: calc(0.5em + 1vmin);">
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Ajouter Jury</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input hidden name="add_jury">
+                    <input type="number" name="id" value="<?php echo $stage_id; ?>" hidden>
+                    <div class="mb-3">
+                        <label class="form-label">Note</label>
+                        <input class="note-jury form-control text-center form-control-sm w-auto bg-info text-white border-0"
+                               type="number" max="20" min="0" size="6" minlength="1" id="new_note"
+                               name="note" step=".01">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Jury<span
+                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
+                        <select name="jury_id" class="form-select flex-grow-1" required="">
+
+                            <?php
+                            try {
+                                $req = "SELECT p.id,p.cin, p.lname, p.fname FROM person p,
+                                    enseignant e WHERE e.id not in (SELECT jury_id FROM note_jury 
+                                                                                   WHERE stage_id = :stage_id) 
+                                                   AND p.id=e.id ";
+
+                                $stmt = $pdo->prepare($req);
+                                $stmt->bindParam(':stage_id', $stage_id);
+                                $stmt->execute();
+                                $select = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                if (!empty($select)) {
+                                    foreach ($select as $key => $data) {
+                                        ?>
+                                        <option value="<?php echo $data['id']; ?>">
+                                            <?php echo "{$data['cin']}: {$data['lname']} {$data['fname']}"; ?>
+                                        </option>
+                                        <?php
+                                    }
+                                }
+                            } catch (Exception $e) {
+                                echo 'Erreur : ' . $e->getMessage();
+                            }
+                            ?>
+
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal">Fermer</button>
+                    <button class="btn btn-primary" type="submit">Ajouter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
 <script src="/assets/js/bs-init.js"></script>
@@ -387,14 +504,31 @@ try {
 <script>
     $(document).ready(function () {
         $(".note-jury").each(function () {
-            $(this).bind('blur', function (e) {
-                if ($(this).attr('default-note') != $(this).val()) {
-                    console.log("changed");
-                    $(this).closest('')
-                    $(this).data("previousValue", $(this).val());
-                }
+            $(this).bind('blur keyup', function (e) {
+                let vnote = $(this).val()
+                var rnote = new RegExp('^([012]?[0-9](\.[0-9]{1,2})?)?$');
 
+                if ((!rnote.test(vnote) || vnote < 0 || 20 < vnote))
+                    $(this).val($(this).data("previousValue") ?? $(this).attr('default-note'));
+                else {
+                    const jury = $(this).closest('div[id^="jury-"]');
+                    if ($(this).attr('default-note') != $(this).val()) {
+                        console.log("changed");
+                        $('button[type="submit"]', jury).removeClass('visually-hidden');
+                        $(this).data("previousValue", $(this).val());
+                    } else {
+                        $('button.update-button', jury).addClass('visually-hidden');
+                    }
+                }
             });
+        });
+
+        $('#new_note').bind('blur keyup', function (e) {
+            let vnote = $(this).val()
+            var rnote = new RegExp('^([012]?[0-9](\.[0-9]{1,2})?)?$');
+
+            if ((!rnote.test(vnote) || vnote < 0 || 20 < vnote))
+                $(this).val($(this).data("previousValue"));
         });
     });
 </script>
