@@ -32,7 +32,8 @@
 </style>
 
 <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: rgb(249, 249, 249);">
-            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+            <div class="container-fluid d-flex flex-column p-0">
+                <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="/">
                     <div class="sidebar-brand-icon rotate-n-15"><span style="color: rgb(115, 128, 236);">Stage</span></div>
                     <div class="sidebar-brand-text mx-3"><span style="color: rgb(0,0,0);">FSTM</span></div>
                 </a>
