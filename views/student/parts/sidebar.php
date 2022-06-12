@@ -66,7 +66,7 @@
                     </li>
                     
                     <li class="nav-item pulse" >
-                        <a class="nav-link"  href="/consulterstages">
+                        <a class="nav-link"  href="/stages">
                             <i class="far fa-file-archive" style="color: rgb(125, 141, 161);"></i>
                             <span style="color: rgb(115, 128, 236);">Historique de Stage</span>
                         </a>

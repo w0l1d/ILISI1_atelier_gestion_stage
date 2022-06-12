@@ -39,7 +39,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
         $adresse="http://localhost:8580/offres/resultat?key=".$key;
         $img = file_get_contents(__DIR__.'/../../public/assets/img/image-5.png');
         $imgdata = base64_encode($img);
-        $imgdata = "src='data:image/x-icon;base64,$imgdata'";
+        $imgdata = "src='data:image/*;base64,$imgdata'";
         $body="<html >
         <head>
         <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>

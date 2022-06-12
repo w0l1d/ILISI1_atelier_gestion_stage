@@ -62,17 +62,21 @@ switch ($request) {
         require __DIR__ . '/../views/student/profile.student.php';
         break;
 
-   
-        case '/consulterstages':
-            require __DIR__ . '/../views/student/consulterstages.student.php';
-            break;
-        case '/entreprises':
-            require __DIR__ . '/../views/student/entreprise.student.php';
-            break;
-        case '/offres/view' :
-            require __DIR__ . '/../views/student/detailoffre.student.php';
-            break;
-        
+
+    case '/stages':
+        require __DIR__ . '/../views/student/stages.student.php';
+        break;
+    case '/stages/view':
+        require __DIR__ . '/../views/student/detailStage.student.php';
+        break;
+
+
+    case '/entreprises':
+        require __DIR__ . '/../views/student/entreprise.student.php';
+        break;
+    case '/offres/view' :
+        require __DIR__ . '/../views/student/detailoffre.student.php';
+        break;
 
     default:
         http_response_code(404);
@@ -135,7 +139,7 @@ switch ($request) {
     case '/offres/send' :
         require __DIR__ . '/../views/resp/senddata.resp.php';
         break;
-        
+
  
     default:
         http_response_code(404);

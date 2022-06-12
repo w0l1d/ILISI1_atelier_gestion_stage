@@ -191,21 +191,34 @@ try {
                                     <div class="col-auto col-lg-auto flex-grow-1 mb-2">
                                         <label class="form-label">Type de stage<span
                                                     style="color: var(--bs-red);font-weight: bold;">*</span></label>
+                                        <?php echo "typ d'offre : " . $offre['type_stage']?>
                                         <select class="form-select" required="" name="type_stage">
-                                            <option value="PFE" <?php if ($offre['type_stage'] === "PFE"  )?>>PFE</option>
-                                            <option value="PFA" <?php if ($offre['type_stage'] === "PFA"  )?>>PFA</option>
-                                            <option value="INIT" <?php if ($offre['type_stage'] === "INIT"  )?>>stage d'initiation</option>
-                                            <option value="SUMMER" <?php if ($offre['type_stage'] === "SUMMER"  )?>>stage d'ete</option>
+                                            <option value="PFE" <?php if ($offre['type_stage'] === "PFE")
+                                                echo 'selected';?>>PFE</option>
+                                            <option value="PFA" <?php if ($offre['type_stage'] === "PFA")
+                                                echo 'selected';?>>PFA</option>
+                                            <option value="INIT" <?php if ($offre['type_stage'] === 'INIT')
+                                                echo 'selected'; ?>> stage d'initiation</option>
+                                            <option value="SUMMER" <?php if ($offre['type_stage'] === "SUMMER")
+                                                echo 'selected';?>>stage d'ete</option>
                                         </select>
                                     </div>
                                     <div class="col-auto col-lg-auto flex-grow-1  mb-2">
                                         <label class="form-label">Status<span
                                                     style="color: var(--bs-red);font-weight: bold;">*</span></label>
                                         <select class="form-select" required name="status">
-                                            <option value="NEW" <?php if ($offre['statue'] === "NEW"  )?>>Nouveau</option>
-                                            <option value="CLOSED" <?php if ($offre['statue'] === "CLOSED"  )?>>Ferme</option>
-                                            <option value="CANCELLED" <?php if ($offre['statue'] === "CANCELLED"  )?>>Annule</option>
-                                            <option value="FULL" <?php if ($offre['statue'] === "FULL"  )?>>Complet</option>
+                                            <option value="NEW" <?php if ($offre['statue'] === 'NEW')
+                                                echo 'selected';?>>Nouveau</option>
+                                            <option value="CLOSED" <?php if ($offre['statue'] === 'CLOSED')
+                                                echo 'selected';?>>Ferme</option>
+                                            <option value="CANCELLED" <?php if ($offre['statue'] === 'CANCELLED')
+                                                echo 'selected';?>>Annule</option>
+                                            <option value="FULL" <?php if ($offre['statue'] === 'FULL')
+                                                echo 'selected';?>>Complet</option>
+                                            <option value="WAITING_RESPONSE" <?php if ($offre['statue'] === 'WAITING_RESPONSE')
+                                                echo 'selected';?>>en Attente..Reponse des etudiants</option>
+                                            <option value="WAITING_RESULT" <?php if ($offre['statue'] === 'WAITING_RESULT')
+                                                echo 'selected';?>>en Attente..Reponse de l'entreprise</option>
                                         </select>
                                     </div>
                                     <div class="col-auto flex-grow-1 mb-2">
