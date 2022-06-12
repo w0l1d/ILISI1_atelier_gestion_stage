@@ -86,7 +86,7 @@ try {
     <link rel="stylesheet" href="/assets/fonts/fontawesome5-overrides.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
+        <script type="text/javascript">
         google.charts.load('current', {'packages': ['corechart']});
         google.charts.setOnLoadCallback(drawChart);
 
@@ -128,7 +128,7 @@ try {
 
         function drawChart() {
 
-            var data = google.visualization.arrayToDataTable([
+            var data =google.visualization.arrayToDataTable([
                 ['statue', 'number'],
                 <?php
                 $row = $stmt2->fetchAll(PDO::FETCH_ASSOC);
@@ -186,6 +186,9 @@ try {
 
 
     </script>
+    
+    
+   
 </head>
 
 <body id="page-top">
@@ -440,11 +443,14 @@ try {
             <a class="border rounded d-inline scroll-to-top" href="#page-top"><i
                         class="fas fa-angle-up"></i></a>
         </div>
+       
+
         <script src="/assets/js/jquery.min.js"></script>
         <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
         <script src="/assets/js/chart.min.js"></script>
         <script src="/assets/js/bs-init.js"></script>
         <script src="/assets/js/theme.js"></script>
+      
 </body>
 
 </html>

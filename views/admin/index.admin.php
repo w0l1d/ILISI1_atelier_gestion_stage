@@ -35,7 +35,7 @@ try {
 
 
 
-<?php // nombre stage de chaque formation
+<?php // nombre de stage de chaque formation
 
 try {
     $query1 = "SELECT f.short_title as short_title,count(*) as number FROM stage s, formation f
@@ -62,7 +62,7 @@ try {
 }
 
 ?>
-<?php //nombre de candidature e chaque formation
+<?php //nombre de candidature de chaque formation
 try {
     $query3 = "SELECT f.short_title as short_title  ,count(*) as number FROM candidature c,etudiant e,
                 formation f WHERE c.etudiant_id =e.id AND  e.formation_id =f.id

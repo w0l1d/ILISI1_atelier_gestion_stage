@@ -72,6 +72,7 @@ switch ($request) {
         case '/offres/view' :
             require __DIR__ . '/../views/student/detailoffre.student.php';
             break;
+        
 
     default:
         http_response_code(404);
@@ -131,7 +132,10 @@ switch ($request) {
     case '/entreprises/view' :
         require __DIR__ . '/../views/resp/detailEntreprise.resp.php';
         break;
-
+    case '/offres/send' :
+        require __DIR__ . '/../views/resp/senddata.resp.php';
+        break;
+        
  
     default:
         http_response_code(404);
