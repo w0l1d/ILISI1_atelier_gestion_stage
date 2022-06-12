@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-function sendMail(string $mailto, string $body, string $subject, string $attach, string $attachName) {
+function sendMail(string $mailto, string $body, string $subject) {
 
     //Load Composer's autoloader
     require __DIR__ . '/../vendor/autoload.php';
@@ -35,8 +35,8 @@ function sendMail(string $mailto, string $body, string $subject, string $attach,
         $mail->Body = $body;
         $mail->AddAddress($mailto);
 
-        //Attachments
-        $mail->addAttachment($attach, $attachName);
+       /* //Attachments
+        $mail->addAttachment($attach, $attachName);*/
         $mail->Send();
 
         echo 'Message has been sent';

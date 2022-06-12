@@ -3,6 +3,23 @@ $curr_user = $_SESSION['user'];
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 
+//closed offer
+try {
+    $query_or = "SELECT o.id as id_offre,o.title,o.statue,o.type_stage ,t.short_name , r.key,r.submited_at FROM offre o,offreresults r,entreprise t
+     WHERE o.id=r.offre_id AND t.id=o.entreprise_id AND o.statue='CLOSED'
+    AND o.formation_id = (SELECT id from formation WHERE responsable_id = :resp_id)";
+
+    $stmt_or = $pdo->prepare($query_or);
+    $stmt_or->bindParam(':resp_id', $curr_user['id']);
+    $stmt_or->execute();
+    $closed_offre = $stmt_or->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (Exception $e) {
+    $error = $e->getMessage();
+}
+
+
+
 try {
     $query = "SELECT p.lname, p.fname, e.promotion, e.cne, e.IsValidated FROM etudiant e, person p 
                                      WHERE e.id = p.id AND e.formation_id = (SELECT id from formation WHERE responsable_id = :resp_id)
@@ -203,6 +220,80 @@ try {
             <div class="container-fluid">
                 <div class="d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">Tableau De Board</h3>
+                </div>
+                <!--closed offre-->
+                <div class="row">
+                    <?php
+                        if (!empty($closed_offre)) {
+                         foreach ($closed_offre as $key => $Coffre){
+                            if (is_null($Coffre['submited_at'])){?>
+                    <div class="col-lg-5 col-xl-4 bounce animated">
+                        
+                        <div class="card shadow mb-4 ">
+                            <div class="card-header d-flex justify-content-between align-items-center  bg-warning" >
+                                <h6 class="text-primary fw-bold m-0 " data-bss-hover-animate="swing"
+                                    style="font-size: 18px ">Offre Fermée</h6>
+                                <div class="dropdown no-arrow">
+                                    <button class="btn btn-link btn-sm dropdown-toggle " aria-expanded="false"
+                                            data-bs-toggle="dropdown" type="button"><i
+                                                class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                        <p class="text-center dropdown-header">plus de détails</p><a
+                                                class="dropdown-item" href="/offres">&nbsp;afficher tous les offres
+                                              </a>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body"  >
+                                <table class="table">
+                                        <tr>
+                                            <th> Id de l'offre</th>
+                                            <td><?php echo strtoupper($Coffre['id_offre']); ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Titre</th>
+                                            <td><?php echo strtoupper($Coffre['title']); ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Type de stage</th>
+                                            <td><?php echo $Coffre['type_stage'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Societé </th>
+                                            <td><?php echo $Coffre['short_name'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>statue </th>
+                                            <td><?php echo $Coffre['statue'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Action </th>
+                                            <td>
+                                            <a class="btn btn-secondary bg-success btn-circle btn-sm"
+                                                   href="/offres/view?id=<?php echo $Coffre['id_offre']; ?>">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a class="btn btn-primary bg-primary btn-circle btn-sm"
+                                                   href="/offres/update?id=<?php echo $Coffre['id_offre']; ?>">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a class="btn btn-primary bg-danger  btn-sm  "
+                                                 href="/offres/send?id=<?php echo $Coffre['id_offre']; ?>"><i class="fas fa-envelope"></i> Envoyer
+                                                </a>
+                                                
+                                            </td>
+                                        </tr>
+                                      
+                                </table>
+
+                            </div>
+                        </div>
+                            
+                    </div>
+                    <?php
+                          } }}
+                   ?>
                 </div>
                 <div class="row">
                     <div class="col-lg-5 col-xl-4 bounce animated">

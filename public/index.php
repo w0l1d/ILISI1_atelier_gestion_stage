@@ -47,6 +47,7 @@ switch ($request) {
     case '':
     case '/dashboard':
     case '/':
+ 
         require __DIR__ . '/../views/student/dashboard.student.php';
         break;
 
@@ -79,7 +80,7 @@ switch ($request) {
 
     default:
         http_response_code(404);
-        echo $request . "<br>";
+        echo $request."<br>";
         require __DIR__ . '/../views/404.php';
         break;
 }
@@ -119,15 +120,15 @@ switch ($request) {
     case '/etudiants/view' :
         require __DIR__ . '/../views/resp/detailetudiant.resp.php';
         break;
-
+    
     case '/stages' :
         require __DIR__ . '/../views/resp/stages.resp.php';
         break;
-
+    
     case '/stages/view' :
         require __DIR__ . '/../views/resp/detailstage.resp.php';
         break;
-
+    
     case '/stages/update' :
         require __DIR__ . '/../views/resp/updatestage.resp.php';
         break;
@@ -135,11 +136,14 @@ switch ($request) {
     case '/entreprises/view' :
         require __DIR__ . '/../views/resp/detailEntreprise.resp.php';
         break;
+    case '/offres/send' :
+        require __DIR__ . '/../views/resp/senddata.resp.php';
+        break;
 
-
+ 
     default:
         http_response_code(404);
-        echo $request . "<br>";
+        echo $request."<br>";
         require __DIR__ . '/../views/404.php';
         break;
 }
@@ -177,7 +181,7 @@ switch ($request) {
 
     default:
         http_response_code(404);
-        echo $request . "<br>";
+        echo $request."<br>";
         require __DIR__ . '/../views/404.php';
         break;
 }
