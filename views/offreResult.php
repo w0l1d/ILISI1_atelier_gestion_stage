@@ -109,7 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         goto respond_lbl;
     }
 
-
     respond_lbl:
     echo json_encode($response);
     exit();
@@ -122,10 +121,7 @@ function in_params($c)
         array_push($result, ':stud' . $i);
     return $result;
 }
-
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
