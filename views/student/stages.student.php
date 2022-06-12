@@ -95,13 +95,15 @@ $autre = "autre";
                                             <td><?php echo $value['statue']; ?></td>
 
                                             <td><?php echo $value['lastname']; ?></td>
-                                            <td><?php
+                                            <td>
+                                                <?php
                                                 if ($value['stagiaire_id'] == $curr_user['id']) {
                                                     echo "moi meme";
                                                 } else {
                                                     echo " Etudiant de la promotion " . $value['promotion'];;
                                                 };
-                                                ?></td>
+                                                ?>
+                                            </td>
                                             <td><?php echo $value['start']; ?></td>
                                             <td><?php echo $value['end']; ?></td>
                                             <td><?php echo $value['created_date']; ?></td>

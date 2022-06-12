@@ -9,6 +9,60 @@ if (empty($_GET['id'])) {
 }
 $stage_id = $_GET['id'];
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['add_doc']) &&
+        !empty($_POST['title']) &&
+        !empty($_POST['type']) &&
+        !empty($_POST['categorie_id']) &&
+        !empty($_FILES["doc"])) {
+
+
+        $title = $_POST['title'];
+        $type = $_POST['type'];
+        $categorie_id = $_POST['categorie_id'];
+
+
+//        $query = 'SELECT name FROM doc_categorie where id = :id';
+//        $stmt = $pdo->prepare($query);
+//        $stmt->bindParam(':id',$categorie_id);
+//        $stmt->execute();
+
+        require_once __DIR__ . '/../../private/shared/tools.functions.php';
+
+        $filename = $_FILES["doc"]["name"];
+        $now = new DateTime();
+
+        $updoc = generateRandomString(10) . '-' . $filename;
+        $tempname = $_FILES["doc"]["tmp_name"];
+        $folder = __DIR__ . "/../../private/uploads/Docs/" . $updoc;
+        if (!move_uploaded_file($tempname, $folder)) {
+            $error = "Failed to upload image";
+            goto skip_process;
+        }
+
+        try {
+            $pdo->beginTransaction();
+            $query = 'INSERT INTO document (id, path, titre, type, categorie_id, stage_id) 
+                        VALUES (null, :updoc, :title, :type, :cat, :stage_id)';
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':updoc', $updoc);
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':type', $type);
+            $stmt->bindParam(':cat', $categorie_id);
+            $stmt->bindParam(':stage_id', $stage_id);
+            $stmt->execute();
+
+            $pdo->commit();
+
+        } catch (Exception $e) {
+            $pdo->rollback();
+            $error = $e->getMessage();
+        }
+    } else
+        header("Location: /stages/view?id=$stage_id");
+
+}
+
 if (isset($_GET['update_jury']) && !empty($_GET['jury'])) {
     $jury_id = $_GET['jury'];
     $note = $_GET['note'] ?? '';
@@ -62,8 +116,9 @@ try {
         die();
     }
 } catch (Exception $e) {
-//  header('Location: /stages');
+    $error = $e->getMessage();
 }
+skip_process:
 ?>
 
 
@@ -86,7 +141,7 @@ try {
 ?>
 <?php
 try {
-    $query = "SELECT d.id, d.titre, d.type, d.name 
+    $query = "SELECT d.id, d.titre, d.type, c.name
                 FROM document d, doc_categorie c
                  WHERE d.stage_id = :stage_id 
                    AND c.id = d.categorie_id";
@@ -134,6 +189,22 @@ try {
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">information sur le stage n° <?php echo $stage_id ?> <br></h3>
                 </div>
+                <?php
+                if (!empty($error)) {
+                ?>
+                <div class="alert alert-danger" role="alert">
+                    <span>
+                        <strong>Erreur : </strong>
+                        <?php echo $error; ?>
+                    </span>
+                </div>
+                <?php } elseif (!empty($msg)) { ?>
+                <div class="alert alert-success" role="alert">
+                    <span>
+                        <?php echo $msg; ?>
+                    </span>
+                </div>
+                <?php }?>
 
                 <div class="card shadow mb-3">
                     <div class="card-header">
@@ -377,7 +448,7 @@ try {
                     </div>
                 </div>
                 <div class="card shadow mb-3">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between">
                         <h5 class="text-dark mb-0">Document</h5>
                         <button class="btn btn-primary" type="button" data-bs-target="#modal-doc"
                                 data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i>
@@ -392,32 +463,21 @@ try {
                             foreach ($stage_docs as $doc) {
                                 ?>
                                 <div class="row d-flex mb-3">
-                                    <div class="col-auto col-2 text-center">
-                                        <img class="border img-profile rounded-circle img-fluid"
-                                             style="max-block-size: 100px"
-                                             src="<?php
-                                             echo "/uploads?doc_id={$doc['id']}";
-                                             ?>">
-                                    </div>
                                     <div class="col">
-                                        <div class="card-subtitle">
+                                        <div class="card-title fs-3">
                                             <?php
-                                            echo $doc['name']; ?>
+                                            echo $doc['titre']; ?>
                                         </div>
-                                        <small class="text-muted">
-                                            <?php echo $doc['categorie'] ?>
+                                        <small class="badge bg-light text-black text-muted">
+                                            <?php echo $doc['name'] ?>
                                         </small>
                                     </div>
                                     <div class="col  d-flex justify-content-center align-items-center text-lg">
-                                        <a class="btn btn-sm btn-warning"
+                                        <a class="btn btn-warning"
                                            href="<?php echo "/uploads?id_doc={$doc['id']}"; ?>">
                                             <i class="fa fa-download"></i>
                                         </a>
                                     </div>
-                                    <div class="col">
-                                        ...
-                                    </div>
-
                                 </div>
 
                             <?php } ?>
@@ -437,7 +497,8 @@ try {
 
 
 <!--ADD JURY MODAL-->
-<form class="d-flex flex-column flex-fill justify-content-around align-content-start" method="get"
+<form class="d-flex flex-column flex-fill justify-content-around align-content-start"
+      method="get"
       style="font-size: calc(0.5em + 1vmin);">
     <div class="modal fade" role="dialog" tabindex="-1" id="modal-jury">
         <div class="modal-dialog" role="document">
@@ -500,9 +561,9 @@ try {
 </form>
 
 <!--ADD DOCUMENT MODAL-->
-<form class="d-flex flex-column flex-fill justify-content-around align-content-start" method="get"
-      style="font-size: calc(0.5em + 1vmin);">
-    <div class="modal fade" role="dialog" tabindex="-1" id="modal-jury">
+<form class="d-flex flex-column flex-fill justify-content-around align-content-start"
+      method="post" enctype="multipart/form-data">
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal-doc">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -511,18 +572,27 @@ try {
                 </div>
                 <div class="modal-body">
                     <input hidden name="add_doc">
-                    <input type="number" name="id" value="<?php echo $stage_id; ?>" hidden>
+
+                    <div class="mb-3">
+                        <label class="form-label">Titre</label>
+                        <input class="stage-doc form-control" name="title"
+                               type="text" required minlength="10">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Type</label>
+                        <input class="form-control" name="type"
+                               type="text" required minlength="5">
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Document</label>
-                        <input class="note-jury form-control text-center form-control-sm w-auto bg-info text-white border-0"
-                               type="number" max="20" min="0" size="6" minlength="1" id="new_note"
-                               name="note" step=".01">
+                        <input class="stage-doc form-control" name="doc"
+                               type="file" multiple required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Jury<span
+                        <label class="form-label">Categorie<span
                                     style="color: var(--bs-red);font-weight: bold;">*</span></label>
-                        <select name="jury_id" class="form-select flex-grow-1" required="">
+                        <select name="categorie_id" class="form-select flex-grow-1" required="">
 
                             <?php
                             try {
@@ -535,8 +605,9 @@ try {
                                     foreach ($select as $key => $data) {
                                         ?>
                                         <option value="<?php echo $data['id']; ?>">
-                                            <?php echo "{$data['cin']}: {$data['lname']} {$data['fname']}"; ?>
-                                            <i class="fa fa-eye<?php if ($data['student_visible']) ?>-slash"></i>
+                                            <?php echo $data['name']; ?>
+                                            <i class="fa fa-eye<?php if ($data['student_visible'])
+                                                echo '-slash'; ?>"></i>
                                         </option>
                                         <?php
                                     }
