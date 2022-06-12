@@ -638,9 +638,40 @@ try {
 
 <script>
     $(document).ready(function () {
+        $(".note-jury").each(function () {
+            $(this).bind('blur keyup', function (e) {
+                let vnote = $(this).val()
+                var rnote = new RegExp('^([012]?[0-9](\.[0-9]{1,2})?)?$');
 
+                if ((!rnote.test(vnote) || vnote < 0 || 20 < vnote)) {
+                    $(this).val($(this).data("previousValue") ?? $(this).attr('default-note'));
+                    console.log("hello");
+                }
+                else {
+                    console.log("hello 222");
+                    const jury = $(this).closest('div[id^="jury-"]');
+                    if ($(this).attr('default-note') != $(this).val()) {
+                        console.log("changed");
+                        $('button[type="submit"]', jury).removeClass('visually-hidden');
+                        $(this).data("previousValue", $(this).val());
+                    } else {
+                        console.log("hello 3333");
+                        $('button.update-button', jury).addClass('visually-hidden');
+                    }
+                }
+            });
+        });
+
+        $('#new_note').bind('blur keyup', function (e) {
+            let vnote = $(this).val()
+            var rnote = new RegExp('^([012]?[0-9](\.[0-9]{1,2})?)?$');
+
+            if ((!rnote.test(vnote) || vnote < 0 || 20 < vnote))
+                $(this).val($(this).data("previousValue"));
+        });
     });
 </script>
+
 
 </body>
 
