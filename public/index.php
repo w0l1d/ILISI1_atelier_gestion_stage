@@ -175,7 +175,10 @@ switch ($request) {
     case '/enseignants/update':
         require __DIR__ . '/../views/admin/updateEnseignant.admin.php';
         break;
-
+        
+    case '/enseignants/view':
+        require __DIR__ . '/../views/admin/detailEnseignant.admin.php';
+        break;
     case '/formations':
         require __DIR__ . '/../views/admin/formation.admin.php';
         break;

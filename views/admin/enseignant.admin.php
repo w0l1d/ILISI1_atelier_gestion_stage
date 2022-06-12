@@ -155,6 +155,10 @@ skip_process:
                                                    href="/enseignants/update?id=<?php echo $value['id']; ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
+                                                <a class="btn btn-primary bg-success btn-circle btn-sm"
+                                                   href="/enseignants/view?id=<?php echo $value['id']; ?>">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                         <?php
