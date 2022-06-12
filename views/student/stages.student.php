@@ -2,7 +2,7 @@
 $curr_user = $_SESSION['user'];
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
-
+require_once(__DIR__ . '/../../views/switcher.php');
 $formation = $curr_user['formation_id'];
 $moi = "moi";
 $autre = "autre";
@@ -79,7 +79,7 @@ $autre = "autre";
                             </thead>
                             <?php
                             try {
-                                $query = "SELECT  s.* ,s.id as stage_id,t.short_name,ps.lname as lastname ,e.promotion as promotion FROM stage s ,etudiant e ,entreprise t, person ps
+                                $query = "SELECT  s.* ,s.id as stage_id,t.short_name,ps.lname as lastname ,e.promotion as promotion ,t.id as entreprise_id FROM stage s ,etudiant e ,entreprise t, person ps
                                   WHERE e.formation_id =:formation and e.id = s.stagiaire_id AND t.id=s.entreprise_id AND ps.id=s.encadrant_id ";
 
                                 $stmt = $pdo->prepare($query);
@@ -91,8 +91,14 @@ $autre = "autre";
                                         ?>
                                         <tr>
                                             <td><?php echo $value['stage_id']; ?></td>
-                                            <td><?php echo $value['short_name']; ?></td>
-                                            <td><?php echo $value['statue']; ?></td>
+                                            <td data-bs-toggle="tooltip" title="<?php echo $value['short_name']; ?>"><a
+                                            href="/entreprises/view?id=<?php echo $value['entreprise_id']; ?>">
+                                                <?php echo $value['short_name']; ?>
+                                             </a>
+                                            </td>
+
+                                          
+                                            <td><?php echo switch_stage($value['statue']); ?></td>
 
                                             <td><?php echo $value['lastname']; ?></td>
                                             <td><?php

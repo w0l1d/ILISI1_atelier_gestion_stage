@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
-
+require_once(__DIR__ . '/../../views/switcher.php');
 $curr_user = $_SESSION['user'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['offreid']) {
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                         WHERE c.offre_id = o.id 
                                                           AND c.etudiant_id = :id_etud ) AS candidature_statue,
                                             o.title, o.updated_date, o.formation_id,
-                                            o.type_stage, e.short_name, e.name
+                                            o.type_stage, e.short_name, e.name,e.id as entreprise_id
                                             FROM offre o, entreprise e WHERE o.formation_id = :formation_id
                                             AND o.entreprise_id = e.id  and o.delai_offre >= cast(now() as date)";
 
@@ -116,10 +116,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <tr>
                                             <td><?php echo $value['id']; ?></td>
                                             <td><?php echo $value['title']; ?></td>
-                                            <td><?php echo $value['statue']; ?></td>
+                                            <td><?php echo switch_offre( $value['statue']); ?></td>
                                             <td><?php echo $value['type_stage']; ?></td>
-                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>">
+                                         
+                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>"><a
+                                            href="/entreprises/view?id=<?php echo $value['entreprise_id']; ?>">
                                                 <?php echo $value['short_name']; ?>
+                                             </a>
                                             </td>
                                             <td><?php echo $value['delai_offre']; ?></td>
                                             <td><?php echo $value['duree_stage']; ?></td>
@@ -140,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                         </form>
                                                     <?php } else { ?>
                                                         <span class="badge bg-secondary text-uppercase font-monospace"
-                                                              bs-cut="1"><?php echo $value['statue']; ?></span>
+                                                              bs-cut="1"><?php echo switch_offre($value['statue']); ?></span>
                                                     <?php } ?>
                                                 <?php } else { ?>
                                                     <span class="badge bg-<?php

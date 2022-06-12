@@ -1,27 +1,27 @@
 <?php
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
-require_once(__DIR__ . '/../../views/switcher.php');
+
 $curr_user = $_SESSION['user'];
 if (empty($_GET['id'])) {
-    header('Location: /offres');
+    header('Location: /entreprises');
 }
-$offre_id = $_GET['id'];
-$statue_att="WAITING";
+$entreprise_id = $_GET['id'];
+
 
 try {
-    $query = "SELECT o.*, e.name FROM offre o, entreprise e WHERE o.id = :id AND o.entreprise_id = e.id";
+    $query = "SELECT e.* FROM  entreprise e WHERE e.id = :id ";
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':id', $offre_id);
+    $stmt->bindParam(':id', $entreprise_id);
     $stmt->execute();
-    $offre = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (empty($offre)) {
-        $error = "Offre `$offre_id` n'est pas trouve";
+    $entreprise = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (empty($entreprise)) {
+        $error = "Offre `$entreprise_id` n'est pas trouve";
         require_once(__DIR__ . '/../404.php');
         die();
     }
 } catch (Exception $e) {
-    header('Location: /offres');
+    header('Location: /entreprises');
 }
 ?>
 
@@ -54,7 +54,8 @@ try {
 
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-dark mb-0">information sur l'offre n° <?php echo $offre_id ?> <br></h3>
+                    <h3 class="text-dark mb-0">information sur Entreprise n° <?php echo $entreprise_id ?> <br></h3>
+
                 </div>
 
                 <div class="card shadow">
@@ -63,83 +64,74 @@ try {
                             <tbody style="width: 913.6px;">
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    TITRE DE L'OFFRE
+                                    Id Entreprise
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['title']; ?></td>
+                                <td class="text-center text-uppercase"><?php echo $entreprise['id']; ?></td>
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    STATUE
+                                    Domaine
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo  switch_offre($offre['statue']); ?></td>
+                                <td class="text-center text-uppercase"><?php echo $entreprise['domaine']; ?></td>
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    TYPE DE STAGE
+                                    Email
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['type_stage']; ?></td>
+                                <td class="text-center text-uppercase"><?php echo $entreprise['email']; ?></td>
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    NOMBRE DE STAGIAIRE
+                                   Logo
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['nbr_stagiaire']; ?></td>
+                                <td class="text-center text-uppercase"> <?php if (!empty($entreprise['logo'])) { ?>
+                                                    <img src="/uploads?logo_id=<?php echo $entreprise['id'] ?>"
+                                                         width="50px" height="50px"/>
+                                                <?php } else { ?>
+                                                    <span class="badge bg-secondary text-uppercase font-monospace fw-light"
+                                                          bs-cut="1"><i>NULL</i></span>
+                                                <?php } ?></td>
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    DELAI&nbsp; DE STAGE
+                                   Nom Court
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['duree_stage']; ?></td>
+                                <td class="text-center text-uppercase"><?php echo $entreprise['short_name']; ?></td>
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    ENTREPRISE
+                                    Nom
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['name']; ?></td>
+                                <td class="text-center text-uppercase"><?php echo $entreprise['name']; ?></td>
                             </tr>
+                           
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    DUREE DE STAGE
+                                    Telephone
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['duree_stage']; ?><br></td>
+                                <td class="text-center text-uppercase"><?php echo $entreprise['phone']; ?><br></td>
                             </tr>
+                           
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    DEBUT
+                                    site Web
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['start_stage']; ?><br></td>
+                                <td class="text-center text-uppercase"><?php echo $entreprise['web_site']; ?><br></td>
                             </tr>
-                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    FIN
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['end_stage']; ?><br></td>
-                            </tr>
-                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    DATE DE CREATION
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['created_date']; ?><br></td>
-                            </tr>
-                            <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
-                                <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
-                                    DATE DE MODIFICATION
-                                </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['updated_date']; ?><br></td>
-                            </tr>
+                           
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
                                     DESCRIPTION
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $offre['description']; ?></td>
+                                <td class="text-center text-uppercase"><?php echo $entreprise['description']; ?></td>
                             </tr>
                             </tbody>
-
                         </table>
-
                     </div>
                 </div>
-                              
+                <br>
+
+               
             </div>
         </div>
         <footer class="bg-white sticky-footer">
@@ -160,30 +152,7 @@ try {
 <script src="/assets/datatable/js/dataTables.bootstrap5.min.js"></script>
 <script src="/assets/datatable/js/dataTables.responsive.min.js"></script>
 <script src="/assets/datatable/js/responsive.bootstrap5.min.js"></script>
-
-<script>
-    $(document).ready(function () {
-        $('#myTable').DataTable({
-            responsive: {
-                details: {
-                    display: $.fn.dataTable.Responsive.display.modal({
-                        header: function (row) {
-                            var data = row.data();
-                            return 'Details for ' + data[0] + ' ' + data[1];
-                        }
-                    }),
-                    renderer: $.fn.dataTable.Responsive.renderer.tableAll({
-                        tableClass: 'table'
-                    })
-                }
-            },
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json"
-            }
-        });
-    });
-</script>
-
+ 
 </body>
 
 </html>

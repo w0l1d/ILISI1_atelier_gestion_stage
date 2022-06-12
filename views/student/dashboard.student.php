@@ -2,7 +2,7 @@
 $curr_user = $_SESSION['user'];
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
-
+require_once(__DIR__ . '/../../views/switcher.php');
 try {
     $query_ent = "SELECT e.name, e.short_name,e.email,e.logo,e.domaine,e.web_site, e.id  FROM entreprise e 
                                    
@@ -114,9 +114,25 @@ try {
                 colors:[  '#ab4e6b','#e5bcd9','#e5eed2','#561220',], 
             };
 
+            var changerStatue = {
+            IN_PROGRESS: 'En cours',
+            FINISHED: 'Termine',
+            CANCELED: 'Annule',
+            DRAFT: 'planifier'
+        };
+
+        var view = new google.visualization.DataView(data);
+        view.setColumns([{
+          calc: function (dt, row) {
+            return changerStatue[data.getValue(row, 0)];
+          },
+          label: 'statue',
+          type: 'string'
+        }, 1]);
+
             var chart = new google.visualization.PieChart(document.getElementById('piechartStage'));
 
-            chart.draw(data, options);
+            chart.draw(view, options);
 
         }
 
@@ -129,12 +145,12 @@ try {
         function drawChart() {
 
             var data =google.visualization.arrayToDataTable([
-                ['statue', 'number'],
+                [ 'statue', 'number'],
                 <?php
                 $row = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                 if (!empty($row)) {
                     foreach ($row as $key => $value2) {
-                        echo "['" . $value2["statue"] . "'," . $value2["number"] . "],";
+                        echo "['" . $value2['statue']. "'," . $value2["number"] . "],";
                     }
                 }
                 ?>
@@ -145,9 +161,27 @@ try {
                 colors:[  '#F2C3A7','#3D5A73','#6588A6','#D9583B',], 
             };
 
+            var changerStatue = {
+            NEW: 'Nouveau',
+            CLOSED: 'Fermee',
+            CANCELED: 'Annule',
+            WAITING_RESPONSE: 'RÉPONSE EN ATTENTE',
+            WAITING_RESULT: 'Résultat EN ATTENTE ',
+            FULL: 'Plein'
+        };
+
+        var view = new google.visualization.DataView(data);
+        view.setColumns([{
+          calc: function (dt, row) {
+            return changerStatue[data.getValue(row, 0)];
+          },
+          label: 'statue',
+          type: 'string'
+        }, 1]);
+
             var chart = new google.visualization.PieChart(document.getElementById('piechartOffre'));
 
-            chart.draw(data, options);
+            chart.draw(view, options);
         }
 
 
@@ -178,10 +212,28 @@ try {
                 },
 
             };
+            var changerStatue = {
+            APPLIED: 'postuler',
+            NACCEPTED: 'Pas Retenu',
+            CANCELED: 'Annule',
+            ACCEPTED: 'Retenu',
+            WAITING: 'EN ATTENTE',
+            NAGREED: 'Pas Accepté',
+            AGREED: 'Accepté'
+        };
+
+        var view = new google.visualization.DataView(data);
+        view.setColumns([{
+          calc: function (dt, row) {
+            return changerStatue[data.getValue(row, 0)];
+          },
+          label: 'statue',
+          type: 'string'
+        }, 1]);
 
             var chart = new google.visualization.PieChart(document.getElementById('piechartCandidature'));
 
-            chart.draw(data, options);
+            chart.draw(view, options);
         }
 
 

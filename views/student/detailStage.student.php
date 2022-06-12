@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
-
+require_once(__DIR__ . '/../../views/switcher.php');
 $curr_user = $_SESSION['user'];
 if (empty($_GET['id'])) {
     header('Location: /stages');
@@ -118,7 +118,7 @@ try {
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
                                     statue du stage
                                 </td>
-                                <td class="text-center text-uppercase"><?php echo $stage['stage_statue']; ?></td>
+                                <td class="text-center text-uppercase"><?php echo switch_stage($stage['stage_statue']); ?></td>
                             </tr>
                             <tr class="d-flex flex-column flex-grow-1" style="padding: -2px;">
                                 <td style="background: rgba(154,170,169,0.23);border-style: outset;border-color: var(--bs-gray);color: rgb(35,28,32);font-size: 17px;font-family: 'Abril Fatface', serif;">
