@@ -52,10 +52,10 @@ try {
 <?php
 
 try {
-    $query = "SELECT d.id, d.titre, d.type, d.name 
+    $query = "SELECT d.id, d.titre, d.type, c.name 
                 FROM document d, doc_categorie c
                  WHERE d.stage_id = :stage_id 
-                   AND c.id = d.categorie_id AND c.student_visible is true";
+                   AND c.id = d.categorie_id AND c.student_visible = true";
 
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':stage_id', $stage_id);
@@ -100,6 +100,22 @@ try {
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">information sur le stage n° <?php echo $stage_id ?> <br></h3>
                 </div>
+                <?php
+                if (!empty($error)) {
+                    ?>
+                    <div class="alert alert-danger" role="alert">
+                    <span>
+                        <strong>Erreur : </strong>
+                        <?php echo $error; ?>
+                    </span>
+                    </div>
+                <?php } elseif (!empty($msg)) { ?>
+                    <div class="alert alert-success" role="alert">
+                    <span>
+                        <?php echo $msg; ?>
+                    </span>
+                    </div>
+                <?php } ?>
 
                 <div class="card shadow mb-3">
                     <div class="card-header">
@@ -272,9 +288,12 @@ try {
                         </table>
                     </div>
                 </div>
+
                 <div class="card shadow mb-3">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="text-dark mb-0">Jury</h5>
+
+                    </div>
                     <div class="card-body">
                         <?php
                         if (empty($stage_jury)) {
@@ -308,6 +327,8 @@ try {
                             <?php } ?>
                     </div>
                 </div>
+
+
                 <div class="card shadow mb-3">
                     <div class="card-header">
                         <h5 class="text-dark mb-0">Document</h5>
@@ -320,150 +341,46 @@ try {
                             foreach ($stage_docs as $doc) {
                                 ?>
                                 <div class="row d-flex mb-3">
-                                    <div class="col-auto col-2 text-center">
-                                        <img class="border img-profile rounded-circle img-fluid"
-                                             style="max-block-size: 100px"
-                                             src="<?php
-                                             echo "/uploads?doc_id={$doc['id']}";
-                                             ?>">
-                                    </div>
                                     <div class="col">
-                                        <div class="card-subtitle">
-                                            <?php
-                                            echo $doc['name']; ?>
+                                        <div class="card-title fs-3">
+                                            <?php echo $doc['titre']; ?>
                                         </div>
-                                        <small class="text-muted">
-                                            <?php echo $doc['categorie'] ?>
+                                        <small class="badge bg-light text-black text-muted">
+                                            <?php echo $doc['name'] ?>
                                         </small>
                                     </div>
                                     <div class="col  d-flex justify-content-center align-items-center text-lg">
-                                        <a class="btn btn-sm btn-warning"
+                                        <a class="btn btn-warning"
                                            href="<?php echo "/uploads?id_doc={$doc['id']}"; ?>">
                                             <i class="fa fa-download"></i>
                                         </a>
                                     </div>
-                                    <div class="col">
-                                        ...
-                                    </div>
-
                                 </div>
 
                             <?php } ?>
                     </div>
                 </div>
-
             </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © Gestion de stage 2022</span></div>
+                </div>
+            </footer>
         </div>
-        <footer class="bg-white sticky-footer">
-            <div class="container my-auto">
-                <div class="text-center my-auto copyright"><span>Copyright © Gestion de stage 2022</span></div>
-            </div>
-        </footer>
+        <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
     </div>
-    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
-</div>
 
 
-<!--ADD OFFRE MODAL-->
-<form class="d-flex flex-column flex-fill justify-content-around align-content-start" method="get"
-      style="font-size: calc(0.5em + 1vmin);">
-    <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Ajouter Jury</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input hidden name="add_jury">
-                    <input type="number" name="id" value="<?php echo $stage_id; ?>" hidden>
-                    <div class="mb-3">
-                        <label class="form-label">Note</label>
-                        <input class="note-jury form-control text-center form-control-sm w-auto bg-info text-white border-0"
-                               type="number" max="20" min="0" size="6" minlength="1" id="new_note"
-                               name="note" step=".01">
-                    </div>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/js/bs-init.js"></script>
+    <script src="/assets/js/theme.js"></script>
 
-                    <div class="mb-3">
-                        <label class="form-label">Jury<span
-                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
-                        <select name="jury_id" class="form-select flex-grow-1" required="">
+    <script>
+        $(document).ready(function () {
 
-                            <?php
-                            try {
-                                $req = "SELECT p.id,p.cin, p.lname, p.fname FROM person p,
-                                    enseignant e WHERE e.id not in (SELECT jury_id FROM note_jury 
-                                                                                   WHERE stage_id = :stage_id) 
-                                                   AND p.id=e.id ";
-
-                                $stmt = $pdo->prepare($req);
-                                $stmt->bindParam(':stage_id', $stage_id);
-                                $stmt->execute();
-                                $select = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                if (!empty($select)) {
-                                    foreach ($select as $key => $data) {
-                                        ?>
-                                        <option value="<?php echo $data['id']; ?>">
-                                            <?php echo "{$data['cin']}: {$data['lname']} {$data['fname']}"; ?>
-                                        </option>
-                                        <?php
-                                    }
-                                }
-                            } catch (Exception $e) {
-                                echo 'Erreur : ' . $e->getMessage();
-                            }
-                            ?>
-
-                        </select>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-light" type="button" data-bs-dismiss="modal">Fermer</button>
-                    <button class="btn btn-primary" type="submit">Ajouter</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-
-
-<script src="/assets/js/jquery.min.js"></script>
-<script src="/assets/bootstrap/js/bootstrap.min.js"></script>
-<script src="/assets/js/bs-init.js"></script>
-<script src="/assets/js/theme.js"></script>
-
-<script>
-    $(document).ready(function () {
-        $(".note-jury").each(function () {
-            $(this).bind('blur keyup', function (e) {
-                let vnote = $(this).val()
-                var rnote = new RegExp('^([012]?[0-9](\.[0-9]{1,2})?)?$');
-
-                if ((!rnote.test(vnote) || vnote < 0 || 20 < vnote))
-                    $(this).val($(this).data("previousValue") ?? $(this).attr('default-note'));
-                else {
-                    const jury = $(this).closest('div[id^="jury-"]');
-                    if ($(this).attr('default-note') != $(this).val()) {
-                        console.log("changed");
-                        $('button[type="submit"]', jury).removeClass('visually-hidden');
-                        $(this).data("previousValue", $(this).val());
-                    } else {
-                        $('button.update-button', jury).addClass('visually-hidden');
-                    }
-                }
-            });
         });
-
-        $('#new_note').bind('blur keyup', function (e) {
-            let vnote = $(this).val()
-            var rnote = new RegExp('^([012]?[0-9](\.[0-9]{1,2})?)?$');
-
-            if ((!rnote.test(vnote) || vnote < 0 || 20 < vnote))
-                $(this).val($(this).data("previousValue"));
-        });
-    });
-</script>
+    </script>
 
 </body>
 
