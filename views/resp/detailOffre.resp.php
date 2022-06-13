@@ -172,7 +172,7 @@ try {
                                         <td><?php echo $value['etudiantid']; ?></td>
                                         <td><?php echo $value['lname']; ?></td>
                                         <td><?php echo $value['fname']; ?></td>
-                                        <td><?php echo $value['status'];
+                                        <td><?php echo switch_candidature($value['status']);
                                             if (strcmp($value['status'], $statue_att) == 0) {
                                                 echo " ( " . $value['position'] . " )";
                                             }

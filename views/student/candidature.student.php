@@ -3,6 +3,7 @@ require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 $curr_user = $_SESSION['user'];
 $statue_att = "WAITING";
+require_once(__DIR__ . '/../../views/switcher.php');      
 ?>
 
 
@@ -145,7 +146,7 @@ skip_process:
                                                 }
 
                                                 ?> text-uppercase font-monospace" bs-cut="1">
-                                                    <?php echo $value['status'];
+                                                    <?php echo switch_candidature($value['status']);
                                                     if (strcmp($value['status'], $statue_att) == 0) {
                                                         echo " ( " . $value['position'] . " )";
                                                     }
