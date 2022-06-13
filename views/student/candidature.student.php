@@ -9,13 +9,57 @@ require_once(__DIR__ . '/../../views/switcher.php');
 
 
 <?php
-if (!empty($_GET['agree']) || !empty($_GET['disagree'])) {
-    $candidature = $_GET['agree'] ?? $_GET['disagree'];
+if (!empty($_GET['agree'])) {
+    $candidature = $_GET['agree'];
     try {
         $pdo->beginTransaction();
         $query = "UPDATE candidature SET status = 'AGREED' where id = :id AND status = 'ACCEPTED'";
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(":id", $candidature);
+        if (!$stmt->execute()) {
+            $pdo->rollBack();
+            $error = "Offre n'est pas acceptee";
+            goto skip_process;
+        }
+
+        $query = "UPDATE candidature SET status = 'NAGREED' where status = 'ACCEPTED'";
+        $stmt = $pdo->prepare($query);
+        if (!$stmt->execute()) {
+            $pdo->rollBack();
+            $error = "Offre n'est pas acceptee";
+            goto skip_process;
+        }
+        $msg = "Congratulation : l'Offre est acceptee, le reponsable attribuer un encadrant";
+        $pdo->commit();
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        $error = $e->getMessage();
+    }
+
+} else if (!empty($_GET['disagree'])) {
+    $candidature = $_GET['disagree'];
+    try {
+        $pdo->beginTransaction();
+        $query = "UPDATE candidature SET status = 'NAGREED' where id = :id AND status = 'ACCEPTED'";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(":id", $candidature);
+        if (!$stmt->execute()) {
+            $pdo->rollBack();
+            $error = "Offre n'est pas acceptee";
+            goto skip_process;
+        }
+
+        $query = "UPDATE candidature SET status = 'ACCEPTED' 
+                   WHERE id = (SELECT id from candidature c 
+                                         WHERE c.status LIKE 'WAITING' 
+                                           AND c.offre_id = (SELECT offre_id 
+                                                             FROM candidature 
+                                                             WHERE id = :candidature_id)  
+                                         GROUP BY c.offre_id  
+                                         having c.position = MIN(c.position) )";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(":candidature_id", $candidature);
+        $stmt->bindParam(":candidature_id2", $candidature);
         if (!$stmt->execute()) {
             $pdo->rollBack();
             $error = "Offre n'est pas acceptee";
