@@ -327,6 +327,7 @@ skip_process:
                 <div class="modal-body">
                     <input name="profile-img-form" class="visually-hidden">
                     <label class="form-label" for="profile_picture">Photo de profile</label>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
                     <input class="form-control" type="file" name="profile_picture"
                            id="profile_picture" placeholder="Photo de profile"
                            accept="image/*" multiple required/>

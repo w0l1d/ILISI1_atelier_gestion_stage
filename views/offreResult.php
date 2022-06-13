@@ -54,6 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':rst_key', $key);
         $stmt->execute();
 
+        $query = "UPDATE offre set statue = 'WAITING_RESPONSE' where id = :id";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':id', $form['offre_id']);
+        $stmt->execute();
+
         $nbr_retenu = count($retenu);
 
         if ($nbr_retenu > 0) {
