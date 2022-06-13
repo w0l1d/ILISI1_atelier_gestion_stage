@@ -18,19 +18,19 @@ function sendMail(string $mailto, string $body, string $subject) {
         //Enable verbose debug output
         $mail->SMTPDebug = SMTP::DEBUG_SERVER;
         // Send email using Outlook SMTP server
-        $mail->Host = 'smtp-mail.outlook.com';
         $mail->SMTPDebug = 2;
+        $mail->Host       = "smtp.gmail.com";
 
         $mail->SMTPAuth = true;
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
-        $mail->Username = "ilisi1_atelier@hotmail.com";
-        $mail->Password = "Cz8JEvjwT427kGm";
+        $mail->Username = "w0l1d.dev@gmail.com";
+        $mail->Password = "yfrdgllnwegajmge";
 
 
         $mail->IsHTML(true);
-        $mail->setFrom("ilisi1_atelier@hotmail.com");
+        $mail->setFrom("w0l1d.dev@gmail.com");
         $mail->Subject = $subject;
         $mail->Body = $body;
         $mail->AddAddress($mailto);

@@ -58,7 +58,7 @@ try {
 }
 
 ?>
-<?php //candidature
+<?php //candidatures
 try {
     $query3 = "SELECT status ,count(*) as number FROM candidature c where c.etudiant_id= :stud_id  GROUP BY status";
 

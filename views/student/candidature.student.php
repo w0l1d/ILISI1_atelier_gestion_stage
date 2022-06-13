@@ -5,6 +5,40 @@ $curr_user = $_SESSION['user'];
 $statue_att = "WAITING";
 ?>
 
+
+
+<?php
+if (!empty($_GET['agree']) || !empty($_GET['disagree'])) {
+    $candidature = $_GET['agree'] ?? $_GET['disagree'];
+    try {
+        $pdo->beginTransaction();
+        $query = "UPDATE candidature SET status = 'AGREED' where id = :id AND status = 'ACCEPTED'";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(":id", $candidature);
+        if (!$stmt->execute()) {
+            $pdo->rollBack();
+            $error = "Offre n'est pas acceptee";
+            goto skip_process;
+        }
+
+        $query = "UPDATE candidature SET status = 'NAGREED' where status = 'ACCEPTED'";
+        $stmt = $pdo->prepare($query);
+        if (!$stmt->execute()) {
+            $pdo->rollBack();
+            $error = "Offre n'est pas acceptee";
+            goto skip_process;
+        }
+        $msg = "Congratulation : l'Offre est acceptee, le reponsable attribuer un encadrant";
+        $pdo->commit();
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        $error = $e->getMessage();
+    }
+
+}
+skip_process:
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -32,8 +66,23 @@ $statue_att = "WAITING";
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">Mes candidatures<br></h3>
-
                 </div>
+                <?php
+                if (!empty($error)) {
+                    ?>
+                    <div class="alert alert-danger" role="alert">
+                    <span>
+                        <strong>Erreur : </strong>
+                        <?php echo $error; ?>
+                    </span>
+                    </div>
+                <?php } elseif (!empty($msg)) { ?>
+                    <div class="alert alert-success" role="alert">
+                    <span>
+                        <?php echo $msg; ?>
+                    </span>
+                    </div>
+                <?php } ?>
 
                 <div class="card shadow">
                     <div class="card-header py-3">
@@ -72,13 +121,27 @@ $statue_att = "WAITING";
                                             <td>
                                                 <span class="badge bg-<?php
                                                 switch ($value['status']) {
-                                                    case 'APPLIED': echo 'info'; break;
-                                                    case 'CANCELED': echo 'secondary'; break;
-                                                    case 'ACCEPTED': echo 'gradient-success'; break;
-                                                    case 'WAITING': echo 'gradient-info'; break;
-                                                    case 'NACCEPTED': echo 'gradient-warning'; break;
-                                                    case 'AGREED': echo 'success'; break;
-                                                    case 'NAGREED': echo 'warning'; break;
+                                                    case 'APPLIED':
+                                                        echo 'info';
+                                                        break;
+                                                    case 'CANCELED':
+                                                        echo 'secondary';
+                                                        break;
+                                                    case 'ACCEPTED':
+                                                        echo 'gradient-success';
+                                                        break;
+                                                    case 'WAITING':
+                                                        echo 'gradient-info';
+                                                        break;
+                                                    case 'NACCEPTED':
+                                                        echo 'gradient-warning';
+                                                        break;
+                                                    case 'AGREED':
+                                                        echo 'success';
+                                                        break;
+                                                    case 'NAGREED':
+                                                        echo 'warning';
+                                                        break;
                                                 }
 
                                                 ?> text-uppercase font-monospace" bs-cut="1">
@@ -97,7 +160,16 @@ $statue_att = "WAITING";
                                                    href="/offres/view?id=<?php echo $value['offre_id']; ?>">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-
+                                                <?php if ($value['status'] === 'ACCEPTED') { ?>
+                                                    <a class="btn btn-success bg-success btn-circle btn-sm"
+                                                       href="/candidatures?agree=<?php echo $value['candidature_id']; ?>">
+                                                        <i class="fa fa-check"></i>
+                                                    </a>
+                                                    <a class="btn btn-danger bg-danger btn-circle btn-sm"
+                                                       href="/candidatures?disagree=<?php echo $value['candidature_id']; ?>">
+                                                        <i class="fa fa-close"></i>
+                                                    </a>
+                                                <?php } ?>
                                             </td>
                                         </tr>
                                         <?php

@@ -60,7 +60,7 @@
                         </a>
                     </li>
                     <li class="nav-item pulse" >
-                        <a class="nav-link" href="/candidature">
+                        <a class="nav-link" href="/candidatures">
                             <i  class="fas fa-bookmark" style="color: rgb(125, 141, 161);"></i>
                             <span style="color: rgb(115, 128, 236);">candidature</span>
                         </a>
