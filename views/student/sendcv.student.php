@@ -5,13 +5,10 @@ function sendcv(int $offre_id){
   $pdo = getDBConnection();
 
   $curr_user = $_SESSION['user'];
- 
-/*if (empty($_GET['id'])) {
-    
-    header('Location: /offres');
-}*/
-//$offre_id = '2';//$_GET['id'];
+
 $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
+ 
+
 
  
 
@@ -40,6 +37,11 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
         $end=$offre['end_stage'];
         $type=$offre['type_stage'];
         $nbr=$offre['nbr_stagiaire'];
+
+        $img_cndidature = __DIR__.'/../../public/assets/img/image-6.png';
+        $imgdataCand = base64_encode(file_get_contents($img_cndidature));
+
+        $imgdataCand = 'src="data:'. mime_content_type($img_cndidature) .';base64,'.$imgdataCand.'"';
       
 
         $img = __DIR__.'/../../public/assets/img/image-5.png';
@@ -198,7 +200,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
     <tr>
       <td style='padding-right: 0px;padding-left: 0px;' align='center'>
         
-      <i class='fas fa-check fa-4x ' style='font-size:60px;color:#cca250;'></i>
+      <img align='center' border='0' $imgdataCand alt='Logo' title='Tick' style='outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 14%;max-width:  81.2px;' width='81.2' class='v-src-width v-src-max-width'/>
       </td>
     </tr>
   </table>
@@ -214,9 +216,10 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
         <td class='v-container-padding-padding' style='overflow-wrap:break-word;word-break:break-word;padding:10px 55px;font-family:sans-serif;' align='left'>
           
     <h1 class='v-font-size' style='margin: 0px; line-height: 160%; text-align: center; word-wrap: break-word; font-weight: normal; font-family:sans-serif; font-size: 33px;'>
-      <strong>Liste des Condidatures :<br />'$entreprise'<br /></strong>
+      <strong>Nouvelle candidature  :</strong>
     </h1>
-  
+    
+   
         </td>
       </tr>
     </tbody>
@@ -229,10 +232,9 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
           
     <div style='color: #444444; line-height: 170%; text-align: center; word-wrap: break-word;'>
       <p style='font-size: 14px; line-height: 170%;'><span style='font-size: 16px; line-height: 27.2px;'>
-      le délai pour l'offre que vous avez faite a expiré
-      merci de préciser la liste des étudiants admis, en attente et refusés sur la page suivante :
-       <br>
-      <h2>note:</h2>   <h4 style='color:#cca250';>Après sauvegarde,aucune modification ne sera prise en compte <h4></span></p>
+       Une nouvelle candidature li&eacutee &agrave votre offre de stage avec l'&eacuteel&eacuteement ci-dessous :
+     $nom_prenom (nom prenom)  &agrave postuler dans votre offre, pour plus d&squoinformations voir le CV (pi&egravece jointe)
+      </p>
     </div>
   
         </td>
@@ -282,7 +284,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
               <td>'$end'</td>
           </tr>
           <tr>
-              <th> Nombre de stagiaires demandés</th>
+              <th> Nombre de stagiaires demand&eacutees</th>
               <td>'$nbr'</td>
           </tr>
   
@@ -335,7 +337,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
           
     <div style='color: #444444; line-height: 170%; text-align: center; word-wrap: break-word;'>
       <p style='font-size: 14px; line-height: 170%;'><span style='font-size: 16px; line-height: 27.2px;'>
-      N'hésitez pas à nous contacter!</span></p>
+      N&apos;h&eacuteesitez pas &agrave nous contacter!</span></p>
     </div>
   
         </td>

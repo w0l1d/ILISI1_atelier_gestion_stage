@@ -224,10 +224,10 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
           
     <div style='color: #444444; line-height: 170%; text-align: center; word-wrap: break-word;'>
       <p style='font-size: 14px; line-height: 170%;'><span style='font-size: 16px; line-height: 27.2px;'>
-      le délai pour l'offre que vous avez faite a expiré
-      merci de préciser la liste des étudiants admis, en attente et refusés sur la page suivante :
+      le d&egravelai pour l'offre que vous avez faite a expir&eacute
+      merci de pr&eacuteciser la liste des &eacutetudiants admis, en attente et refus&eacutes sur la page suivante :
       <a href='$adresse'> resultats </a> <br>
-      <h2>note:</h2>   <h4 style='color:#cca250';>Après sauvegarde,aucune modification ne sera prise en compte <h4></span></p>
+      <h2>note:</h2>   <h4 style='color:#cca250';>Apr&egraves sauvegarde,aucune modification ne sera prise en compte <h4></span></p>
     </div>
   
         </td>
@@ -277,7 +277,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
               <td>'$end'</td>
           </tr>
           <tr>
-              <th> Nombre de stagiaires demandés</th>
+              <th> Nombre de stagiaires demand&eacutes</th>
               <td>'$nbr'</td>
           </tr>
   
@@ -330,7 +330,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
           
     <div style='color: #444444; line-height: 170%; text-align: center; word-wrap: break-word;'>
       <p style='font-size: 14px; line-height: 170%;'><span style='font-size: 16px; line-height: 27.2px;'>
-      N'hésitez pas à nous contacter!</span></p>
+      N&acuteh&eacutesitez pas &agrave nous contacter!</span></p>
     </div>
   
         </td>
@@ -377,7 +377,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
           
     <div style='color: #b0b1b4; line-height: 180%; text-align: center; word-wrap: break-word;'>
       <p style='font-size: 14px; line-height: 180%;'>$nom_prenom</p>
-  <p style='font-size: 14px; line-height: 180%;'>contactez le Responsable</p>
+  <p style='font-size: 14px; line-height: 180%;'> le Responsable</p>
     </div>
   
         </td>
