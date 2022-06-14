@@ -50,12 +50,12 @@ if (!empty($_GET['agree'])) {
         }
 
         $query = "UPDATE candidature SET status = 'ACCEPTED' 
-                   WHERE id in (SELECT id FROM candidature c 
+                   WHERE id = (SELECT id FROM candidature c 
                                          WHERE c.status LIKE 'WAITING' 
                                            AND c.offre_id = (SELECT offre_id 
                                                              FROM candidature 
                                                              WHERE id = :candidature_id)  
-                                           AND (c.position, c.offre_id) = 
+                                           AND (c.position, c.offre_id) in 
                                                (SELECT min(c2.position), c2.offre_id 
                                                 FROM candidature c2 GROUP BY c2.offre_id))";
 
