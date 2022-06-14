@@ -58,7 +58,6 @@ if (!empty($_GET['agree'])) {
                                          having c.position = MIN(c.position) )";
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(":candidature_id", $candidature);
-        $stmt->bindParam(":candidature_id2", $candidature);
         if (!$stmt->execute()) {
             $pdo->rollBack();
             $error = "Offre n'est pas acceptee";
@@ -78,7 +77,6 @@ if (!empty($_GET['agree'])) {
         $pdo->rollBack();
         $error = $e->getMessage();
     }
-
 }
 skip_process:
 ?>
@@ -101,9 +99,7 @@ skip_process:
 
 <body id="page-top">
 <div id="wrapper">
-    <?php
-    require_once 'parts/sidebar.php'
-    ?>
+    <?php require_once 'parts/sidebar.php' ?>
     <div class="d-flex flex-column" id="content-wrapper" style="font-size: calc(0.5em + 1vmin);">
         <div id="content">
             <?php require_once 'parts/navbar.php' ?>
