@@ -50,13 +50,15 @@ if (!empty($_GET['agree'])) {
         }
 
         $query = "UPDATE candidature SET status = 'ACCEPTED' 
-                   WHERE id in (SELECT id from candidature c 
+                   WHERE id in (SELECT id FROM candidature c 
                                          WHERE c.status LIKE 'WAITING' 
                                            AND c.offre_id = (SELECT offre_id 
                                                              FROM candidature 
                                                              WHERE id = :candidature_id)  
-                                         GROUP BY c.offre_id  
-                                         having c.position = MIN(c.position) )";
+                                           AND (c.position, c.offre_id) = 
+                                               (SELECT min(c2.position), c2.offre_id 
+                                                FROM candidature c2 GROUP BY c2.offre_id))";
+
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(":candidature_id", $candidature);
         if (!$stmt->execute()) {
