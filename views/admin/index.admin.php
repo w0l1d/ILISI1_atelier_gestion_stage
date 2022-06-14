@@ -406,7 +406,7 @@ try {
                                     <div class="card-header py-3">
                                         <h6 class="text-primary m-0 fw-bold">Nouveaux Etudiants Ajoutes</h6>
                                     </div>
-                                    <div class="card-body" style="background: rgba(133,135,150,0.29);">
+                                    <div class="card-body" >
                                         <!-- Todo ::   add recently added students -->
                                         <?php
 
@@ -428,7 +428,7 @@ try {
                                                              ?>">
                                                     </div>
                                                     <div class="col-9">
-                                                        <div class="card-subtitle">
+                                                        <div class="fs-5  text-dark m-0 fw-italic">
                                                             <?php echo "NOM: {$rStud['lname']} --- PRENOM:{$rStud['fname']}
                                                             ---FILIERE: {$rStud['short_title']}" ?>
                                                         </div>
@@ -448,7 +448,7 @@ try {
                                     <div class="card-header py-3">
                                         <h6 class="text-primary m-0 fw-bold">Nouvelles Entreprises ajoutées</h6>
                                     </div>
-                                    <div class="card-body" style="background: rgba(133,135,150,0.29);">
+                                    <div class="card-body" >
                                         <!-- Todo ::   add recently added companies -->
                                         <?php
 
@@ -464,7 +464,7 @@ try {
                                                              src="/uploads?logo_id=<?php echo $rComp['id']; ?>">
                                                     </div>
                                                     <div class="col-9">
-                                                        <div class="card-subtitle">
+                                                        <div class="fs-5  text-dark m-0 fw-italic">
                                                             <?php echo "{$rComp['name']} {$rComp['web_site']}" ?>
                                                         </div>
                                                         <small class="text-muted"><?php echo "{$rComp['email']} --- {$rComp['domaine']} " ?></small>

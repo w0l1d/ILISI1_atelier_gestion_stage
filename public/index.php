@@ -83,11 +83,18 @@ switch ($request) {
         require __DIR__ . '/../views/student/detailoffre.student.php';
         break;
 
+    case '/sendccv' :
+        require __DIR__ . '/../views/student/sendcv.student.php';
+        break;
+
     default:
         http_response_code(404);
         echo $request."<br>";
         require __DIR__ . '/../views/404.php';
         break;
+
+
+        
 }
 
 die();

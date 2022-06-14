@@ -2,6 +2,7 @@
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 require_once(__DIR__ . '/../../views/switcher.php');
+require_once(__DIR__ . '/../../views/student/sendcv.student.php');
 $curr_user = $_SESSION['user'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['offreid']) {
@@ -18,6 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($rows)) {
             $error = "  vous avez deja postuler dans cette offre N° :" . $offre_id;
         } else {
+           
+
             $query = "INSERT INTO candidature (id, created_date, status, updated_date,etudiant_id,offre_id,position)
                     VALUES (null,cast(now() as datetime),:statue,cast(now() as datetime),:student_id,:offre_id,NULL)";
             $stmt = $pdo->prepare($query);
@@ -26,7 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':offre_id', $offre_id);
 
             if ($stmt->execute())
+               {   sendcv($offre_id);
                 $msg = "vous avez postule à l'offre `$offre_id`";
+              }
             else
                 $error = "ne peux pas postuler";
         }
@@ -138,6 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                         <form method='POST' action="/offres">
                                                             <input type="hidden" name="offreid"
                                                                    value="<?php echo $value['id']; ?>"/>
+                                                                   
                                                             <input class="btn btn-primary btn-sm "
                                                                    type="submit" name="button1" value="postuler"/>
                                                         </form>

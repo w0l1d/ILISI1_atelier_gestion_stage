@@ -1,24 +1,28 @@
 <?php
 
-require_once(__DIR__ . '/../../private/shared/DBConnection.php');
+function sendcv(int $offre_id){
+  require_once(__DIR__ . '/../../private/shared/DBConnection.php');
+  $pdo = getDBConnection();
 
-$pdo = getDBConnection();
-
-$curr_user = $_SESSION['user'];
-if (empty($_GET['id'])) {
+  $curr_user = $_SESSION['user'];
+ 
+/*if (empty($_GET['id'])) {
     
-    header('Location: /dashboard');
-}
-$offre_id = $_GET['id'];
+    header('Location: /offres');
+}*/
+//$offre_id = '2';//$_GET['id'];
 $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
 
  
 
 
-    $query = "SELECT  r.key , e.email ,o.title,e.short_name ,o.start_stage ,o.nbr_stagiaire ,o.end_stage, o.type_stage ,f.short_title FROM  offreresults r ,offre o, entreprise e,formation f
-                WHERE  r.offre_id=o.id AND o.id =:id_offre AND o.entreprise_id= e.id AND f.id=o.formation_id";
+    $query = "SELECT   e.email ,o.title,e.short_name,t.cv,o.start_stage ,o.nbr_stagiaire ,
+              o.end_stage, o.type_stage FROM offre o, entreprise e,etudiant t, candidature c
+              WHERE  o.id =:id_offre AND o.entreprise_id= e.id AND c.offre_id=o.id AND c.etudiant_id=t.id
+              AND t.id =:id_student";
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':id_offre', $offre_id);
+    $stmt->bindParam(':id_student', $curr_user['id']);
     $stmt->execute();
     $offre = $stmt->fetch(PDO::FETCH_ASSOC);
     if (empty($offre)) {
@@ -27,16 +31,17 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
         die();
     }
     else {
-   
-        $key=$offre['key'];
+     
+      
+        $attach = __DIR__ . '/../../private/uploads/Docs/CVs/'.$offre['cv'];
         $titre=$offre['title'];
         $entreprise=$offre['short_name'];
         $start=$offre['start_stage'];
         $end=$offre['end_stage'];
         $type=$offre['type_stage'];
         $nbr=$offre['nbr_stagiaire'];
-        $formation=$offre['short_title'];
-        $adresse="http://localhost:8580/offres/resultat?key=".$key;
+      
+
         $img = __DIR__.'/../../public/assets/img/image-5.png';
         $imgdata = base64_encode(file_get_contents($img));
 
@@ -226,7 +231,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
       <p style='font-size: 14px; line-height: 170%;'><span style='font-size: 16px; line-height: 27.2px;'>
       le délai pour l'offre que vous avez faite a expiré
       merci de préciser la liste des étudiants admis, en attente et refusés sur la page suivante :
-      <a href='$adresse'> resultats </a> <br>
+       <br>
       <h2>note:</h2>   <h4 style='color:#cca250';>Après sauvegarde,aucune modification ne sera prise en compte <h4></span></p>
     </div>
   
@@ -362,7 +367,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
         <td class='v-container-padding-padding' style='overflow-wrap:break-word;word-break:break-word;padding:32px 10px 0px;font-family:'Montserrat',sans-serif;' align='left'>
           
     <div style='color: #ffffff; line-height: 140%; text-align: center; word-wrap: break-word;'>
-      <p style='font-size: 14px; line-height: 140%;'><span style='font-size: 18px; line-height: 25.2px;'><strong>$formation</strong></span></p>
+      <p style='font-size: 14px; line-height: 140%;'><span style='font-size: 18px; line-height: 25.2px;'><strong></strong></span></p>
     </div>
   
         </td>
@@ -376,8 +381,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
         <td class='v-container-padding-padding'style='overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:'sans-serif;' align='left'>
           
     <div style='color: #b0b1b4; line-height: 180%; text-align: center; word-wrap: break-word;'>
-      <p style='font-size: 14px; line-height: 180%;'>$nom_prenom</p>
-  <p style='font-size: 14px; line-height: 180%;'>contactez le Responsable</p>
+  
     </div>
   
         </td>
@@ -483,23 +487,12 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
     </table>";
 
         $mailto=$offre['email'];
-        $subject="liste des candidature pour votre offre : titre :'$titre' "; 
+        $subject="nouvelle candidature : titre :'$titre' "; 
         require_once(__DIR__ . '/../../views/Mailing.php');
-        sendMail($mailto,$body,$subject);
+        sendMail($mailto,$body,$subject,$attach);
        
       
-    $req = "UPDATE offre SET statue = 'WAITING_RESPONSE' where id = :offre_id";
-    $stmt1 = $pdo->prepare($req);
-    $stmt1->bindParam(':offre_id', $offre_id);
-    if (!$stmt1->execute()) {
-        $error = 'Impossible de changer le statue ';
-        header('Location: /dashboard');
+   
     }
-
-    $msg = "statue de l'offre est modifier ";
  
-}
- 
-
-  
- 
+    }

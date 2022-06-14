@@ -18,6 +18,24 @@ try {
     $error = $e->getMessage();
 }
 
+//accepted offer
+try {
+    $query_accepted = "SELECT c.id as candidature_id,o.id as offre_id,o.end_stage,o.start_stage,
+                 o.description, o.entreprise_id ,c.etudiant_id FROM candidature c ,offre o
+                WHERE o.id=c.offre_id AND c.status='AGREED'
+                AND o.formation_id = (SELECT id from formation WHERE responsable_id = :resp_id)
+                AND c.id not in(SELECT s.candidature_id FROM stage s WHERE s.stagiaire_id =c.etudiant_id)
+                ";
+                
+
+    $stmt_accepted = $pdo->prepare($query_accepted);
+    $stmt_accepted->bindParam(':resp_id', $curr_user['id']);
+    $stmt_accepted->execute();
+    $accepted_offre = $stmt_accepted->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (Exception $e) {
+    $error = $e->getMessage();
+}
 
 
 try {
@@ -347,6 +365,119 @@ try {
                           } }}
                    ?>
                 </div>
+                 <!--accepted offre-->
+                 <div class="row">
+                    <?php
+                        if (!empty($accepted_offre)) {
+                         foreach ($accepted_offre as $key => $Aoffre){?>
+                    <div class="col-lg-5 col-xl-4 bounce animated">
+                        
+                        <div class="card shadow mb-4 ">
+                            <div class="card-header d-flex justify-content-between align-items-center  bg-success" >
+                                <h6 class="text-primary fw-bold m-0 " data-bss-hover-animate="swing"
+                                    style="font-size: 18px ">Creer stage pour l'etudiant <?php echo $Aoffre['etudiant_id'] ?> </h6>
+                                <div class="dropdown no-arrow">
+                                    <button class="btn btn-link btn-sm dropdown-toggle " aria-expanded="false"
+                                            data-bs-toggle="dropdown" type="button"><i
+                                                class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                        <p class="text-center dropdown-header">plus de détails</p><a
+                                                class="dropdown-item" href="/offres">&nbsp;afficher tous les offres
+                                              </a>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body"  >
+                            <form class="d-flex flex-column flex-fill justify-content-around align-content-start"
+                                 action="/stages" method="post" style="font-size: calc(0.5em + 1vmin);">
+                                 <div class="mb-3">
+                        <label class="form-label">Encadrant<span
+                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
+                        <select name="encadrant_id" class="form-select flex-grow-1" required="">
+
+                            <?php
+                            try {
+                                $req = "SELECT p.id, p.lname, p.fname FROM person p,
+                                    enseignant e WHERE p.id=e.id ";
+
+                                $stmt = $pdo->prepare($req);
+                                $stmt->execute();
+                                $select = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                if (!empty($select)) {
+                                    foreach ($select as $key => $data) {
+                                        ?>
+                                        <option value="<?php echo $data['id']; ?>">
+                                            <?php echo "{$data['id']}: {$data['lname']} {$data['fname']}"; ?>
+                                        </option>
+                                        <?php
+                                    }
+                                }
+                            } catch (Exception $e) {
+                                echo 'Erreur : ' . $e->getMessage();
+                            }
+                            ?>
+
+                        </select>
+                    </div>
+
+                            <div class="col mb-2">
+                                <label hidden class="form-label">Etudiant</label>
+                                <input class="form-control" type="text" name="stagiaire_id" hidden value="<?php echo $Aoffre['etudiant_id'] ?>" readonly>
+                               
+                            </div>
+
+                            <div class="col mb-2">
+                                <label hidden class="form-label">Entreprise</label>
+                                <input class="form-control" type="text" name="entreprise_id" hidden value="<?php echo $Aoffre['entreprise_id'] ?>" readonly>
+                               
+                            </div>
+                            <div class="col mb-2">
+                                <label class="form-label">Debut</label>
+                                <input class="form-control" type="text" name="start" value="<?php echo $Aoffre['start_stage'] ?>" readonly>
+                              
+                            </div>
+                            <div class="col mb-2">
+                                <label class="form-label">Fin</label>
+                                <input class="form-control" type="text" name="end" value="<?php echo $Aoffre['end_stage'] ?>" readonly>
+                              
+                            </div>
+                            <div class="col mb-2">
+                                <label class="form-label">Candidature Id</label>
+                                <input class="form-control" type="text" name="candidature_id" value="<?php echo $Aoffre['candidature_id'] ?>" readonly>
+                              
+                            </div>
+                            <div class="col-auto col-lg-auto flex-grow-1  mb-2">
+                                <label class="form-label">Statue<span
+                                            style="color: var(--bs-red);font-weight: bold;">*</span></label>
+                                <select class="form-select" required="" name="statue">
+                                    <option value="DRAFT" selected="">Planifie</option>
+                                    <option value="FINISHED">Termine</option>
+                                    <option value="IN_PROGRESS">en cours</option>
+                                    <option value="CANCELED">Annule</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="border rounded form-control"
+                                  placeholder="Description" name="description"
+                                  maxlength="254"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal">Fermer</button>
+                    <button class="btn btn-primary" type="submit">Ajouter</button>
+                </div>
+
+                         </form>
+                            </div>
+                        </div>
+                            
+                    </div>
+                    <?php
+                          } }
+                   ?>
+                </div>
                 <div class="row">
                     <div class="col-lg-5 col-xl-4 bounce animated">
                         <div class="card shadow mb-4">
@@ -510,7 +641,7 @@ try {
                                     <div class="card-header py-3">
                                         <h6 class="text-primary m-0 fw-bold">Nouveaux Etudiants Ajoutes</h6>
                                     </div>
-                                    <div class="card-body" style="background: rgba(133,135,150,0.29);">
+                                    <div class="card-body" >
                                         <!-- Todo ::   add recently added students -->
                                         <?php
 
@@ -532,7 +663,7 @@ try {
                                                              ?>">
                                                     </div>
                                                     <div class="col-9">
-                                                        <div class="card-subtitle">
+                                                        <div   class="fs-5  text-dark m-0 fw-italic">
                                                             <?php echo "{$rStud['lname']} {$rStud['fname']}" ?>
                                                         </div>
                                                         <small class="text-muted"><?php echo "{$rStud['cne']} --- {$rStud['promotion']} " ?></small>
@@ -551,7 +682,7 @@ try {
                                     <div class="card-header py-3">
                                         <h6 class="text-primary m-0 fw-bold">Nouvelles Entreprises ajoutées</h6>
                                     </div>
-                                    <div class="card-body" style="background: rgba(133,135,150,0.29);">
+                                    <div class="card-body" >
                                         <!-- Todo ::   add recently added companies -->
                                         <?php
 
@@ -567,7 +698,7 @@ try {
                                                              src="/uploads?logo_id=<?php echo $rComp['id']; ?>">
                                                     </div>
                                                     <div class="col-9">
-                                                        <div class="card-subtitle">
+                                                        <div class="fs-5  text-dark m-0 fw-italic">
                                                             <?php echo "{$rComp['name']} {$rComp['web_site']}" ?>
                                                         </div>
                                                         <small class="text-muted"><?php echo "{$rComp['email']} --- {$rComp['domaine']} " ?></small>

@@ -22,13 +22,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statue = $_POST['statue'];
         $id_encadrant = $_POST['encadrant_id'];
         $entreprise_id = $_POST['entreprise_id'];
-  
+        if(!empty($_POST['candidature_id'])) $candidature_id=$_POST['candidature_id'];
+        else $candidature_id=null;
+       
+
        
         
         $query = "INSERT INTO stage 
                     (id, candidature_id, encadrant_id, stagiaire_id, entreprise_id, statue, start,
                     end, description, created_date,updated_date,encadrant_ext_note,encardant_note)
-                    VALUES (null,null,:encadrant_id,:stagiaire_id,:entreprise_id,:statue,
+                    VALUES (null,:candidature_id,:encadrant_id,:stagiaire_id,:entreprise_id,:statue,
                     :start,:end,:description,cast(NOW() as datetime ),cast(NOW() as datetime ),
                     :note,:note)";
         $stmt = $pdo->prepare($query);
@@ -38,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':encadrant_id', $id_encadrant);
         $stmt->bindParam(':stagiaire_id', $id_stagiaire);
         $stmt->bindParam(':entreprise_id', $entreprise_id);
+        $stmt->bindParam(':candidature_id', $candidature_id);
 
         $stmt->bindParam(':statue', $statue);
         $stmt->bindParam(':start', $start_stage);
