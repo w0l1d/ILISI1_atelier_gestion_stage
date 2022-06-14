@@ -460,12 +460,11 @@ try {
 
                             <div class="mb-3">
                         <label class="form-label">Description</label>
-                        <textarea class="border rounded form-control"
+                        <textarea class="border rounded form-control" 
                                   placeholder="Description" name="description"
-                                  maxlength="254"></textarea>
+                                  maxlength="254"><?php echo $Aoffre['description'] ?> </textarea>
                     </div>
                     <div class="modal-footer">
-                    <button class="btn btn-light" type="button" data-bs-dismiss="modal">Fermer</button>
                     <button class="btn btn-primary" type="submit">Ajouter</button>
                 </div>
 
