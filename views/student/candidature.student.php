@@ -3,7 +3,7 @@ require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 $curr_user = $_SESSION['user'];
 $statue_att = "WAITING";
-require_once(__DIR__ . '/../../views/switcher.php');      
+require_once(__DIR__ . '/../../views/switcher.php');
 ?>
 
 
@@ -22,8 +22,12 @@ if (!empty($_GET['agree'])) {
             goto skip_process;
         }
 
-        $query = "UPDATE candidature SET status = 'NAGREED' where status = 'ACCEPTED'";
+        $query = "UPDATE candidature SET status = 'NAGREED' 
+                   WHERE etudiant_id = (SELECT etudiant_id FROM candidature 
+                                                           WHERE id = :id) 
+                     AND status = 'ACCEPTED'";
         $stmt = $pdo->prepare($query);
+        $stmt->bindParam(":id", $candidature);
         if (!$stmt->execute()) {
             $pdo->rollBack();
             $error = "Offre n'est pas acceptee";
@@ -35,7 +39,6 @@ if (!empty($_GET['agree'])) {
         $pdo->rollBack();
         $error = $e->getMessage();
     }
-
 } else if (!empty($_GET['disagree'])) {
     $candidature = $_GET['disagree'];
     try {
@@ -45,7 +48,7 @@ if (!empty($_GET['agree'])) {
         $stmt->bindParam(":id", $candidature);
         if (!$stmt->execute()) {
             $pdo->rollBack();
-            $error = "Offre n'est pas acceptee";
+            $error = "Offre n'est pas refusee";
             goto skip_process;
         }
 
@@ -63,18 +66,11 @@ if (!empty($_GET['agree'])) {
         $stmt->bindParam(":candidature_id", $candidature);
         if (!$stmt->execute()) {
             $pdo->rollBack();
-            $error = "Offre n'est pas acceptee";
+            $error = "Offre n'est pas refusee";
             goto skip_process;
         }
 
-        $query = "UPDATE candidature SET status = 'NAGREED' where status = 'ACCEPTED'";
-        $stmt = $pdo->prepare($query);
-        if (!$stmt->execute()) {
-            $pdo->rollBack();
-            $error = "Offre n'est pas acceptee";
-            goto skip_process;
-        }
-        $msg = "Congratulation : l'Offre est acceptee, le reponsable attribuer un encadrant";
+        $warning = "l'Offre est refusee";
         $pdo->commit();
     } catch (Exception $e) {
         $pdo->rollBack();
@@ -123,6 +119,12 @@ skip_process:
                     <div class="alert alert-success" role="alert">
                     <span>
                         <?php echo $msg; ?>
+                    </span>
+                    </div>
+                <?php } elseif (!empty($warning)) { ?>
+                    <div class="alert alert-warning" role="alert">
+                    <span>
+                        <?php echo $warning; ?>
                     </span>
                     </div>
                 <?php } ?>
