@@ -37,10 +37,11 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
         $nbr=$offre['nbr_stagiaire'];
         $formation=$offre['short_title'];
         $adresse="http://localhost:8580/offres/resultat?key=".$key;
-        $img = file_get_contents(__DIR__.'/../../public/assets/img/image-5.png');
-        $imgdata = base64_encode($img);
-        $imgdata = "src='data:image/*;base64,$imgdata'";
-        $body="<html >
+        $img = __DIR__.'/../../public/assets/img/image-5.png';
+        $imgdata = base64_encode(file_get_contents($img));
+
+        $imgdata = 'src="data:'. mime_content_type($img) .';base64,'.$imgdata.'"';
+      /*  $body="<html >
         <head>
         <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
       
@@ -479,7 +480,8 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
       </td>
     </tr>
     </tbody>
-    </table>";
+    </table>";*/
+    $body="hjkl";
 
         $mailto=$offre['email'];
         $subject="liste des candidature pour votre offre : titre :'$titre' "; 
@@ -496,7 +498,7 @@ $nom_prenom=$curr_user['fname']." ".$curr_user['lname'];
     }
 
     $msg = "statue de l'offre est modifier ";
-    header('Location: /dashboard');
+ 
 }
  
 

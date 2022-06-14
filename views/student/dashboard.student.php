@@ -3,6 +3,24 @@ $curr_user = $_SESSION['user'];
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 require_once(__DIR__ . '/../../views/switcher.php');
+$accepted_candidature=null;
+
+//accepted 
+try {
+    $query_acc= "SELECT c.*, c.id as candidature_id,e.short_name, o.type_stage,o.title
+                FROM entreprise e,candidature c, offre o
+                WHERE o.id=c.offre_id AND e.id=o.entreprise_id AND c.etudiant_id =:etud_id 
+                AND c.status='ACCEPTED'";
+
+    $stmt_acc = $pdo->prepare($query_acc);
+    $stmt_acc->bindParam(':etud_id', $curr_user['id']);
+    $stmt_acc->execute();
+    $accepted_candidature = $stmt_acc->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (Exception $e) {
+    $error = $e->getMessage();
+}
+
 try {
     $query_ent = "SELECT e.name, e.short_name,e.email,e.logo,e.domaine,e.web_site, e.id  FROM entreprise e 
                                    
@@ -252,6 +270,97 @@ try {
             <div class="container-fluid">
                 <div class="d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">Tableau De Board</h3>
+                </div>
+                <?php
+                if (!empty($error)) {
+                    ?>
+                    <div class="alert alert-danger" role="alert">
+                    <span>
+                        <strong>Erreur : </strong>
+                        <?php echo $error; ?>
+                    </span>
+                    </div>
+                <?php } elseif (!empty($msg)) { ?>
+                    <div class="alert alert-success" role="alert">
+                    <span>
+                        <?php echo $msg; ?>
+                    </span>
+                    </div>
+                <?php } ?>
+                 <!--accepted-->
+                 <div class="row">
+                    <?php
+                        if (!empty($accepted_candidature)) {
+                         foreach ($accepted_candidature as $key => $accepted){
+                           ?>
+                    <div class="col-lg-5 col-xl-4 bounce animated">
+                        
+                        <div class="card shadow mb-4 ">
+                            <div class="card-header d-flex justify-content-between align-items-center  bg-warning" >
+                                <h6 class="text-primary fw-bold m-0 " data-bss-hover-animate="swing"
+                                    style="font-size: 18px ">Candidature Acceptée</h6>
+                                <div class="dropdown no-arrow">
+                                    <button class="btn btn-link btn-sm dropdown-toggle " aria-expanded="false"
+                                            data-bs-toggle="dropdown" type="button"><i
+                                                class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                        <p class="text-center dropdown-header">plus de détails</p><a
+                                                class="dropdown-item" href="/candidature">&nbsp;afficher tous les candidatures
+                                              </a>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body"  >
+                                <table class="table">
+                                        <tr>
+                                            <th> Id de Candidature</th>
+                                            <td><?php echo strtoupper($accepted['candidature_id']); ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Titre</th>
+                                            <td><?php echo strtoupper($accepted['title']); ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Type de stage</th>
+                                            <td><?php echo $accepted['type_stage'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Societé </th>
+                                            <td><?php echo $accepted['short_name'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>statue </th>
+                                            <td><?php echo $accepted['status'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Action </th>
+                                            <td>
+                                            <a class="btn btn-secondary bg-success btn-circle btn-sm"
+                                                   href="/offres/view?id=<?php echo $accepted['offre_id']; ?>">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a class="btn btn-success bg-success btn-circle btn-sm"
+                                                       href="/candidatures?agree=<?php echo $accepted['candidature_id']; ?>">
+                                                        <i class="fa fa-check"></i>
+                                                    </a>
+                                                    <a class="btn btn-danger bg-danger btn-circle btn-sm"
+                                                       href="/candidatures?disagree=<?php echo $accepted['candidature_id']; ?>">
+                                                        <i class="fa fa-close"></i>
+                                                    </a>
+                                                
+                                            </td>
+                                        </tr>
+                                      
+                                </table>
+
+                            </div>
+                        </div>
+                            
+                    </div>
+                    <?php
+                          } }
+                   ?>
                 </div>
                 <div class="row">
                     <div class="col-lg-5 col-xl-4 bounce animated">

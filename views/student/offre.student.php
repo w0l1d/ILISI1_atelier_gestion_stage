@@ -116,8 +116,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <tr>
                                             <td><?php echo $value['id']; ?></td>
                                             <td><?php echo $value['title']; ?></td>
-                                            <td><?php echo switch_offre( $value['statue']); ?></td>
-                                            <td><?php echo $value['type_stage']; ?></td>
+                                            <td><?php echo switch_offre($value['statue']); ?></td>
+                                            <td><?php echo type_stage($value['type_stage']); ?></td>
                                          
                                             <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>"><a
                                             href="/entreprises/view?id=<?php echo $value['entreprise_id']; ?>">
@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                         default => 'gradient-info',
                                                     };
                                                     ?> text-uppercase font-monospace" bs-cut="1">
-                                                    <?php echo $value['candidature_statue']; ?>
+                                                    <?php echo switch_candidature($value['candidature_statue']); ?>
                                                 </span>
                                                 <?php } ?>
                                             </td>

@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
-
+require_once(__DIR__ . '/../../views/switcher.php');
 $curr_user = $_SESSION['user'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

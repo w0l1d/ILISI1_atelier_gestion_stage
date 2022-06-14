@@ -39,9 +39,7 @@ function switch_candidature(string $status){
         case 'ACCEPTED':
             echo 'Retenu';
             break;
-        case 'WAITING':
-            echo "EN ATTENTE";
-           
+        
             break;
         case 'NAGREED':
             echo 'Pas Accepté';
@@ -49,6 +47,12 @@ function switch_candidature(string $status){
         case 'AGREED':
             echo 'Accepté';
             break;
+        case 'WAITING':
+            echo 'En Attente';
+            break;
+        default:
+       $st= explode("{",$status);
+            echo "En Attente{".$st[1];
        
 }
 }
@@ -68,6 +72,21 @@ function switch_stage(string $status){
         case 'DRAFT':
             echo 'planifier';
             break;
+        
+}
+};
+
+function type_stage(string $status){
+
+    switch ("$status") {
+        case 'INIT':
+            echo 'INITIATION';
+            break;
+        case 'SUMMER':
+            echo 'ÉTÉ';
+            break;
+        default:
+        echo $status;
         
 }
 };

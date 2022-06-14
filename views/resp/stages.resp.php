@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
-
+require_once(__DIR__ . '/../../views/switcher.php');
 $curr_user = $_SESSION['user'];
 $note="0";
 
@@ -115,8 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="text-primary m-0 fw-bold">Stages</p>
                     </div>
                     <div class="card-body">
-                        <table id="myTable" class="table table-striped nowrap"
-                               style="width:100%; font-size: calc(0.5em + 1vmin); ">
+                    <table id="myTable" class="table table-striped nowrap"
+                               style="width:100%; font-size: calc(0.5em + 1vmin);">
                             <thead>
                             <tr>
                                 <th class="filterhead">Id</th>
@@ -126,12 +126,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <th class="filterhead">Encadrant</th>
                                 <th class="filterhead">Date Debut</th>
                                 <th class="filterhead">Date Fin</th>
-                                <th class="filterhead">Description</th>
-                                <th class="filterhead">candidature Id</th>
-                                <th class="filterhead"> Note Encadrant</th>
-                                <th class="filterhead"> Note Encadrant Exterieur</th>
-                                <th class="filterhead">Date de creation</th>
-                                <th class="filterhead">Date de Maj</th>
+                                
+                                
+                               
+                              
+                               
                                 <th></th>
                             </tr>
                             <tr>
@@ -142,12 +141,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <th>Encadrant</th>
                                 <th>Date Debut</th>
                                 <th>Date Fin</th>
-                                <th>Description</th>
-                                <th>candidature Id</th>
-                                <th> Note Encadrant</th>
-                                <th> Note Encadrant Exterieur</th>
-                                <th>Date de creation</th>
-                                <th>Date de Maj</th>
+                                
+                               
+                               
+                                
+                               
                                 <th class="all">Action</th>
                             </tr>
 
@@ -174,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         ?>
                                         <tr>
                                             <td><?php echo $value['stage_id']; ?></td>
-                                            <td><?php echo $value['statue']; ?></td>
+                                            <td><?php echo switch_stage($value['statue']); ?></td>
                                             <td><?php echo $value['stagiaire_id'].":". $value['etu_fname']. $value['etu_lname']; ?></td>                 
                                             <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>"><a
                                             href="/entreprises/view?id=<?php echo $value['entreprise_id']; ?>">
@@ -184,14 +182,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <td><?php echo $value['encadrant_id'] . ":" . $value['ens_fname'] . $value['ens_lname']; ?></td>
                                             <td><?php echo $value['start']; ?></td>
                                             <td><?php echo $value['end']; ?></td>
-                                            <td><?php echo $value['description']; ?></td>
-                                            <td><?php echo $value['candidature_id']; ?></td>
-                                            <td><?php if ($value['statue'] === "FINISHED") echo $value['encardant_note'];
-                                                else echo " non disponible "; ?></td>
-                                            <td><?php if ($value['statue'] === "FINISHED") echo $value['encadrant_ext_note'];
-                                                else echo " non disponible "; ?></td>
-                                            <td><?php echo $value['created_date']; ?></td>
-                                            <td><?php echo $value['updated_date']; ?></td>
+                                           
+                                          
+                                           
+                                          
+                                           
                                             <td>
                                                 <a class="btn btn-secondary bg-secondary btn-circle btn-sm"
                                                    href="/stages/view?id=<?php echo $value['stage_id']; ?>">
@@ -201,10 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                    href="/stages/update?id=<?php echo $value['stage_id']; ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a class="btn btn-primary bg-warning btn-circle btn-sm"
-                                                   href="#">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
+                                               
                                             </td>
                                         </tr>
                                         <?php
@@ -391,7 +383,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="/assets/datatable/js/responsive.bootstrap5.min.js"></script>
 <script src="https://nightly.datatables.net/scroller/js/dataTables.scroller.js?_=cd11977a9e85e84b9a1ebeb03f7b1a10"></script>
 <script>
-    $(document).ready(function () {
+   /* $(document).ready(function () {
 
         function hideSearchInputs(columns) {
             for (i = 0; i < columns.length; i++) {
@@ -452,7 +444,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         });
 
-    });
+    });*/
+    $(document).ready(function () {
+
+function hideSearchInputs(columns) {
+    for (i = 0; i < columns.length; i++) {
+        if (columns[i]) {
+            $('.filterhead:eq(' + i + ')').show();
+        } else {
+            $('.filterhead:eq(' + i + ')').hide();
+        }
+    }
+}
+
+var table = $('#myTable').DataTable({
+    orderCellsTop: true,
+    dom: 'Bfrtip',
+    responsive: {
+        details: {
+            display: $.fn.dataTable.Responsive.display.modal({
+                header: function (row) {
+                    var data = row.data();
+                    return 'Details for ' + data[0] + ' ' + data[1];
+                }
+            }),
+            renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                tableClass: 'table'
+            })
+        }
+    },
+    scrollY: 200,
+    scrollCollapse: true,
+    scroller: true,
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+    ],
+    initComplete: function () {
+        var api = this.api();
+        $('.filterhead', api.table().header()).each(function (i) {
+            var column = api.column(i);
+            var select = $('<select><option value=""></option></select>')
+                .appendTo($(this).empty())
+                .on('change', function () {
+                    var val = $.fn.dataTable.util.escapeRegex(
+                        $(this).val()
+                    );
+
+                    column
+                        .search(val ? '^' + val + '$' : '', true, false)
+                        .draw();
+                });
+
+            column.data().unique().sort().each(function (d, j) {
+                select.append('<option value="' + d + '">' + d + '</option>');
+            });
+        });
+        hideSearchInputs(api.columns().responsiveHidden().toArray());
+    }
+});
+
+table.on('responsive-resize', function (e, datatable, columns) {
+    hideSearchInputs(columns);
+
+});
+
+});
+
 
 
 </script>
