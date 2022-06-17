@@ -55,7 +55,11 @@ try {
             <div class="container-fluid">
                 <div class="d-flex d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">information sur l'offre n° <?php echo $offre_id ?> <br></h3>
-
+                    <a class="btn btn-primary"
+                       href="/offres/update?id=<?php echo $offre_id; ?>">
+                        <i class="fas fa-edit"></i>
+                        <span class="d-none d-sm-inline-block">Modifier</span>
+                    </a>
                 </div>
 
                 <div class="card shadow">

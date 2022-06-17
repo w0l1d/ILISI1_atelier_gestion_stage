@@ -86,7 +86,6 @@ skip_process:
             <div class="container-fluid">
                 <div class="d-sm-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-dark mb-0">Enseignants</h3>
-
                     <button class="btn btn-primary d-none d-sm-block d-md-block"
                             type="button" data-bs-target="#modal-1" data-bs-toggle="modal">
                         <i class="fas fa-plus fa-sm text-white-50"></i>
@@ -155,7 +154,7 @@ skip_process:
                                                    href="/enseignants/update?id=<?php echo $value['id']; ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a class="btn btn-primary bg-success btn-circle btn-sm"
+                                                <a class="btn btn-primary bg-secondary btn-circle btn-sm"
                                                    href="/enseignants/view?id=<?php echo $value['id']; ?>">
                                                     <i class="fas fa-eye"></i>
                                                 </a>

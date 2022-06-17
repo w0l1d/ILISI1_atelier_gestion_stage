@@ -48,29 +48,22 @@
                     </li>
                     <li class="nav-item pulse"  >
                         <a class="nav-link" href="/formations">
-                        <i  class="fas fa-school" style="color: rgb(125, 141, 161);"></i>
+                        <i  class="fas fa-file-archive" style="color: rgb(125, 141, 161);"></i>
                             <span style="color: rgb(115, 128, 236);">Formations</span>
                         </a>
                     </li>
-                  
-                    
                     <li class="nav-item pulse" >
                         <a class="nav-link" href="/enseignants">
-                            <i  class="fa fa-bullhorn" style="color: rgb(125, 141, 161);"></i>
+                            <i  class="fa fa-users" style="color: rgb(125, 141, 161);"></i>
                             <span style="color: rgb(115, 128, 236);">Enseignants</span>
                         </a>
                     </li>
                     <li class="nav-item pulse" >
                         <a class="nav-link" href="/entreprises">
-                            <i class="fa fa-group" style="color: rgb(125, 141, 161);"></i>
+                            <i class="fas fa-school" style="color: rgb(125, 141, 161);"></i>
                             <span style="color: rgb(115, 128, 236);">Entreprises</span>
                         </a>
                     </li>
-
-                  
-                   
-                    <li class="nav-item"></li>
-                    <li class="nav-item"></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button" style="border-color: rgb(115,128,236);background: rgb(115,128,236);"></button></div>
             </div>

@@ -3,7 +3,7 @@ require_once(__DIR__ . '/../../private/shared/DBConnection.php');
 $pdo = getDBConnection();
 require_once(__DIR__ . '/../../views/switcher.php');
 $curr_user = $_SESSION['user'];
-$note="0";
+$note = "0";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['encadrant_id']) &&
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <button class="btn btn-primary" type="button" data-bs-target="#modal-1"
                             data-bs-toggle="modal"><i class="fas fa-plus fa-sm text-white-50"></i>
-                    <span class="d-none d-sm-inline-block d-md-inline-block">Ajouter Stage</span>
+                        <span class="d-none d-sm-inline-block d-md-inline-block">Ajouter Stage</span>
                     </button>
                 </div>
 
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="text-primary m-0 fw-bold">Stages</p>
                     </div>
                     <div class="card-body">
-                    <table id="myTable" class="table table-striped nowrap"
+                        <table id="myTable" class="table table-striped nowrap"
                                style="width:100%; font-size: calc(0.5em + 1vmin);">
                             <thead>
                             <tr>
@@ -130,11 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <th class="filterhead">Encadrant</th>
                                 <th class="filterhead">Date Debut</th>
                                 <th class="filterhead">Date Fin</th>
-                                
-                                
-                               
-                              
-                               
+
+
                                 <th></th>
                             </tr>
                             <tr>
@@ -145,11 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <th>Encadrant</th>
                                 <th>Date Debut</th>
                                 <th>Date Fin</th>
-                                
-                               
-                               
-                                
-                               
+
+
                                 <th class="all">Action</th>
                             </tr>
 
@@ -164,8 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                              and pe.id= s.encadrant_id and t.id=s.stagiaire_id and t.formation_id=f.id
                                              and f.id = (
                                                  select f.id from  formation f  where f.responsable_id= :id_ent
-                                                 )
-                                        ";
+                                                 )";
 
                                 $stmt = $pdo->prepare($query);
                                 $stmt->bindParam(':id_ent', $curr_user['id']);
@@ -177,20 +170,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <tr>
                                             <td><?php echo $value['stage_id']; ?></td>
                                             <td><?php echo switch_stage($value['statue']); ?></td>
-                                            <td><?php echo $value['stagiaire_id'].":". $value['etu_fname']. $value['etu_lname']; ?></td>                 
-                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>"><a
-                                            href="/entreprises/view?id=<?php echo $value['entreprise_id']; ?>">
-                                                <?php echo $value['short_name']; ?>
-                                             </a>
+                                            <td><?php echo $value['stagiaire_id'] . ":" . $value['etu_fname'] . $value['etu_lname']; ?></td>
+                                            <td data-bs-toggle="tooltip" title="<?php echo $value['name']; ?>">
+                                                <a href="/entreprises/view?id=<?php echo $value['entreprise_id']; ?>">
+                                                    <?php echo $value['short_name']; ?>
+                                                </a>
                                             </td>
                                             <td><?php echo $value['encadrant_id'] . ":" . $value['ens_fname'] . $value['ens_lname']; ?></td>
                                             <td><?php echo $value['start']; ?></td>
                                             <td><?php echo $value['end']; ?></td>
-                                           
-                                          
-                                           
-                                          
-                                           
+
                                             <td>
                                                 <a class="btn btn-secondary bg-secondary btn-circle btn-sm"
                                                    href="/stages/view?id=<?php echo $value['stage_id']; ?>">
@@ -200,7 +189,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                    href="/stages/update?id=<?php echo $value['stage_id']; ?>">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                               
                                             </td>
                                         </tr>
                                         <?php
@@ -238,42 +226,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                            <label class="form-label">Etudiant<span
-                                        style="color: var(--bs-red);font-weight: bold;">*</span></label>
-                            <select name="stagiaire_id" class="form-select flex-grow-1" required="">
+                        <label class="form-label">Etudiant<span
+                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
+                        <select name="stagiaire_id" class="form-select flex-grow-1" required="">
 
-                                <?php
-                                try {
-                                    $query = "SELECT e1.id as etudiant, fname ,lname FROM etudiant e1 , person p 
+                            <?php
+                            try {
+                                $query = "SELECT e1.id as etudiant, fname ,lname FROM etudiant e1 , person p 
                                     where p.id=e1.id and e1.formation_id=:formation and e1.id not in ( SELECT e.id 
                                     FROM etudiant e , stage s  where s.stagiaire_id=e.id  
                                     and cast(s.end as datetime ) >= cast(NOW() as datetime )) ";
 
-                                    $stmt = $pdo->prepare($query);
-                                    $stmt->bindParam(':formation', $curr_user['formation_id']);
-                                    $stmt->execute();
-                                    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                    if (!empty($rows)) {
-                                        foreach ($rows as $key => $value) {
-                                            ?>
-                                            <option value="<?php echo $value['etudiant']; ?>">
-                                                <?php echo "{$value['etudiant']} :{$value['fname']} {$value['lname']}"; ?>
-                                            </option>
-                                            <?php
-                                        }
+                                $stmt = $pdo->prepare($query);
+                                $stmt->bindParam(':formation', $curr_user['formation_id']);
+                                $stmt->execute();
+                                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                if (!empty($rows)) {
+                                    foreach ($rows as $key => $value) {
+                                        ?>
+                                        <option value="<?php echo $value['etudiant']; ?>">
+                                            <?php echo "{$value['etudiant']} :{$value['fname']} {$value['lname']}"; ?>
+                                        </option>
+                                        <?php
                                     }
-                                } catch (Exception $e) {
-                                    echo 'Erreur : ' . $e->getMessage();
                                 }
-                                ?>
+                            } catch (Exception $e) {
+                                echo 'Erreur : ' . $e->getMessage();
+                            }
+                            ?>
 
-                            </select>
-                        </div>
-                
-                        <div class="mb-3">
-                            <label class="form-label">Entreprise<span
-                                        style="color: var(--bs-red);font-weight: bold;">*</span></label>
-                            <select name="entreprise_id" class="form-select flex-grow-1" required="">
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Entreprise<span
+                                    style="color: var(--bs-red);font-weight: bold;">*</span></label>
+                        <select name="entreprise_id" class="form-select flex-grow-1" required="">
 
                             <?php
                             try {
@@ -387,7 +375,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="/assets/datatable/js/responsive.bootstrap5.min.js"></script>
 <script src="https://nightly.datatables.net/scroller/js/dataTables.scroller.js?_=cd11977a9e85e84b9a1ebeb03f7b1a10"></script>
 <script>
-   /* $(document).ready(function () {
+    /* $(document).ready(function () {
+
+         function hideSearchInputs(columns) {
+             for (i = 0; i < columns.length; i++) {
+                 if (columns[i]) {
+                     $('.filterhead:eq(' + i + ')').show();
+                 } else {
+                     $('.filterhead:eq(' + i + ')').hide();
+                 }
+             }
+         }
+
+         var table = $('#myTable').DataTable({
+             orderCellsTop: true,
+             "language": {
+                 "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json"
+             },
+             responsive: {
+                 details: {
+                     display: $.fn.dataTable.Responsive.display.modal({
+                         header: function (row) {
+                             var data = row.data();
+                             return 'Details for ' + data[0] + ' ' + data[1];
+                         }
+                     }),
+                     renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                         tableClass: 'table'
+                     })
+                 }
+             },
+
+
+             initComplete: function () {
+                 var api = this.api();
+                 $('.filterhead', api.table().header()).each(function (i) {
+                     var column = api.column(i);
+                     var select = $('<select><option value=""></option></select>')
+                         .appendTo($(this).empty())
+                         .on('change', function () {
+                             var val = $.fn.dataTable.util.escapeRegex(
+                                 $(this).val()
+                             );
+
+                             column
+                                 .search(val ? '^' + val + '$' : '', true, false)
+                                 .draw();
+                         });
+
+                     column.data().unique().sort().each(function (d, j) {
+                         select.append('<option value="' + d + '">' + d + '</option>');
+                     });
+                 });
+                 hideSearchInputs(api.columns().responsiveHidden().toArray());
+             }
+         });
+
+         table.on('responsive-resize', function (e, datatable, columns) {
+             hideSearchInputs(columns);
+
+         });
+
+     });*/
+    $(document).ready(function () {
 
         function hideSearchInputs(columns) {
             for (i = 0; i < columns.length; i++) {
@@ -401,9 +451,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         var table = $('#myTable').DataTable({
             orderCellsTop: true,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/fr-FR.json"
-            },
+            dom: 'Bfrtip',
             responsive: {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({
@@ -417,12 +465,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     })
                 }
             },
-
-
+            scrollY: 200,
+            scrollCollapse: true,
+            scroller: true,
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
             initComplete: function () {
                 var api = this.api();
                 $('.filterhead', api.table().header()).each(function (i) {
                     var column = api.column(i);
+                    // console.log(api.column(i))
+                    // console.log(removeTags(api.column(i).data()[0]).trim())
                     var select = $('<select><option value=""></option></select>')
                         .appendTo($(this).empty())
                         .on('change', function () {
@@ -435,8 +489,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 .draw();
                         });
 
+                    // console.log(column.data());
                     column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>');
+                        console.log(d)
+                        select.append('<option value="' + d + '">' + removeTags(d).trim() + '</option>');
                     });
                 });
                 hideSearchInputs(api.columns().responsiveHidden().toArray());
@@ -448,71 +504,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         });
 
-    });*/
-    $(document).ready(function () {
+        function removeTags(str) {
+            if ((str===null) || (str===''))
+                return false;
+            else
+                str = str.toString();
 
-function hideSearchInputs(columns) {
-    for (i = 0; i < columns.length; i++) {
-        if (columns[i]) {
-            $('.filterhead:eq(' + i + ')').show();
-        } else {
-            $('.filterhead:eq(' + i + ')').hide();
+            // Regular expression to identify HTML tags in
+            // the input string. Replacing the identified
+            // HTML tag with a null string.
+            return str.replace( /(<([^>]+)>)/ig, '');
         }
-    }
-}
 
-var table = $('#myTable').DataTable({
-    orderCellsTop: true,
-    dom: 'Bfrtip',
-    responsive: {
-        details: {
-            display: $.fn.dataTable.Responsive.display.modal({
-                header: function (row) {
-                    var data = row.data();
-                    return 'Details for ' + data[0] + ' ' + data[1];
-                }
-            }),
-            renderer: $.fn.dataTable.Responsive.renderer.tableAll({
-                tableClass: 'table'
-            })
-        }
-    },
-    scrollY: 200,
-    scrollCollapse: true,
-    scroller: true,
-    buttons: [
-        'copy', 'csv', 'excel', 'pdf', 'print'
-    ],
-    initComplete: function () {
-        var api = this.api();
-        $('.filterhead', api.table().header()).each(function (i) {
-            var column = api.column(i);
-            var select = $('<select><option value=""></option></select>')
-                .appendTo($(this).empty())
-                .on('change', function () {
-                    var val = $.fn.dataTable.util.escapeRegex(
-                        $(this).val()
-                    );
-
-                    column
-                        .search(val ? '^' + val + '$' : '', true, false)
-                        .draw();
-                });
-
-            column.data().unique().sort().each(function (d, j) {
-                select.append('<option value="' + d + '">' + d + '</option>');
-            });
-        });
-        hideSearchInputs(api.columns().responsiveHidden().toArray());
-    }
-});
-
-table.on('responsive-resize', function (e, datatable, columns) {
-    hideSearchInputs(columns);
-
-});
-
-});
+    });
 
 
 

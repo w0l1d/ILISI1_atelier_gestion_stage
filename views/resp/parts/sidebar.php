@@ -16,20 +16,7 @@
 .pulse:hover { transform: scale(1.15); 
                 margin-left:3px;} 
 /***** Pulse *****/
-/*
-.pulse a:hover{ 
-    animation: pulse 0.4s  ;
-     animation-timing-function: linear;   
-     
-}
- 
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1);
-  100% { transform: scale(1); }
-  }
-}*/
 </style>
 
 <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: rgb(249, 249, 249);">
@@ -52,8 +39,6 @@
                             <span style="color: rgb(115, 128, 236);">Entreprises</span>
                         </a>
                     </li>
-                  
-                    
                     <li class="nav-item pulse" >
                         <a class="nav-link" href="/offres">
                             <i  class="fa fa-bullhorn" style="color: rgb(125, 141, 161);"></i>
@@ -66,23 +51,19 @@
                             <span style="color: rgb(115, 128, 236);">Etudiant</span>
                         </a>
                     </li>
-
                     <li class="nav-item pulse"  >
                         <a class="nav-link" href="/stages">
                             <i  class="fas fa-suitcase" style="color: rgb(125, 141, 161);"></i>
                             <span style="color: rgb(115, 128, 236);">Stages</span>
                         </a>
                     </li>
-                   
-                    <li class="nav-item"></li>
-                    <li class="nav-item"></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button" style="border-color: rgb(115,128,236);background: rgb(115,128,236);"></button></div>
             </div>
         </nav>
 
 <script>
-    const path = "/" + location.pathname.substr(1);
+    const path = "/" + location.pathname.substring(1);
     const navlink = document.querySelector(`a.nav-link[href="${path}"]`)
     if (navlink != null)
          navlink.classList.add('active');
