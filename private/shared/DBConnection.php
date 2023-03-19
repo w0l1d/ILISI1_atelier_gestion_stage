@@ -5,6 +5,11 @@ class Connection
 
     protected static $instance;
 
+    /*
+    ******************************************
+    Don't worry this is not production version :)
+    ******************************************
+    */
     private static $dbname = "ilisi1_atelier1_gestion_stages";
 
     private static $servername = "localhost";
